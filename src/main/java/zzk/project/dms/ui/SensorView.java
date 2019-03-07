@@ -4,9 +4,15 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "sensor",layout = MainView.class)
+@Route(value = SensorView.VIEW_NAME, layout = MainView.class)
 public class SensorView extends VerticalLayout {
+
+    public static final String VIEW_NAME = "sensor";
+    public static final String VIEW_TITLE = "传感器";
+
     public SensorView() {
-        add(new H1("这里是传感器页面"));
+        add(new H1(VIEW_TITLE));
     }
+
+
 }

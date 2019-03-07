@@ -4,9 +4,12 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "finance",layout = MainView.class)
+@Route(value = FinanceView.VIEW_NAME,layout = MainView.class)
 public class FinanceView extends VerticalLayout {
+    public static final String VIEW_NAME = "finance";
+    public static final String VIEW_TITLE = "财富管理";
+
     public FinanceView() {
-        add(new H1("这是财务管理页面"));
+        add(new H1(VIEW_TITLE));
     }
 }
