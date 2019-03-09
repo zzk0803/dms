@@ -5,7 +5,7 @@ import zzk.project.dms.domain.entities.DormitorySpace;
 
 import java.util.List;
 
-public interface DormitorySpaceRepository extends JpaRepository<DormitorySpace, String> {
+public interface DormitorySpaceRepository extends JpaRepository<DormitorySpace, Long> {
     List<DormitorySpace> findDormitorySpacesByUpperSpace(DormitorySpace upperSpace);
 
     boolean existsDormitorySpacesByUpperSpace(DormitorySpace upperSpace);

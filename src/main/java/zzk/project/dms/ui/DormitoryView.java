@@ -1,18 +1,13 @@
 package zzk.project.dms.ui;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.treegrid.TreeGrid;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationListener;
 import com.vaadin.flow.router.Route;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.ui.dormitory.DormitoryEditDialog;
-
-import java.util.Collection;
 
 @Route(value = DormitoryView.VIEW_NAME, layout = MainView.class)
 public class DormitoryView extends VerticalLayout {
@@ -46,17 +41,14 @@ public class DormitoryView extends VerticalLayout {
         add(headerH1);
         add(controlPanel);
         add(spaceTreeGrid);
+        setFlexGrow(1, spaceTreeGrid);
         expand(spaceTreeGrid);
         onEvent();
     }
 
     private void onEvent() {
         createSpaceButton.addClickListener(click -> editDialog.open());
-
-        editDialog.addDialogCloseActionListener(dialogClose -> {
-            spaceTreeGrid.getDataProvider().refreshAll();
-        });
-
+        editDialog.setSpaceTreeGrid(this.spaceTreeGrid);
     }
 
 }

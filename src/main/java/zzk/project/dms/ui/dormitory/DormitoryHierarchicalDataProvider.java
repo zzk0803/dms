@@ -3,9 +3,7 @@ package zzk.project.dms.ui.dormitory;
 import com.vaadin.flow.data.provider.hierarchy.AbstractBackEndHierarchicalDataProvider;
 import com.vaadin.flow.data.provider.hierarchy.HierarchicalQuery;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.services.DormitoryManagementService;
 
@@ -14,7 +12,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @SpringComponent
-public class DormitoryHierarchicalDataProvider extends AbstractBackEndHierarchicalDataProvider<DormitorySpace,Void> {
+public class DormitoryHierarchicalDataProvider extends AbstractBackEndHierarchicalDataProvider<DormitorySpace, Void> {
 
     private DormitoryManagementService dormitoryManagementService;
 

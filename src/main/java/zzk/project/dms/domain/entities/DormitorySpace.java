@@ -3,7 +3,6 @@ package zzk.project.dms.domain.entities;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -60,9 +59,8 @@ public class DormitorySpace {
     }
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    private String uuid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long uuid;
 
     @ManyToOne
     @JoinTable(name = "domain_dormitory_spacecascade_relationship",

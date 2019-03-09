@@ -1,10 +1,7 @@
 package zzk.project.dms.ui.dormitory;
 
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -12,6 +9,7 @@ import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.services.DormitoryManagementService;
 
@@ -29,6 +27,7 @@ public class DormitoryEditForm extends VerticalLayout {
     private ComboBox<DormitorySpace> upperSpaceComboBox;
 
     private DormitorySpace editingObject = new DormitorySpace();
+    private DormitorySpace lastedCompletedObject;
 
     @Autowired
     public DormitoryEditForm(
@@ -36,7 +35,7 @@ public class DormitoryEditForm extends VerticalLayout {
             Binder<DormitorySpace> spaceBinder,
             TextField spaceNameField,
             TextField capacityField,
-            Checkbox availableCheckbox,
+            @Qualifier("availableCheckbox") Checkbox availableCheckbox,
             Checkbox operationalCheckbox,
             ComboBox<DormitorySpace.SpaceType> spaceTypeComboBox,
             ComboBox<DormitorySpace> upperSpaceComboBox
@@ -51,8 +50,8 @@ public class DormitoryEditForm extends VerticalLayout {
         this.upperSpaceComboBox = upperSpaceComboBox;
 
         initUI();
+        initBinding();
         onEvent();
-        configureBinding();
     }
 
     public DormitorySpace getEditingObject() {
@@ -64,15 +63,31 @@ public class DormitoryEditForm extends VerticalLayout {
         this.editingObject = editingObject;
     }
 
-    public void doPersistence() {
+    public DormitorySpace getLastedCompletedObject() {
+        return lastedCompletedObject;
+    }
+
+    public void setLastedCompletedObject(DormitorySpace lastedCompletedObject) {
+        this.lastedCompletedObject = lastedCompletedObject;
+    }
+
+    public void reset() {
+        DormitorySpace dormitorySpace = new DormitorySpace();
+        setEditingObject(dormitorySpace);
+        binding();
+    }
+
+    public void doCommit() {
         DormitorySpace editingObject = this.getEditingObject();
         boolean valid = spaceBinder.writeBeanIfValid(editingObject);
         if (valid) {
-            dormitoryManagementService.createOrUpdate(getEditingObject());
+            setLastedCompletedObject(getEditingObject());
+            setLastedCompletedObject(dormitoryManagementService.createOrUpdate(getLastedCompletedObject()));
         }
+        reset();
     }
 
-    private void configureBinding() {
+    private void initBinding() {
         binding();
         spaceBinder.forField(spaceNameField)
                 .asRequired("空间名称&编号不能为空")
@@ -100,12 +115,6 @@ public class DormitoryEditForm extends VerticalLayout {
 
         spaceBinder.forField(upperSpaceComboBox)
                 .bind(DormitorySpace::getUpperSpace, DormitorySpace::setUpperSpace);
-    }
-
-    public void reset() {
-        DormitorySpace dormitorySpace = new DormitorySpace();
-        setEditingObject(dormitorySpace);
-        binding();
     }
 
     private void binding() {

@@ -1,9 +1,9 @@
 package zzk.project.dms.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.dao.DormitorySpaceRepository;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.services.DormitoryManagementService;
@@ -18,16 +18,8 @@ public class DormitoryManagementServiceImpl implements DormitoryManagementServic
     private DormitorySpaceRepository dormitorySpaceRepository;
 
     @Override
-    public String createOrUpdate(DormitorySpace space) {
-        DormitorySpace saved = dormitorySpaceRepository.save(space);
-        return saved.getUuid();
-    }
-
-    @Override
-    public String delete(DormitorySpace space) throws DormitoryManageException {
-        String uuid = space.getUuid();
-        dormitorySpaceRepository.delete(space);
-        return uuid;
+    public JpaRepository<DormitorySpace, Long> getRepository() {
+        return dormitorySpaceRepository;
     }
 
     @Override

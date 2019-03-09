@@ -40,7 +40,6 @@ public class BeanConfigurationForDormitoryView {
         spaceTreeGrid.addColumn(DormitorySpace::getCapacity).setHeader("容积");
         spaceTreeGrid.addColumn(space -> space.getCapacity() - space.getSize()).setHeader("剩余");
         spaceTreeGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        spaceTreeGrid.addThemeVariants(GridVariant.LUMO_COMPACT);
         return spaceTreeGrid;
     }
 
@@ -127,15 +126,13 @@ public class BeanConfigurationForDormitoryView {
     @Bean
     @UIScope
     public Checkbox availableCheckbox() {
-        Checkbox availableCheckbox = new Checkbox("设置为可用（未满）");
-        return availableCheckbox;
+        return new Checkbox("设置为可用（未满）");
     }
 
     @Bean
     @UIScope
     public Checkbox operationalCheckbox() {
-        Checkbox availableCheckbox = new Checkbox("设置为启用");
-        return availableCheckbox;
+        return new Checkbox("设置为启用");
     }
 
     @Bean

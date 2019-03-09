@@ -1,17 +1,15 @@
 package zzk.project.dms.ui;
 
-import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.applayout.AbstractAppRouterLayout;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.page.Push;
 
+@Push
 public class MainView extends AbstractAppRouterLayout {
     @Override
     protected void configure(AppLayout appLayout, AppLayoutMenu appLayoutMenu) {
