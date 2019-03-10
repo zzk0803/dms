@@ -82,7 +82,7 @@ public class BeanConfigurationForTenementView {
             });
             edit.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
             group.add(edit);
-            Button delete = new Button(VaadinIcon.DEL.create(), click -> {
+            Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
 
             });
             delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
@@ -118,7 +118,7 @@ public class BeanConfigurationForTenementView {
     @Bean
     @UIScope
     public Checkbox distributeCurrently() {
-        return new Checkbox("立即分配房间");
+        return new Checkbox("显示房间分配");
     }
 
     @Bean
