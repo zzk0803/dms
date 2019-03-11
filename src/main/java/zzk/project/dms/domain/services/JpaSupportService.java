@@ -1,15 +1,20 @@
 package zzk.project.dms.domain.services;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface JpaSupportServiceTemplate<T, ID> {
+public interface JpaSupportService<T, ID> {
 
     JpaRepository<T, ID> getRepository();
 
-    default T createOrUpdate(T entity) {
+    default T put(T entity) {
         return getRepository().save(entity);
+    }
+
+    default List<T> putAll(Iterable<T> ts) {
+        return getRepository().saveAll(ts);
     }
 
     default T delete(T entity) {

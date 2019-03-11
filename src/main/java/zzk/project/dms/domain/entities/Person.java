@@ -7,45 +7,15 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Person {
     @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @Embeddable
-    public static class ContactMethod {
-        private String houseTelephone;
-        private String mobilePhone;
-        private String primaryEmail;
-
-        public String getHouseTelephone() {
-            return houseTelephone;
-        }
-
-        public void setHouseTelephone(String houseTelephone) {
-            this.houseTelephone = houseTelephone;
-        }
-
-        public String getMobilePhone() {
-            return mobilePhone;
-        }
-
-        public void setMobilePhone(String mobilePhone) {
-            this.mobilePhone = mobilePhone;
-        }
-
-        public String getPrimaryEmail() {
-            return primaryEmail;
-        }
-
-        public void setPrimaryEmail(String primaryEmail) {
-            this.primaryEmail = primaryEmail;
-        }
-    }
+    private PersonGender gender;
 
     @Id
     @GeneratedValue
     private Long id;
 
     private String name;
-    private ContactMethod contactMethod = new ContactMethod();
+
+    private PersonContactMethod personContactMethod = new PersonContactMethod();
 
     public Person() {
     }
@@ -68,20 +38,20 @@ public class Person {
         this.name = name;
     }
 
-    public Gender getGender() {
+    public PersonGender getGender() {
         return this.gender;
     }
 
-    public void setGender(Gender gender) {
+    public void setGender(PersonGender gender) {
         this.gender = gender;
     }
 
-    public ContactMethod getContactMethod() {
-        return this.contactMethod;
+    public PersonContactMethod getPersonContactMethod() {
+        return this.personContactMethod;
     }
 
-    public void setContactMethod(ContactMethod contactMethod) {
-        this.contactMethod = contactMethod;
+    public void setPersonContactMethod(PersonContactMethod personContactMethod) {
+        this.personContactMethod = personContactMethod;
     }
 
     public String getPersonIdentityID() {
@@ -102,7 +72,7 @@ public class Person {
         if (getId() != null ? !getId().equals(person.getId()) : person.getId() != null) return false;
         if (getName() != null ? !getName().equals(person.getName()) : person.getName() != null) return false;
         if (getGender() != person.getGender()) return false;
-        if (getContactMethod() != null ? !getContactMethod().equals(person.getContactMethod()) : person.getContactMethod() != null)
+        if (getPersonContactMethod() != null ? !getPersonContactMethod().equals(person.getPersonContactMethod()) : person.getPersonContactMethod() != null)
             return false;
         return getPersonIdentityID() != null ? getPersonIdentityID().equals(person.getPersonIdentityID()) : person.getPersonIdentityID() == null;
 
@@ -113,7 +83,7 @@ public class Person {
         int result = getId() != null ? getId().hashCode() : 0;
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         result = 31 * result + (getGender() != null ? getGender().hashCode() : 0);
-        result = 31 * result + (getContactMethod() != null ? getContactMethod().hashCode() : 0);
+        result = 31 * result + (getPersonContactMethod() != null ? getPersonContactMethod().hashCode() : 0);
         result = 31 * result + (getPersonIdentityID() != null ? getPersonIdentityID().hashCode() : 0);
         return result;
     }
@@ -124,26 +94,9 @@ public class Person {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", gender=" + gender +
-                ", contactMethod=" + contactMethod +
+                ", personContactMethod=" + personContactMethod +
                 ", personIdentityID='" + personIdentityID + '\'' +
                 '}';
     }
 
-    public enum Gender {
-        //男性
-        MALE("男"),
-
-        //女性
-        FEMALE("女");
-
-        private String cn;
-
-        Gender(String cn) {
-            this.cn = cn;
-        }
-
-        public String getCn() {
-            return cn;
-        }
-    }
 }

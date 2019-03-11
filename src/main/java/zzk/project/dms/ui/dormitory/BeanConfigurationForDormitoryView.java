@@ -7,6 +7,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.binder.Binder;
@@ -16,14 +17,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import zzk.project.dms.domain.entities.DormitorySpace;
-import zzk.project.dms.domain.services.DormitoryManagementService;
-import zzk.project.dms.ui.DormitoryView;
+import zzk.project.dms.domain.entities.DormitorySpaceType;
+import zzk.project.dms.domain.services.DormitorySpaceService;
 
 @Configuration
 public class BeanConfigurationForDormitoryView {
 
     @Autowired
-    DormitoryManagementService dormitoryManagementService;
+    DormitorySpaceService dormitorySpaceService;
 
     @Autowired
     DormitoryHierarchicalDataProvider dormitoryHierarchicalDataProvider;
@@ -38,7 +39,8 @@ public class BeanConfigurationForDormitoryView {
         spaceTreeGrid.addColumn(space -> space.isOperational() ? "已启用" : "已停用").setHeader("是否启用").setFlexGrow(0);
         spaceTreeGrid.addColumn(space -> space.isAvailable() ? "可用" : "已占用").setHeader("是否占用").setFlexGrow(0);
         spaceTreeGrid.addColumn(DormitorySpace::getCapacity).setHeader("容积");
-        spaceTreeGrid.addColumn(space -> space.getCapacity() - space.getSize()).setHeader("剩余");
+        spaceTreeGrid.addColumn(DormitorySpace::getHasDivided).setHeader("已分派");
+        spaceTreeGrid.addColumn(DormitorySpace::getHasOccupy).setHeader("已被住户占有");
         spaceTreeGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         return spaceTreeGrid;
     }
@@ -69,7 +71,7 @@ public class BeanConfigurationForDormitoryView {
     @UIScope
     public DormitoryEditForm dormitoryEditForm() {
         return new DormitoryEditForm(
-                dormitoryManagementService,
+                dormitorySpaceService,
                 spaceBinder(),
                 spaceNameField(),
                 capacityField(),
@@ -118,7 +120,6 @@ public class BeanConfigurationForDormitoryView {
     @UIScope
     public TextField capacityField() {
         TextField capacityField = new TextField("容积", "最大容纳人数");
-        capacityField.setRequired(true);
         capacityField.setRequiredIndicatorVisible(true);
         return capacityField;
     }
@@ -137,10 +138,10 @@ public class BeanConfigurationForDormitoryView {
 
     @Bean
     @UIScope
-    public ComboBox<DormitorySpace.SpaceType> spaceTypeComboBox() {
-        ComboBox<DormitorySpace.SpaceType> spaceTypeComboBox = new ComboBox<>("空间类型");
-        spaceTypeComboBox.setItems(DormitorySpace.SpaceType.values());
-        spaceTypeComboBox.setItemLabelGenerator(DormitorySpace.SpaceType::getCn);
+    public ComboBox<DormitorySpaceType> spaceTypeComboBox() {
+        ComboBox<DormitorySpaceType> spaceTypeComboBox = new ComboBox<>("空间类型");
+        spaceTypeComboBox.setItems(DormitorySpaceType.values());
+        spaceTypeComboBox.setItemLabelGenerator(DormitorySpaceType::getCn);
         return spaceTypeComboBox;
     }
 

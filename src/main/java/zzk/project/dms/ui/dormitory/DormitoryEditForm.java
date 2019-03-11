@@ -11,19 +11,20 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.DormitorySpace;
-import zzk.project.dms.domain.services.DormitoryManagementService;
+import zzk.project.dms.domain.entities.DormitorySpaceType;
+import zzk.project.dms.domain.services.DormitorySpaceService;
 
 import java.util.Objects;
 
 public class DormitoryEditForm extends VerticalLayout {
-    private DormitoryManagementService dormitoryManagementService;
+    private DormitorySpaceService dormitorySpaceService;
     private Binder<DormitorySpace> spaceBinder;
 
     private TextField spaceNameField;
     private TextField capacityField;
     private Checkbox availableCheckbox;
     private Checkbox operationalCheckbox;
-    private ComboBox<DormitorySpace.SpaceType> spaceTypeComboBox;
+    private ComboBox<DormitorySpaceType> spaceTypeComboBox;
     private ComboBox<DormitorySpace> upperSpaceComboBox;
 
     private DormitorySpace editingObject = new DormitorySpace();
@@ -31,16 +32,16 @@ public class DormitoryEditForm extends VerticalLayout {
 
     @Autowired
     public DormitoryEditForm(
-            DormitoryManagementService dormitoryManagementService,
+            DormitorySpaceService dormitorySpaceService,
             Binder<DormitorySpace> spaceBinder,
-            TextField spaceNameField,
-            TextField capacityField,
+            @Qualifier("spaceNameField") TextField spaceNameField,
+            @Qualifier("capacityField")TextField capacityField,
             @Qualifier("availableCheckbox") Checkbox availableCheckbox,
             Checkbox operationalCheckbox,
-            ComboBox<DormitorySpace.SpaceType> spaceTypeComboBox,
+            ComboBox<DormitorySpaceType> spaceTypeComboBox,
             ComboBox<DormitorySpace> upperSpaceComboBox
     ) {
-        this.dormitoryManagementService = dormitoryManagementService;
+        this.dormitorySpaceService = dormitorySpaceService;
         this.spaceBinder = spaceBinder;
         this.spaceNameField = spaceNameField;
         this.capacityField = capacityField;
@@ -82,7 +83,7 @@ public class DormitoryEditForm extends VerticalLayout {
         boolean valid = spaceBinder.writeBeanIfValid(editingObject);
         if (valid) {
             setLastedCompletedObject(getEditingObject());
-            setLastedCompletedObject(dormitoryManagementService.createOrUpdate(getLastedCompletedObject()));
+            setLastedCompletedObject(dormitorySpaceService.put(getLastedCompletedObject()));
         }
         reset();
     }
@@ -114,7 +115,7 @@ public class DormitoryEditForm extends VerticalLayout {
                 .bind(DormitorySpace::getType, DormitorySpace::setType);
 
         spaceBinder.forField(upperSpaceComboBox)
-                .bind(DormitorySpace::getUpperSpace, DormitorySpace::setUpperSpace);
+                .bind(DormitorySpace::getParent, DormitorySpace::setParent);
     }
 
     private void binding() {
@@ -123,12 +124,12 @@ public class DormitoryEditForm extends VerticalLayout {
 
     private void onEvent() {
         spaceTypeComboBox.addValueChangeListener(changed -> {
-            DormitorySpace.SpaceType spaceType = changed.getValue();
+            DormitorySpaceType spaceType = changed.getValue();
             if (Objects.nonNull(spaceType) && spaceType.hasNext()) {
                 ListDataProvider<DormitorySpace> spaceListDataProvider;
 
-                DormitorySpace.SpaceType nextType = spaceType.next();
-                spaceListDataProvider = new ListDataProvider<>(dormitoryManagementService.listSpaceByType(nextType));
+                DormitorySpaceType nextType = spaceType.next();
+                spaceListDataProvider = new ListDataProvider<>(dormitorySpaceService.listSpaceByType(nextType));
                 upperSpaceComboBox.setLabel("选择" + nextType.getCn());
                 upperSpaceComboBox.setDataProvider(spaceListDataProvider);
                 upperSpaceComboBox.setVisible(true);

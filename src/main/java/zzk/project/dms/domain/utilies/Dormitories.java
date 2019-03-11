@@ -12,7 +12,7 @@ public class Dormitories {
         LinkedList<String> dormitoryNameStuck = new LinkedList<>();
         while (dormitorySpace != null) {
             dormitoryNameStuck.push(dormitorySpace.getName());
-            dormitorySpace = dormitorySpace.getUpperSpace();
+            dormitorySpace = dormitorySpace.getParent();
         }
         return String.join("-", dormitoryNameStuck);
     }

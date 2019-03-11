@@ -1,8 +1,9 @@
-package zzk.project.dms.ui;
+package zzk.project.dms.ui.finance;
 
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import zzk.project.dms.ui.MainView;
 
 @Route(value = FinanceView.VIEW_NAME,layout = MainView.class)
 public class FinanceView extends VerticalLayout {

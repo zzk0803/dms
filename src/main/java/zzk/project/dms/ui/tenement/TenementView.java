@@ -1,16 +1,13 @@
-package zzk.project.dms.ui;
+package zzk.project.dms.ui.tenement;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.Tenement;
-import zzk.project.dms.ui.tenement.TenementEditDialog;
+import zzk.project.dms.ui.MainView;
 
 @Route(value = TenementView.VIEW_NAME, layout = MainView.class)
 public class TenementView extends VerticalLayout {

@@ -19,7 +19,8 @@ import com.vaadin.flow.data.selection.SingleSelect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.DormitorySpace;
-import zzk.project.dms.domain.entities.Person;
+import zzk.project.dms.domain.entities.DormitorySpaceType;
+import zzk.project.dms.domain.entities.PersonGender;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
@@ -40,7 +41,7 @@ public class TenementEditForm extends VerticalLayout {
     @Id("id")
     private TextField nameField;
     @Id("gender")
-    private Select<Person.Gender> genderSelect;
+    private Select<PersonGender> genderSelect;
     @Id("personIdentityID")
     private TextField personIdentityIDField;
     @Id("contactMethod.houseTelephone")
@@ -68,7 +69,7 @@ public class TenementEditForm extends VerticalLayout {
             TenementService tenementService,
             @Qualifier("distributeCurrently") Checkbox distributeCurrentlyCheckbox,
             @Qualifier("nameField") TextField nameField,
-            @Qualifier("genderSelect") Select<Person.Gender> genderSelect,
+            @Qualifier("genderSelect") Select<PersonGender> genderSelect,
             @Qualifier("personIdentityIDField") TextField personIdentityIDField,
             @Qualifier("houseTelephoneField") TextField houseTelephoneField,
             @Qualifier("mobilePhone") TextField mobilePhone,
@@ -126,18 +127,18 @@ public class TenementEditForm extends VerticalLayout {
                 .bind(Tenement::getPersonIdentityID, Tenement::setPersonIdentityID);
 
         tenementBinder.forField(houseTelephoneField)
-                .bind(tenement -> tenement.getContactMethod().getHouseTelephone(),
-                        (tenement, telephone) -> tenement.getContactMethod().setHouseTelephone(telephone)
+                .bind(tenement -> tenement.getPersonContactMethod().getHouseTelephone(),
+                        (tenement, telephone) -> tenement.getPersonContactMethod().setHouseTelephone(telephone)
                 );
 
         tenementBinder.forField(mobilePhone)
-                .bind(tenement -> tenement.getContactMethod().getHouseTelephone(),
-                        (tenement, mobile) -> tenement.getContactMethod().setMobilePhone(mobile)
+                .bind(tenement -> tenement.getPersonContactMethod().getHouseTelephone(),
+                        (tenement, mobile) -> tenement.getPersonContactMethod().setMobilePhone(mobile)
                 );
 
         tenementBinder.forField(primaryEmailField)
-                .bind(tenement -> tenement.getContactMethod().getHouseTelephone(),
-                        (tenement, email) -> tenement.getContactMethod().setPrimaryEmail(email)
+                .bind(tenement -> tenement.getPersonContactMethod().getHouseTelephone(),
+                        (tenement, email) -> tenement.getPersonContactMethod().setPrimaryEmail(email)
                 );
     }
 
@@ -145,7 +146,7 @@ public class TenementEditForm extends VerticalLayout {
         tenementBinder.forField(dormitorySpaceSingleSelect)
                 .withValidator((space, valueContext) -> {
                     if (space != null) {
-                        if (space.getType().equals(DormitorySpace.SpaceType.BERTH)) {
+                        if (space.getType().equals(DormitorySpaceType.BERTH)) {
                             setLabelTextAndColor("green", Dormitories.getFullName(space));
                             return ValidationResult.ok();
                         } else {
@@ -213,7 +214,7 @@ public class TenementEditForm extends VerticalLayout {
         this.dormitorySpaceTreeGrid = new TreeGrid<>();
         dormitorySpaceTreeGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         dormitorySpaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号").setFlexGrow(1);
-        dormitorySpaceTreeGrid.addColumn(space -> space.getCapacity() - space.getSize()).setHeader("剩余").setFlexGrow(0);
+        dormitorySpaceTreeGrid.addColumn(space -> space.getCapacity() - space.getHasDivided()).setHeader("剩余").setFlexGrow(0);
         dormitorySpaceTreeGrid.setDataProvider(getDormitoryHierarchicalDataProvider());
         dormitorySpaceTreeGrid.setHeight("12em");
         moreInfoGroups.add(dormitorySpaceTreeGrid, validCheckbox);
@@ -244,7 +245,7 @@ public class TenementEditForm extends VerticalLayout {
         try {
             tenementBinder.writeBean(getEditTenement());
             setCompletedTenement(getEditTenement());
-            tenementService.createOrUpdate(getCompletedTenement());
+            tenementService.put(getCompletedTenement());
             setCommitSuccess(true);
         } catch (ValidationException e) {
             setCommitSuccess(false);

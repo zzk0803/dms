@@ -1,4 +1,4 @@
-package zzk.project.dms.ui;
+package zzk.project.dms.ui.dormitory;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
@@ -7,7 +7,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.router.Route;
 import zzk.project.dms.domain.entities.DormitorySpace;
-import zzk.project.dms.ui.dormitory.DormitoryEditDialog;
+import zzk.project.dms.ui.MainView;
 
 @Route(value = DormitoryView.VIEW_NAME, layout = MainView.class)
 public class DormitoryView extends VerticalLayout {
