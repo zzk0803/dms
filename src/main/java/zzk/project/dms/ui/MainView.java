@@ -23,10 +23,10 @@ public class MainView extends AbstractAppRouterLayout {
                 new AppLayoutMenuItem(VaadinIcon.CHART_GRID.create(),Overview.VIEW_TITLE, Overview.VIEW_NAME),
                 new AppLayoutMenuItem(VaadinIcon.BUILDING.create(), DormitoryView.VIEW_TITLE, DormitoryView.VIEW_NAME),
                 new AppLayoutMenuItem(VaadinIcon.USER.create(), TenementView.VIEW_TITLE, TenementView.VIEW_NAME),
-                new AppLayoutMenuItem(VaadinIcon.STORAGE.create(), AssetsView.VIEW_TITLE, AssetsView.VIEW_NAME),
-                new AppLayoutMenuItem(VaadinIcon.DOLLAR.create(), FinanceView.VIEW_TITLE, FinanceView.VIEW_NAME),
-                new AppLayoutMenuItem(VaadinIcon.CLUSTER.create(), SensorView.VIEW_TITLE, SensorView.VIEW_NAME),
-                new AppLayoutMenuItem(VaadinIcon.COGS.create(), SystemView.VIEW_TITLE, SystemView.VIEW_NAME)
+//                new AppLayoutMenuItem(VaadinIcon.STORAGE.create(), AssetsView.VIEW_TITLE, AssetsView.VIEW_NAME),
+                new AppLayoutMenuItem(VaadinIcon.DOLLAR.create(), FinanceView.VIEW_TITLE, FinanceView.VIEW_NAME)
+//                new AppLayoutMenuItem(VaadinIcon.CLUSTER.create(), SensorView.VIEW_TITLE, SensorView.VIEW_NAME),
+//                new AppLayoutMenuItem(VaadinIcon.COGS.create(), SystemView.VIEW_TITLE, SystemView.VIEW_NAME)
         );
     }
 }

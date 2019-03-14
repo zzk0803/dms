@@ -8,14 +8,14 @@ import zzk.project.dms.domain.dao.DormitorySpaceRepository;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.services.DormitorySpaceService;
-import zzk.project.dms.middle.SubscriberAndService;
+import zzk.project.dms.middle.ServiceAndSubscriber;
 
 import java.util.Collections;
 import java.util.List;
 
-@SubscriberAndService
-@Transactional
-public class DormitorySpaceServiceImpl implements DormitorySpaceService {
+@ServiceAndSubscriber
+@Transactional(rollbackFor = DormitoryManageException.class)
+public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
     @Autowired
     private DormitorySpaceRepository dormitorySpaceRepository;
@@ -31,8 +31,8 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
     }
 
     @Override
-    public List<DormitorySpace> listChildSpace(DormitorySpace Parent) {
-        return dormitorySpaceRepository.findDormitorySpacesByParent(Parent);
+    public List<DormitorySpace> listChildSpace(DormitorySpace parent) {
+        return dormitorySpaceRepository.findDormitorySpacesByParent(parent);
     }
 
     @Override
@@ -41,19 +41,18 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
     }
 
     @Override
-    public boolean hasChildSpace(DormitorySpace Parent) {
-        return dormitorySpaceRepository.existsDormitorySpacesByParent(Parent);
+    public boolean hasChildSpace(DormitorySpace parent) {
+        return dormitorySpaceRepository.existsDormitorySpacesByParent(parent);
     }
 
     @Override
-    public int countChildSpace(DormitorySpace Parent) {
-        return dormitorySpaceRepository.countDormitorySpacesByParent(Parent);
+    public int countChildSpace(DormitorySpace parent) {
+        return dormitorySpaceRepository.countDormitorySpacesByParent(parent);
     }
 
     @Override
     public DormitorySpace allocateFromParentByExplicitCapacity(DormitorySpace parent, int allocate) throws DormitoryManageException {
         checkAllocatable(parent);
-
         return null;
     }
 
@@ -61,7 +60,6 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
     @Override
     public List<DormitorySpace> allocateFromParentByExplicitNumber(DormitorySpace parent, int childNumber) throws DormitoryManageException {
         checkAllocatable(parent);
-
         return Collections.emptyList();
     }
 

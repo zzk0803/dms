@@ -8,5 +8,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Service
-public @interface SubscriberAndService {
+public @interface ServiceAndSubscriber {
 }

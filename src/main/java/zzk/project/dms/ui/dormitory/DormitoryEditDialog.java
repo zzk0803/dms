@@ -1,5 +1,6 @@
 package zzk.project.dms.ui.dormitory;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H4;
@@ -37,7 +38,7 @@ public class DormitoryEditDialog extends Dialog {
     }
 
     private void init() {
-        this.setCloseOnOutsideClick(true);
+        this.setCloseOnOutsideClick(false);
         this.setCloseOnEsc(false);
 
         H4 headerH4 = new H4("新建&编辑宿舍空间");
@@ -49,17 +50,24 @@ public class DormitoryEditDialog extends Dialog {
     }
 
     private void onEvent() {
-        commitButton.addClickListener(close -> {
-            dormitoryEditForm.doCommit();
-            DormitorySpace completedObject = dormitoryEditForm.getLastedCompletedObject();
-            spaceTreeGrid.getDataProvider().refreshAll();
-            spaceTreeGrid.getDataProvider().refreshItem(completedObject);
-            spaceTreeGrid.getDataCommunicator().reset();
-            close();
+        commitButton.addClickListener(click -> {
+            UI.getCurrent().access(() -> {
+                if (dormitoryEditForm.doCommit()) {
+                    spaceTreeGrid.getDataProvider().refreshAll();
+                    spaceTreeGrid.getDataProvider().refreshItem(dormitoryEditForm.getCompletedDormitorySpace());
+                    spaceTreeGrid.getDataCommunicator().reset();
+                    close();
+                    dormitoryEditForm.reset();
+                }
+            });
         });
         giveUpButton.addClickListener(close -> {
             dormitoryEditForm.reset();
             close();
         });
+    }
+
+    public void warp(DormitorySpace dormitorySpace) {
+        dormitoryEditForm.setEditingObject(dormitorySpace);
     }
 }

@@ -5,6 +5,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -18,7 +19,7 @@ import java.util.Objects;
 
 public class DormitoryEditForm extends VerticalLayout {
     private DormitorySpaceService dormitorySpaceService;
-    private Binder<DormitorySpace> spaceBinder;
+    private Binder<DormitorySpace> dormitorySpaceBinder;
 
     private TextField spaceNameField;
     private TextField capacityField;
@@ -28,12 +29,14 @@ public class DormitoryEditForm extends VerticalLayout {
     private ComboBox<DormitorySpace> upperSpaceComboBox;
 
     private DormitorySpace editingObject = new DormitorySpace();
-    private DormitorySpace lastedCompletedObject;
+    private DormitorySpace completedDormitorySpace;
+
+    private boolean commitSuccess;
 
     @Autowired
     public DormitoryEditForm(
             DormitorySpaceService dormitorySpaceService,
-            Binder<DormitorySpace> spaceBinder,
+            Binder<DormitorySpace> dormitorySpaceBinder,
             @Qualifier("spaceNameField") TextField spaceNameField,
             @Qualifier("capacityField")TextField capacityField,
             @Qualifier("availableCheckbox") Checkbox availableCheckbox,
@@ -42,7 +45,7 @@ public class DormitoryEditForm extends VerticalLayout {
             ComboBox<DormitorySpace> upperSpaceComboBox
     ) {
         this.dormitorySpaceService = dormitorySpaceService;
-        this.spaceBinder = spaceBinder;
+        this.dormitorySpaceBinder = dormitorySpaceBinder;
         this.spaceNameField = spaceNameField;
         this.capacityField = capacityField;
         this.availableCheckbox = availableCheckbox;
@@ -51,8 +54,8 @@ public class DormitoryEditForm extends VerticalLayout {
         this.upperSpaceComboBox = upperSpaceComboBox;
 
         initUI();
-        initBinding();
         onEvent();
+        initBinding();
     }
 
     public DormitorySpace getEditingObject() {
@@ -64,37 +67,38 @@ public class DormitoryEditForm extends VerticalLayout {
         this.editingObject = editingObject;
     }
 
-    public DormitorySpace getLastedCompletedObject() {
-        return lastedCompletedObject;
+    public DormitorySpace getCompletedDormitorySpace() {
+        return completedDormitorySpace;
     }
 
-    public void setLastedCompletedObject(DormitorySpace lastedCompletedObject) {
-        this.lastedCompletedObject = lastedCompletedObject;
+    public void setCompletedDormitorySpace(DormitorySpace completedDormitorySpace) {
+        this.completedDormitorySpace = completedDormitorySpace;
     }
 
     public void reset() {
-        DormitorySpace dormitorySpace = new DormitorySpace();
-        setEditingObject(dormitorySpace);
+        setEditingObject(new DormitorySpace());
         binding();
     }
 
-    public void doCommit() {
-        DormitorySpace editingObject = this.getEditingObject();
-        boolean valid = spaceBinder.writeBeanIfValid(editingObject);
-        if (valid) {
-            setLastedCompletedObject(getEditingObject());
-            setLastedCompletedObject(dormitorySpaceService.put(getLastedCompletedObject()));
+    public boolean doCommit() {
+        try{
+            dormitorySpaceBinder.writeBean(getEditingObject());
+            setCompletedDormitorySpace(getEditingObject());
+            dormitorySpaceService.put(getEditingObject());
+            setCommitSuccess(true);
+        } catch (ValidationException e) {
+            setCommitSuccess(false);
         }
-        reset();
+        return isCommitSuccess();
     }
 
     private void initBinding() {
         binding();
-        spaceBinder.forField(spaceNameField)
+        dormitorySpaceBinder.forField(spaceNameField)
                 .asRequired("空间名称&编号不能为空")
                 .bind(DormitorySpace::getName, DormitorySpace::setName);
 
-        spaceBinder.forField(capacityField)
+        dormitorySpaceBinder.forField(capacityField)
                 .withConverter(new StringToIntegerConverter("必须输入数字"))
                 .withValidator((value, context) -> {
                     if (value > 0) {
@@ -105,21 +109,21 @@ public class DormitoryEditForm extends VerticalLayout {
                 })
                 .bind(DormitorySpace::getCapacity, DormitorySpace::setCapacity);
 
-        spaceBinder.forField(availableCheckbox)
+        dormitorySpaceBinder.forField(availableCheckbox)
                 .bind(DormitorySpace::isAvailable, DormitorySpace::setAvailable);
 
-        spaceBinder.forField(operationalCheckbox)
+        dormitorySpaceBinder.forField(operationalCheckbox)
                 .bind(DormitorySpace::isOperational, DormitorySpace::setOperational);
 
-        spaceBinder.forField(spaceTypeComboBox)
+        dormitorySpaceBinder.forField(spaceTypeComboBox)
                 .bind(DormitorySpace::getType, DormitorySpace::setType);
 
-        spaceBinder.forField(upperSpaceComboBox)
+        dormitorySpaceBinder.forField(upperSpaceComboBox)
                 .bind(DormitorySpace::getParent, DormitorySpace::setParent);
     }
 
     private void binding() {
-        spaceBinder.setBean(getEditingObject());
+        dormitorySpaceBinder.readBean(getEditingObject());
     }
 
     private void onEvent() {
@@ -137,10 +141,14 @@ public class DormitoryEditForm extends VerticalLayout {
                 upperSpaceComboBox.setVisible(false);
             }
         });
+
+        addAttachListener(attachEvent -> {
+            dormitorySpaceBinder.readBean(getEditingObject());
+        });
     }
 
     private void initUI() {
-        setMargin(false);
+        setWidth("100%");
         add(
                 spaceNameField,
                 capacityField,
@@ -149,5 +157,13 @@ public class DormitoryEditForm extends VerticalLayout {
                 spaceTypeComboBox,
                 upperSpaceComboBox
         );
+    }
+
+    public boolean isCommitSuccess() {
+        return commitSuccess;
+    }
+
+    public void setCommitSuccess(boolean commitSuccess) {
+        this.commitSuccess = commitSuccess;
     }
 }

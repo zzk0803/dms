@@ -1,7 +1,6 @@
 package zzk.project.dms.domain.services;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,11 +21,11 @@ public interface JpaSupportService<T, ID> {
         return entity;
     }
 
-    default int countAll() {
+    default int integerCount() {
         return (int) getRepository().count();
     }
 
-    default List<T> listAll() {
+    default List<T> finaAll() {
         return getRepository().findAll();
     }
 

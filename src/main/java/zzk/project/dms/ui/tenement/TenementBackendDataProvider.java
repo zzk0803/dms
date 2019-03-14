@@ -19,11 +19,11 @@ public class TenementBackendDataProvider extends AbstractBackEndDataProvider<Ten
     protected Stream<Tenement> fetchFromBackEnd(Query<Tenement, Void> query) {
         int offset = query.getOffset();
         int limit = query.getLimit();
-        return tenementService.listAll().stream().skip(offset).limit(limit);
+        return tenementService.finaAll().stream().skip(offset).limit(limit);
     }
 
     @Override
     protected int sizeInBackEnd(Query<Tenement, Void> query) {
-        return tenementService.countAll();
+        return tenementService.integerCount();
     }
 }

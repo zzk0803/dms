@@ -75,8 +75,8 @@ public class TenementEditForm extends VerticalLayout {
             @Qualifier("mobilePhone") TextField mobilePhone,
             @Qualifier("primaryEmailField") EmailField primaryEmailField,
             @Qualifier("berthLabel") Label berthLabel,
-            DatePicker tenementDateField,
-            DatePicker expireDateField,
+            @Qualifier("datePicker") DatePicker tenementDateField,
+            @Qualifier("datePicker") DatePicker expireDateField,
             @Qualifier("validCheckbox") Checkbox validCheckbox
     ) {
 
@@ -214,7 +214,7 @@ public class TenementEditForm extends VerticalLayout {
         this.dormitorySpaceTreeGrid = new TreeGrid<>();
         dormitorySpaceTreeGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         dormitorySpaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号").setFlexGrow(1);
-        dormitorySpaceTreeGrid.addColumn(space -> space.getCapacity() - space.getHasDivided()).setHeader("剩余").setFlexGrow(0);
+        dormitorySpaceTreeGrid.addColumn(space -> space.getCapacity() - space.getHasOccupy()).setHeader("剩余").setFlexGrow(0);
         dormitorySpaceTreeGrid.setDataProvider(getDormitoryHierarchicalDataProvider());
         dormitorySpaceTreeGrid.setHeight("12em");
         moreInfoGroups.add(dormitorySpaceTreeGrid, validCheckbox);

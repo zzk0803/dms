@@ -4,10 +4,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.binder.Binder;
@@ -29,11 +30,14 @@ public class BeanConfigurationForDormitoryView {
     @Autowired
     DormitoryHierarchicalDataProvider dormitoryHierarchicalDataProvider;
 
+    //--------------------------------------------------------------------------------
+    //------------                       宿舍管理页面                             -----------------
+    //--------------------------------------------------------------------------------
+
     @Bean
     @UIScope
     public TreeGrid<DormitorySpace> spaceTreeGrid() {
         TreeGrid<DormitorySpace> spaceTreeGrid = new TreeGrid<>();
-        spaceTreeGrid.setDataProvider(dormitoryHierarchicalDataProvider);
         spaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号");
         spaceTreeGrid.addColumn(space -> space.getType().getCn()).setHeader("层级").setFlexGrow(0);
         spaceTreeGrid.addColumn(space -> space.isOperational() ? "已启用" : "已停用").setHeader("是否启用").setFlexGrow(0);
@@ -41,7 +45,28 @@ public class BeanConfigurationForDormitoryView {
         spaceTreeGrid.addColumn(DormitorySpace::getCapacity).setHeader("容积");
         spaceTreeGrid.addColumn(DormitorySpace::getHasDivided).setHeader("已分派");
         spaceTreeGrid.addColumn(DormitorySpace::getHasOccupy).setHeader("已被住户占有");
-        spaceTreeGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        spaceTreeGrid.addComponentColumn(dormitorySpace -> {
+            HorizontalLayout group = new HorizontalLayout();
+            group.setAlignItems(FlexComponent.Alignment.BASELINE);
+            Button edit = new Button(VaadinIcon.EDIT.create(), click -> {
+                spaceTreeGrid.getParent().ifPresent(component -> {
+                    if (component instanceof DormitoryView) {
+                        DormitoryView dormitoryView = (DormitoryView) component;
+                        dormitoryView.getEditDialog().warp(dormitorySpace);
+                        dormitoryView.getEditDialog().open();
+                    }
+                });
+            });
+            edit.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
+            group.add(edit);
+            Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
+                Notification.show("还未实现");
+            });
+            delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
+            group.add(delete);
+            return group;
+        }).setHeader("可用操作");
+        spaceTreeGrid.setDataProvider(dormitoryHierarchicalDataProvider);
         return spaceTreeGrid;
     }
 
@@ -81,6 +106,10 @@ public class BeanConfigurationForDormitoryView {
                 upperSpaceComboBox()
         );
     }
+
+    //--------------------------------------------------------------------------------
+    //------------                       住户管理编辑对话框                             -----------------
+    //--------------------------------------------------------------------------------
 
     @Bean
     @UIScope

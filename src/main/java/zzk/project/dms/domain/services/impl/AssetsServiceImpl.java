@@ -1,80 +1,89 @@
 package zzk.project.dms.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import zzk.project.dms.domain.dao.AssetsAllocationRepository;
-import zzk.project.dms.domain.dao.AssetsAllocationsTemplateRepository;
-import zzk.project.dms.domain.dao.AssetsArticleRepository;
 import zzk.project.dms.domain.entities.AssetsAllocation;
 import zzk.project.dms.domain.entities.AssetsAllocationTemplate;
 import zzk.project.dms.domain.entities.AssetsArticle;
 import zzk.project.dms.domain.entities.DormitorySpace;
-import zzk.project.dms.domain.services.AssetsService;
-import zzk.project.dms.middle.SubscriberAndService;
+import zzk.project.dms.domain.services.*;
+import zzk.project.dms.middle.ServiceAndSubscriber;
 
 import java.util.List;
 
-@SubscriberAndService
+@ServiceAndSubscriber
 public class AssetsServiceImpl implements AssetsService {
 
     @Autowired
-    private AssetsAllocationRepository assetsAllocationRepository;
+    private AssetsAllocationService assetsAllocationService;
 
     @Autowired
-    private AssetsAllocationsTemplateRepository assetsAllocationsTemplateRepository;
+    private AssetsAllocationTemplateService assetsAllocationTemplateService;
 
     @Autowired
-    private AssetsArticleRepository assetsArticleRepository;
+    private AssetsArticleService assetsArticleService;
+
+    public AssetsAllocationService getAssetsAllocationService() {
+        return assetsAllocationService;
+    }
+
+    public AssetsAllocationTemplateService getAssetsAllocationTemplateService() {
+        return assetsAllocationTemplateService;
+    }
+
+    public AssetsArticleService getAssetsArticleService() {
+        return assetsArticleService;
+    }
 
     @Override
     public AssetsAllocationTemplate putAssetsAllocationTemplate(AssetsAllocationTemplate assetsAllocationTemplate) {
-        return assetsAllocationsTemplateRepository.save(assetsAllocationTemplate);
+        return assetsAllocationTemplateService.save(assetsAllocationTemplate);
     }
 
     @Override
     public AssetsAllocationTemplate findAssetsAllocationTemplateByName(String templateName) {
-        return assetsAllocationsTemplateRepository.findByName(templateName);
+        return assetsAllocationTemplateService.findByName(templateName);
     }
 
     @Override
     public AssetsAllocationTemplate deleteAssetsAllocationTemplate(AssetsAllocationTemplate assetsAllocationTemplate) {
         assetsAllocationTemplate.setDeprecated(true);
-        return assetsAllocationsTemplateRepository.saveAndFlush(assetsAllocationTemplate);
+        return assetsAllocationTemplateService.update(assetsAllocationTemplate);
     }
 
     @Override
     public List<AssetsAllocationTemplate> findAssetsAllocationTemplate() {
-        return assetsAllocationsTemplateRepository.findAll();
+        return assetsAllocationTemplateService.finaAll();
     }
 
     @Override
     public AssetsAllocation putAssetsAllocation(AssetsAllocation assetsAllocation) {
-        return assetsAllocationRepository.save(assetsAllocation);
+        return assetsAllocationService.save(assetsAllocation);
     }
 
     @Override
     public AssetsAllocation deleteAssetsAllocation(AssetsAllocation assetsAllocation) {
-        assetsAllocationRepository.delete(assetsAllocation);
+        assetsAllocationService.delete(assetsAllocation);
         return assetsAllocation;
     }
 
     @Override
     public List<AssetsAllocation> findAssetsAllocationByDormitorySpace(DormitorySpace dormitorySpace) {
-        return assetsAllocationRepository.findAllByDormitorySpace(dormitorySpace);
+        return assetsAllocationService.findAllByDormitorySpace(dormitorySpace);
     }
 
     @Override
     public AssetsArticle putAssetsArticle(AssetsArticle assetsArticle) {
-        return assetsArticleRepository.save(assetsArticle);
+        return assetsArticleService.save(assetsArticle);
     }
 
     @Override
     public AssetsArticle deleteAssetsArticle(AssetsArticle assetsArticle) {
-        assetsArticleRepository.delete(assetsArticle);
+        assetsArticleService.delete(assetsArticle);
         return assetsArticle;
     }
 
     @Override
     public List<AssetsArticle> findAssetsArticle(AssetsArticle assetsArticle) {
-        return assetsArticleRepository.findAll();
+        return assetsArticleService.finaAll();
     }
 }

@@ -2,13 +2,16 @@ package zzk.project.dms.middle;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executors;
 
-public class DmsEventBusService implements InitializingBean {
+@Component
+public class DmsEventBusService implements ApplicationContextAware {
     private static EventBus eventBus;
 
     @Autowired
@@ -19,12 +22,20 @@ public class DmsEventBusService implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+
         eventBus = new AsyncEventBus(
                 "domain-event-bus",
                 Executors.newCachedThreadPool()
         );
-        applicationContext.getBeansWithAnnotation(SubscriberAndService.class)
+        applicationContext.getBeansWithAnnotation(ServiceAndSubscriber.class)
                 .forEach((name, bean) -> eventBus.register(bean));
+        System.out.println("-------------------------");
+        System.out.println("eventBus Has Wired " + eventBus.toString());
+        System.out.println("-------------------------");
+
+
+
     }
 }

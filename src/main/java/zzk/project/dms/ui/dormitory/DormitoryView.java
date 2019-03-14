@@ -11,6 +11,7 @@ import zzk.project.dms.ui.MainView;
 
 @Route(value = DormitoryView.VIEW_NAME, layout = MainView.class)
 public class DormitoryView extends VerticalLayout {
+
     public static final String VIEW_NAME = "dormitory";
     public static final String VIEW_TITLE = "住宿管理";
 
@@ -41,6 +42,7 @@ public class DormitoryView extends VerticalLayout {
         add(headerH1);
         add(controlPanel);
         add(spaceTreeGrid);
+        spaceTreeGrid.setWidth("100%");
         setFlexGrow(1, spaceTreeGrid);
         expand(spaceTreeGrid);
         onEvent();
@@ -51,4 +53,11 @@ public class DormitoryView extends VerticalLayout {
         editDialog.setSpaceTreeGrid(this.spaceTreeGrid);
     }
 
+    public DormitoryEditDialog getEditDialog() {
+        return editDialog;
+    }
+
+    public void setEditDialog(DormitoryEditDialog editDialog) {
+        this.editDialog = editDialog;
+    }
 }

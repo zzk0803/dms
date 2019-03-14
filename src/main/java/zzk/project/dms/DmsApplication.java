@@ -9,8 +9,9 @@ import zzk.project.dms.domain.services.AssetsService;
 import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.domain.services.TenementService;
+import zzk.project.dms.middle.DmsEventBusService;
 
-@SpringBootApplication
+@SpringBootApplication()
 public class DmsApplication {
 
     public static void main(String[] args) {

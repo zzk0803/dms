@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,12 +15,12 @@ public class FinancialRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime recordDateTime = LocalDateTime.now();
+    private LocalDate recordDate = LocalDate.now();
 
     @OneToOne
     private Tenement tenement;
 
-    private BigDecimal checkIn;
+    private BigDecimal checkIn = BigDecimal.ZERO;
 
     private String description;
 
