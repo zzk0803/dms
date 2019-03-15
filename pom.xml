@@ -69,6 +69,14 @@
 <!--            <artifactId>spring-security-test</artifactId>-->
 <!--            <scope>test</scope>-->
 <!--        </dependency>-->
+
+        <!--        Vaadin Addon-->
+        <!-- https://mvnrepository.com/artifact/com.github.appreciated/card -->
+        <dependency>
+            <groupId>com.github.appreciated</groupId>
+            <artifactId>card</artifactId>
+            <version>0.9.4</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -82,6 +90,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>Vaadin Directory</id>
+            <url>http://maven.vaadin.com/vaadin-addons</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
