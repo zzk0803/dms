@@ -5,11 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import zzk.project.dms.domain.entities.DormitorySpace;
+import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.services.AssetsService;
 import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.domain.services.TenementService;
-import zzk.project.dms.middle.DmsEventBusService;
 
 @SpringBootApplication()
 public class DmsApplication {
@@ -26,7 +27,11 @@ public class DmsApplication {
             @Autowired FinancialRecordService financialRecordService
     ) {
         return () -> {
-
+            DormitorySpace dormitorySpace = new DormitorySpace();
+            dormitorySpace.setName("万人坑");
+            dormitorySpace.setType(DormitorySpaceType.COMMUNITY);
+            dormitorySpace.setCapacity(10000);
+            dormitorySpaceService.put(dormitorySpace);
         };
     }
 

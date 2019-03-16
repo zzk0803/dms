@@ -57,7 +57,7 @@ public class DormitoryView extends VerticalLayout {
         return editDialog;
     }
 
-    public void setEditDialog(DormitoryEditDialog editDialog) {
-        this.editDialog = editDialog;
+    public TreeGrid<DormitorySpace> getSpaceTreeGrid() {
+        return spaceTreeGrid;
     }
 }

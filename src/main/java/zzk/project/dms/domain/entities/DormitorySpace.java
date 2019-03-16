@@ -35,11 +35,11 @@ public class DormitorySpace {
 
     private boolean operational = true;
 
-    private Integer capacity = DEFAULT_CAPACITY;
+    private int capacity = DEFAULT_CAPACITY;
 
-    private Integer hasDivided = DEFAULT_DIVIDED_REMAIN;
+    private int hasDivided = DEFAULT_DIVIDED_REMAIN;
 
-    private Integer hasOccupy = DEFAULT_HAS_OCCUPY;
+    private int hasOccupy = DEFAULT_HAS_OCCUPY;
 
     @EqualsAndHashCode.Include
     private String name;

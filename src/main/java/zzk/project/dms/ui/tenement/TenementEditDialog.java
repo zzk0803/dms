@@ -61,8 +61,8 @@ public class TenementEditDialog extends Dialog {
         okButton.addClickListener(click -> {
             UI.getCurrent().access(() -> {
                 if (tenementEditForm.commit()) {
-                    getTenementGrid().getDataProvider().refreshAll();
                     getTenementGrid().getDataProvider().refreshItem(tenementEditForm.getCompletedTenement());
+                    getTenementGrid().getDataProvider().refreshAll();
                     getTenementGrid().getDataCommunicator().reset();
                     close();
                     tenementEditForm.reset();

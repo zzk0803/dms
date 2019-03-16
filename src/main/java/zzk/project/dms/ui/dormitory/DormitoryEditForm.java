@@ -129,10 +129,10 @@ public class DormitoryEditForm extends VerticalLayout {
     private void onEvent() {
         spaceTypeComboBox.addValueChangeListener(changed -> {
             DormitorySpaceType spaceType = changed.getValue();
-            if (Objects.nonNull(spaceType) && spaceType.hasNext()) {
+            if (Objects.nonNull(spaceType) && spaceType.hasBigger()) {
                 ListDataProvider<DormitorySpace> spaceListDataProvider;
 
-                DormitorySpaceType nextType = spaceType.next();
+                DormitorySpaceType nextType = spaceType.bigger();
                 spaceListDataProvider = new ListDataProvider<>(dormitorySpaceService.listSpaceByType(nextType));
                 upperSpaceComboBox.setLabel("选择" + nextType.getCn());
                 upperSpaceComboBox.setDataProvider(spaceListDataProvider);

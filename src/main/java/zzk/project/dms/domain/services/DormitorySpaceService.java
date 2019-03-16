@@ -17,7 +17,15 @@ public interface DormitorySpaceService extends JpaSupportService<DormitorySpace,
 
     int countChildSpace(DormitorySpace upperSpace);
 
-    DormitorySpace allocateFromParentByExplicitCapacity(DormitorySpace parent, int childCapacity) throws DormitoryManageException;
+    DormitorySpace allocateFromParentByExplicitCapacity(DormitorySpace parent, int allocate) throws DormitoryManageException;
+
+    DormitorySpace allocateFromParentByExplicitCapacity(DormitorySpace parent, String childName, int allocate) throws DormitoryManageException;
 
     List<DormitorySpace> allocateFromParentByExplicitNumber(DormitorySpace parent, int childNumber) throws DormitoryManageException;
+
+    List<DormitorySpace> allocateFromParentByExplicitAllocationByEqualization(DormitorySpace parent, int allocate) throws DormitoryManageException;
+
+    void updateOccupy(DormitorySpace berthSpace, int occupyAmount);
+
+    DormitorySpace findAvailableBerth(DormitorySpace airborne) throws DormitoryManageException;
 }

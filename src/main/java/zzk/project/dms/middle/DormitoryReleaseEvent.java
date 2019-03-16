@@ -6,7 +6,7 @@ import zzk.project.dms.domain.entities.DormitorySpace;
 
 @Getter
 @AllArgsConstructor
-public class DormitoryAllocateEvent {
-    private DormitorySpace parent;
-    private int allocation;
+public class DormitoryReleaseEvent {
+    private DormitorySpace parentSpace;
+    private DormitorySpace newSpace;
 }

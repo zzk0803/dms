@@ -18,7 +18,7 @@ public class Tenement extends Person {
 
     @OneToOne
     @JoinColumn(name = "berth_id")
-    private DormitorySpace spot;
+    private DormitorySpace dormitorySpace;
 
     public Tenement() {
     }
@@ -47,12 +47,12 @@ public class Tenement extends Person {
         this.valid = valid;
     }
 
-    public DormitorySpace getSpot() {
-        return this.spot;
+    public DormitorySpace getBerth() {
+        return this.dormitorySpace;
     }
 
-    public void setSpot(DormitorySpace spot) {
-        this.spot = spot;
+    public void setBerth(DormitorySpace spot) {
+        this.dormitorySpace = spot;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class Tenement extends Person {
             return false;
         if (getExpiredDate() != null ? !getExpiredDate().equals(tenement.getExpiredDate()) : tenement.getExpiredDate() != null)
             return false;
-        return getSpot() != null ? getSpot().equals(tenement.getSpot()) : tenement.getSpot() == null;
+        return getBerth() != null ? getBerth().equals(tenement.getBerth()) : tenement.getBerth() == null;
 
     }
 
@@ -78,7 +78,7 @@ public class Tenement extends Person {
         result = 31 * result + (getStartDate() != null ? getStartDate().hashCode() : 0);
         result = 31 * result + (getExpiredDate() != null ? getExpiredDate().hashCode() : 0);
         result = 31 * result + (isValid() ? 1 : 0);
-        result = 31 * result + (getSpot() != null ? getSpot().hashCode() : 0);
+        result = 31 * result + (getBerth() != null ? getBerth().hashCode() : 0);
         return result;
     }
 
@@ -88,7 +88,7 @@ public class Tenement extends Person {
                 "startDate=" + startDate +
                 ", expiredDate=" + expiredDate +
                 ", valid=" + valid +
-                ", spot=" + spot.getName() +
+                ", dormitorySpace=" + dormitorySpace.getName() +
                 '}';
     }
 }

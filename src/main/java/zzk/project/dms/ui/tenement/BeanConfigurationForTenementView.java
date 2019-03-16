@@ -65,7 +65,7 @@ public class BeanConfigurationForTenementView {
         tenementGrid.addColumn(tenement -> tenement.getGender().getCn()).setHeader("性别").setFlexGrow(0);
         tenementGrid.addColumn(Tenement::getPersonIdentityID).setHeader("身份证号码").setWidth("5em");
         tenementGrid.addColumn(tenement -> tenement.getPersonContactMethod().getMobilePhone()).setHeader("手机号").setWidth("5em");
-        tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getSpot())).setHeader("寝室信息").setWidth("20em");
+        tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getBerth())).setHeader("寝室信息").setWidth("20em");
         tenementGrid.addColumn(Tenement::getStartDate).setHeader("入住日期").setFlexGrow(1);
         tenementGrid.addColumn(Tenement::getExpiredDate).setHeader("到期日期").setFlexGrow(1);
         tenementGrid.addComponentColumn(tenement -> {

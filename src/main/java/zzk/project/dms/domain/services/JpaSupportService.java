@@ -1,9 +1,12 @@
 package zzk.project.dms.domain.services;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 
+@Transactional
 public interface JpaSupportService<T, ID> {
 
     JpaRepository<T, ID> getRepository();
@@ -12,8 +15,21 @@ public interface JpaSupportService<T, ID> {
         return getRepository().save(entity);
     }
 
-    default List<T> putAll(Iterable<T> ts) {
-        return getRepository().saveAll(ts);
+    default T flush(T entity) {
+        return getRepository().saveAndFlush(entity);
+    }
+
+    default List<T> putAll(Iterable<T> entities) {
+        return getRepository().saveAll(entities);
+    }
+
+    default List<T> flushAll(Iterable<T> entities) {
+        List<T> savedList = new LinkedList<>();
+        for (T entity : entities) {
+            T flush = flush(entity);
+            savedList.add(flush);
+        }
+        return savedList;
     }
 
     default T delete(T entity) {

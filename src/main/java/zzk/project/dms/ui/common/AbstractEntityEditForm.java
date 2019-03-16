@@ -83,10 +83,15 @@ public abstract class AbstractEntityEditForm<T> extends VerticalLayout {
     }
 
     public void doAbort() {
-        setEditEntity(getBlackEntitySupplier().get());
+        setEditEntity(produceBlackBean());
+    }
+
+    private T produceBlackBean() {
+        return getBlackEntitySupplier().get();
     }
 
     protected void configure() {
+        setEditEntity(produceBlackBean());
         configureUI(this);
         addAttachListener(attachEvent -> {
             getEntityBinder().readBean(getEditEntity());

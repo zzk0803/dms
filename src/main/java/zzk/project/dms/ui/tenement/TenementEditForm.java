@@ -3,8 +3,8 @@ package zzk.project.dms.ui.tenement;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.polymertemplate.Id;
@@ -18,6 +18,7 @@ import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.selection.SingleSelect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.entities.PersonGender;
@@ -35,8 +36,11 @@ public class TenementEditForm extends VerticalLayout {
     private TenementService tenementService;
     private boolean commitSuccess;
 
-    private DormitoryHierarchicalDataProvider dormitoryHierarchicalDataProvider;
-    private TreeGrid<DormitorySpace> dormitorySpaceTreeGrid;
+    //TODO
+
+    //--------------------------------------------------------------------------------
+    //------------                       个人基本信息                             -----------------
+    //--------------------------------------------------------------------------------
 
     @Id("id")
     private TextField nameField;
@@ -50,6 +54,10 @@ public class TenementEditForm extends VerticalLayout {
     private TextField mobilePhone;
     @Id("contactMethod.primaryEmail")
     private EmailField primaryEmailField;
+
+    //--------------------------------------------------------------------------------
+    //------------                       租房信息                             -----------------
+    //--------------------------------------------------------------------------------
 
     private Checkbox distributeCurrentlyCheckbox;
     private VerticalLayout moreInfoGroups;
@@ -150,15 +158,15 @@ public class TenementEditForm extends VerticalLayout {
                             setLabelTextAndColor("green", Dormitories.getFullName(space));
                             return ValidationResult.ok();
                         } else {
-                            setLabelTextAndColor("red", "为住户分配的空间必须具体到床位！！！");
-                            return ValidationResult.error("为住户分配的空间必须具体到床位");
+                            setLabelTextAndColor("#E26A17", "系统将自动寻找可用的床位");
+                            return ValidationResult.ok();
                         }
                     } else {
-                        setLabelTextAndColor("#E26A17", "还没有选择床位");
+                        setLabelTextAndColor("red", "还没有选择床位");
                         return ValidationResult.ok();
                     }
                 })
-                .bind(Tenement::getSpot, Tenement::setSpot);
+                .bind(Tenement::getBerth, Tenement::setBerth);
 
         tenementBinder.forField(tenementDateField)
                 .bind(Tenement::getStartDate, Tenement::setStartDate);
@@ -182,7 +190,7 @@ public class TenementEditForm extends VerticalLayout {
 
         addAttachListener(attachEvent -> {
             tenementBinder.readBean(this.getEditTenement());
-            DormitorySpace spot = getEditTenement().getSpot();
+            DormitorySpace spot = getEditTenement().getBerth();
             boolean hasSpot = spot != null;
             distributeCurrentlyCheckbox.setValue(hasSpot);
             if (hasSpot) {
@@ -192,6 +200,9 @@ public class TenementEditForm extends VerticalLayout {
             }
         });
 
+        addDetachListener(detachEvent -> {
+            reset();
+        });
     }
 
     private void setLabelTextAndColor(String color, String message) {
@@ -211,10 +222,10 @@ public class TenementEditForm extends VerticalLayout {
         expand(moreInfoGroups);
 
         moreInfoGroups.add(selectBerthLabel);
+
         this.dormitorySpaceTreeGrid = new TreeGrid<>();
-        dormitorySpaceTreeGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        dormitorySpaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号").setFlexGrow(1);
-        dormitorySpaceTreeGrid.addColumn(space -> space.getCapacity() - space.getHasOccupy()).setHeader("剩余").setFlexGrow(0);
+        dormitorySpaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号").setFlexGrow(1).setResizable(true);
+        dormitorySpaceTreeGrid.addColumn(space -> space.getCapacity() - space.getHasOccupy()).setHeader("剩余").setFlexGrow(1).setResizable(true);
         dormitorySpaceTreeGrid.setDataProvider(getDormitoryHierarchicalDataProvider());
         dormitorySpaceTreeGrid.setHeight("12em");
         moreInfoGroups.add(dormitorySpaceTreeGrid, validCheckbox);
@@ -245,10 +256,13 @@ public class TenementEditForm extends VerticalLayout {
         try {
             tenementBinder.writeBean(getEditTenement());
             setCompletedTenement(getEditTenement());
-            tenementService.put(getCompletedTenement());
+            tenementService.distributeBerthForTenement(getCompletedTenement());
             setCommitSuccess(true);
         } catch (ValidationException e) {
             setCommitSuccess(false);
+        } catch (DormitoryManageException dormitoryManageException) {
+            setCommitSuccess(false);
+            Notification.show(dormitoryManageException.getMessage(), 3000, Notification.Position.MIDDLE);
         }
         return isCommitSuccess();
     }
@@ -272,15 +286,6 @@ public class TenementEditForm extends VerticalLayout {
 
     public void setCompletedTenement(Tenement completedTenement) {
         this.completedTenement = completedTenement;
-    }
-
-    public DormitoryHierarchicalDataProvider getDormitoryHierarchicalDataProvider() {
-        return dormitoryHierarchicalDataProvider;
-    }
-
-    @Autowired
-    public void setDormitoryHierarchicalDataProvider(DormitoryHierarchicalDataProvider dormitoryHierarchicalDataProvider) {
-        this.dormitoryHierarchicalDataProvider = dormitoryHierarchicalDataProvider;
     }
 
     public boolean isCommitSuccess() {

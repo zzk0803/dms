@@ -47,7 +47,7 @@ public class SummarizeView extends VerticalLayout {
         tenementSummarizedCard.setSizeUndefined();
 
         financeSummarizedCard = new Card(
-                new TitleLabel("财务"),
+                new TitleLabel("财务概况"),
                 new Item("未缴清", "3"),
                 new Item("当月累计缴费", "3800000")
         );
