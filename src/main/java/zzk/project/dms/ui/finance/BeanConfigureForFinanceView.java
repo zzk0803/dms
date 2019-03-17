@@ -8,22 +8,19 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.provider.CallbackDataProvider;
-import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import zzk.project.dms.domain.entities.FinancialRecord;
-import zzk.project.dms.domain.entities.Person;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
+import zzk.project.dms.ui.tenement.TenementNameFilterAndPageableDataProvider;
 
 @Configuration
 public class BeanConfigureForFinanceView {
@@ -57,7 +54,7 @@ public class BeanConfigureForFinanceView {
                 .setFlexGrow(1)
                 .setResizable(true)
                 .setWidth("2em").setHeader("住户");
-        financialRecordGrid.addColumn(financialRecord -> Dormitories.getFullName(financialRecord.getTenement().getBerth()))
+        financialRecordGrid.addColumn(financialRecord -> Dormitories.getFullName(financialRecord.getTenement().getDormitorySpace()))
                 .setFlexGrow(1)
                 .setWidth("4em")
                 .setResizable(true)
@@ -99,25 +96,22 @@ public class BeanConfigureForFinanceView {
     @Bean
     @UIScope
     public Binder<FinancialRecord> financialRecordBinder() {
-        return new Binder<FinancialRecord>();
+        return new Binder<>();
     }
 
     @Bean
     @UIScope
     public ComboBox<Tenement> tenementComboBox() {
         ComboBox<Tenement> tenementComboBox = new ComboBox<>("住户");
-        tenementComboBox.setPageSize(10);
-        CallbackDataProvider<Tenement, String> dataProvider = DataProvider.fromFilteringCallbacks(
-                (CallbackDataProvider.FetchCallback<Tenement, String>) query -> tenementService.filterFromBackend(query),
-                (CallbackDataProvider.CountCallback<Tenement, String>) query -> tenementService.sizeInFilterBackend(query)
-        );
-        tenementComboBox.addCustomValueSetListener(customValueEvent -> {
-            Notification.show("查无此人", 3000, Notification.Position.MIDDLE);
-        });
-        tenementComboBox.setPreventInvalidInput(false);
-        tenementComboBox.setDataProvider(dataProvider);
-        tenementComboBox.setItemLabelGenerator(Person::getName);
+        tenementComboBox.setDataProvider(tenementDataProviderForComboBox());
+        tenementComboBox.setItemLabelGenerator(Tenement::getName);
         return tenementComboBox;
+    }
+
+    @Bean
+    @UIScope
+    public TenementNameFilterAndPageableDataProvider tenementDataProviderForComboBox() {
+        return new TenementNameFilterAndPageableDataProvider(tenementService);
     }
 
     @Bean

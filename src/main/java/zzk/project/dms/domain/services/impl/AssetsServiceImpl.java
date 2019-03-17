@@ -52,7 +52,7 @@
 //
 //    @Override
 //    public List<AssetsAllocationTemplate> findAssetsAllocationTemplate() {
-//        return assetsAllocationTemplateService.finaAll();
+//        return assetsAllocationTemplateService.findAll();
 //    }
 //
 //    @Override
@@ -84,6 +84,6 @@
 //
 //    @Override
 //    public List<AssetsArticle> findAssetsArticle(AssetsArticle assetsArticle) {
-//        return assetsArticleService.finaAll();
+//        return assetsArticleService.findAll();
 //    }
 //}

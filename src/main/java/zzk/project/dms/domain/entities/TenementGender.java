@@ -1,6 +1,6 @@
 package zzk.project.dms.domain.entities;
 
-public enum PersonGender {
+public enum TenementGender {
     //男性
     MALE("男"),
 
@@ -9,7 +9,7 @@ public enum PersonGender {
 
     private String cn;
 
-    PersonGender(String cn) {
+    TenementGender(String cn) {
         this.cn = cn;
     }
 

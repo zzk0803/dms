@@ -1,6 +1,5 @@
 package zzk.project.dms.ui.tenement;
 
-import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.QuerySortOrderBuilder;
@@ -9,22 +8,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
-import zzk.project.dms.domain.dao.TenementRepository;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.TenementService;
 
 import java.util.List;
-import java.util.stream.Stream;
 
-@SpringComponent
-public class TenementBackendDataProvider extends FilterablePageableDataProvider<Tenement, Void> {
+public class TenementNameFilterAndPageableDataProvider extends FilterablePageableDataProvider<Tenement,String> {
 
-    @Autowired
-    private TenementRepository tenementRepository;
+    private TenementService tenementService;
+
+    public TenementNameFilterAndPageableDataProvider(TenementService tenementService) {
+        this.tenementService = tenementService;
+    }
 
     @Override
-    protected Page<Tenement> fetchFromBackEnd(Query<Tenement, Void> query, Pageable pageable) {
-        return tenementRepository.findAll(pageable);
+    protected Page<Tenement> fetchFromBackEnd(Query<Tenement, String> query, Pageable pageable) {
+        String filterString = query.getFilter().orElse("");
+        return tenementService.filterFromBackend(filterString, pageable);
     }
 
     @Override
@@ -34,7 +34,8 @@ public class TenementBackendDataProvider extends FilterablePageableDataProvider<
     }
 
     @Override
-    protected int sizeInBackEnd(Query<Tenement, Void> query) {
-        return (int) tenementRepository.count();
+    protected int sizeInBackEnd(Query<Tenement, String> query) {
+        String filterString = query.getFilter().orElse("");
+        return tenementService.sizeInBackend(filterString);
     }
 }

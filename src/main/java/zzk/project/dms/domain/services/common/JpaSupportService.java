@@ -8,6 +8,7 @@ import java.util.List;
 
 @Transactional
 public interface JpaSupportService<T, ID> {
+    int DEFAULT_PAGE_SIZE = 8;
 
     JpaRepository<T, ID> getRepository();
 
@@ -37,11 +38,11 @@ public interface JpaSupportService<T, ID> {
         return entity;
     }
 
-    default int integerCount() {
+    default int intCount() {
         return (int) getRepository().count();
     }
 
-    default List<T> finaAll() {
+    default List<T> findAll() {
         return getRepository().findAll();
     }
 

@@ -25,7 +25,6 @@ public class FinanceView extends VerticalLayout {
         this.addRecordButton = addRecordButton;
         this.financialRecordGrid = financialRecordGrid;
         this.financeRecordDialog = financeRecordDialog;
-        this.financeRecordDialog.setParentView(this);
 
         setWidth("97.5%");
         setHeight("100%");
@@ -40,16 +39,9 @@ public class FinanceView extends VerticalLayout {
         setFlexGrow(1, financeRecordDialog);
         expand(financeRecordDialog);
 
+        this.financeRecordDialog.setParentViewGrid(this.financialRecordGrid);
         addRecordButton.addClickListener(click -> {
             financeRecordDialog.open();
         });
-    }
-
-    public Button getAddRecordButton() {
-        return addRecordButton;
-    }
-
-    public Grid<FinancialRecord> getFinancialRecordGrid() {
-        return financialRecordGrid;
     }
 }

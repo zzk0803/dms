@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
 
@@ -23,7 +22,7 @@ public interface DormitorySpaceRepository extends JpaRepository<DormitorySpace, 
 
     DormitorySpace findFirstByAvailableAndParent(boolean available, DormitorySpace dormitorySpace);
 
-    Page<DormitorySpace> findAllByNameContains(String name, Pageable pageable);
+    Page<DormitorySpace> findAllByNameLike(String name, Pageable pageable);
 
-    int countAllByNameContaining(String name);
+    int countAllByNameLike(String name);
 }

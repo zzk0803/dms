@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import zzk.project.dms.domain.entities.PersonGender;
+import zzk.project.dms.domain.entities.TenementGender;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
@@ -64,8 +64,8 @@ public class BeanConfigurationForTenementView {
         tenementGrid.addColumn(Tenement::getName).setHeader("姓名").setWidth("4em");
         tenementGrid.addColumn(tenement -> tenement.getGender().getCn()).setHeader("性别").setFlexGrow(0);
         tenementGrid.addColumn(Tenement::getPersonIdentityID).setHeader("身份证号码").setWidth("5em");
-        tenementGrid.addColumn(tenement -> tenement.getPersonContactMethod().getMobilePhone()).setHeader("手机号").setWidth("5em");
-        tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getBerth())).setHeader("寝室信息").setWidth("20em");
+        tenementGrid.addColumn(tenement -> tenement.getTenementContactMethod().getMobilePhone()).setHeader("手机号").setWidth("5em");
+        tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getDormitorySpace())).setHeader("寝室信息").setWidth("20em");
         tenementGrid.addColumn(Tenement::getStartDate).setHeader("入住日期").setFlexGrow(1);
         tenementGrid.addColumn(Tenement::getExpiredDate).setHeader("到期日期").setFlexGrow(1);
         tenementGrid.addComponentColumn(tenement -> {
@@ -129,16 +129,16 @@ public class BeanConfigurationForTenementView {
 
     @Bean
     @UIScope
-    public Select<PersonGender> genderSelect() {
-        Select<PersonGender> genderSelect = new Select<>();
+    public Select<TenementGender> genderSelect() {
+        Select<TenementGender> genderSelect = new Select<>();
         genderSelect.setLabel("性别");
-        genderSelect.setItems(PersonGender.values());
+        genderSelect.setItems(TenementGender.values());
         genderSelect.setRenderer(new ComponentRenderer<>(gender -> {
             Button button = new Button(gender.getCn());
             button.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
             return button;
         }));
-        genderSelect.setItemLabelGenerator(PersonGender::getCn);
+        genderSelect.setItemLabelGenerator(TenementGender::getCn);
         return genderSelect;
     }
 

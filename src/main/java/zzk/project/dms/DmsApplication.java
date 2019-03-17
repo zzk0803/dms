@@ -13,7 +13,7 @@ import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.utilies.SpringBeansUtil;
 
-@SpringBootApplication()
+@SpringBootApplication
 public class DmsApplication {
 
     public static void main(String[] args) {

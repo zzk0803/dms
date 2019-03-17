@@ -56,12 +56,12 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
     @Override
     public Page<DormitorySpace> findByNameContains(String name, Pageable pageable) {
-        return dormitorySpaceRepository.findAllByNameContains(name, pageable);
+        return dormitorySpaceRepository.findAllByNameLike(name, pageable);
     }
 
     @Override
     public int countByNameContains(String name) {
-        return dormitorySpaceRepository.countAllByNameContaining(name);
+        return dormitorySpaceRepository.countAllByNameLike(name);
     }
 
     @Override

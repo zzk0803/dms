@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
-import zzk.project.dms.domain.entities.PersonGender;
+import zzk.project.dms.domain.entities.TenementGender;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
@@ -42,7 +42,7 @@ public class TenementEditForm extends VerticalLayout {
     @Id("id")
     private TextField nameField;
     @Id("gender")
-    private Select<PersonGender> genderSelect;
+    private Select<TenementGender> genderSelect;
     @Id("personIdentityID")
     private TextField personIdentityIDField;
     @Id("contactMethod.houseTelephone")
@@ -75,7 +75,7 @@ public class TenementEditForm extends VerticalLayout {
             TenementService tenementService,
             @Qualifier("distributeCurrently") Checkbox distributeCurrentlyCheckbox,
             @Qualifier("nameField") TextField nameField,
-            @Qualifier("genderSelect") Select<PersonGender> genderSelect,
+            @Qualifier("genderSelect") Select<TenementGender> genderSelect,
             @Qualifier("personIdentityIDField") TextField personIdentityIDField,
             @Qualifier("houseTelephoneField") TextField houseTelephoneField,
             @Qualifier("mobilePhone") TextField mobilePhone,
@@ -133,18 +133,18 @@ public class TenementEditForm extends VerticalLayout {
                 .bind(Tenement::getPersonIdentityID, Tenement::setPersonIdentityID);
 
         tenementBinder.forField(houseTelephoneField)
-                .bind(tenement -> tenement.getPersonContactMethod().getHouseTelephone(),
-                        (tenement, telephone) -> tenement.getPersonContactMethod().setHouseTelephone(telephone)
+                .bind(tenement -> tenement.getTenementContactMethod().getHouseTelephone(),
+                        (tenement, telephone) -> tenement.getTenementContactMethod().setHouseTelephone(telephone)
                 );
 
         tenementBinder.forField(mobilePhone)
-                .bind(tenement -> tenement.getPersonContactMethod().getHouseTelephone(),
-                        (tenement, mobile) -> tenement.getPersonContactMethod().setMobilePhone(mobile)
+                .bind(tenement -> tenement.getTenementContactMethod().getHouseTelephone(),
+                        (tenement, mobile) -> tenement.getTenementContactMethod().setMobilePhone(mobile)
                 );
 
         tenementBinder.forField(primaryEmailField)
-                .bind(tenement -> tenement.getPersonContactMethod().getHouseTelephone(),
-                        (tenement, email) -> tenement.getPersonContactMethod().setPrimaryEmail(email)
+                .bind(tenement -> tenement.getTenementContactMethod().getHouseTelephone(),
+                        (tenement, email) -> tenement.getTenementContactMethod().setPrimaryEmail(email)
                 );
     }
 
@@ -164,7 +164,7 @@ public class TenementEditForm extends VerticalLayout {
                         return ValidationResult.ok();
                     }
                 })
-                .bind(Tenement::getBerth, Tenement::setBerth);
+                .bind(Tenement::getDormitorySpace, Tenement::setDormitorySpace);
 
         tenementBinder.forField(tenementDateField)
                 .bind(Tenement::getStartDate, Tenement::setStartDate);
@@ -188,7 +188,7 @@ public class TenementEditForm extends VerticalLayout {
 
         addAttachListener(attachEvent -> {
             tenementBinder.readBean(this.getEditTenement());
-            DormitorySpace spot = getEditTenement().getBerth();
+            DormitorySpace spot = getEditTenement().getDormitorySpace();
             boolean hasSpot = spot != null;
             distributeCurrentlyCheckbox.setValue(hasSpot);
             if (hasSpot) {

@@ -10,6 +10,7 @@ import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.middle.ServiceAndSubscriber;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Transactional
@@ -22,15 +23,5 @@ public class FinancialRecordServiceImpl implements FinancialRecordService {
     @Override
     public JpaRepository<FinancialRecord, Long> getRepository() {
         return financialRecordRepository;
-    }
-
-    @Override
-    public FinancialRecord putFinancialRecord(FinancialRecord financialRecord) {
-        return financialRecordRepository.save(financialRecord);
-    }
-
-    @Override
-    public List<FinancialRecord> findFinancialRecords() {
-        return financialRecordRepository.findAll();
     }
 }

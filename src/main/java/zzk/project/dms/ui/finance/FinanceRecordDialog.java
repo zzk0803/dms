@@ -1,17 +1,26 @@
 package zzk.project.dms.ui.finance;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataCommunicator;
 import com.vaadin.flow.data.provider.DataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.FinancialRecord;
-import zzk.project.dms.ui.common.AbstractEntityEditDialog;
-import zzk.project.dms.ui.common.AbstractEntityEditForm;
 
-public class FinanceRecordDialog extends AbstractEntityEditDialog<FinancialRecord> {
-    private FinanceView parentView;
+public class FinanceRecordDialog extends Dialog {
+    private VerticalLayout rootLayout = new VerticalLayout();
+    private H4 dialogHeader;
+    private FinanceRecordEditForm entityEditForm;
+    private Button okButton;
+    private Button cancelButton;
+
+    private Grid<FinancialRecord> parentViewGrid;
 
     @Autowired
     public FinanceRecordDialog(
@@ -20,36 +29,49 @@ public class FinanceRecordDialog extends AbstractEntityEditDialog<FinancialRecor
             @Qualifier("financeRecordFormOkButton") Button okButton,
             @Qualifier("financeRecordFormCancelButton") Button cancelButton
     ) {
-        super(dialogHeader, financeRecordEditForm, okButton, cancelButton);
-        initUI();
+        this.dialogHeader = dialogHeader;
+        this.entityEditForm = financeRecordEditForm;
+        this.okButton = okButton;
+        this.cancelButton = cancelButton;
+        init();
     }
 
-    private void initUI() {
+    private void init() {
+        this.setCloseOnOutsideClick(false);
+        this.setCloseOnEsc(false);
+
+        rootLayout.add(dialogHeader);
+        rootLayout.add(entityEditForm);
+        HorizontalLayout buttonGroup = new HorizontalLayout(okButton, cancelButton);
+        buttonGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        rootLayout.add(buttonGroup);
+        rootLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        add(rootLayout);
+        onEvent();
     }
 
-    public FinanceView getParentView() {
-        return parentView;
+    private void onEvent() {
+        okButton.addClickListener(click -> {
+            if (entityEditForm.doCommit()) {
+                getParentViewGrid().getDataProvider().refreshItem(entityEditForm.getCompletedEntity());
+                getParentViewGrid().getDataProvider().refreshAll();
+                getParentViewGrid().getDataCommunicator().reset();
+                close();
+                entityEditForm.doAbort();
+            }
+        });
+
+        cancelButton.addClickListener(click -> {
+            entityEditForm.doAbort();
+            close();
+        });
     }
 
-    public void setParentView(FinanceView parentView) {
-        this.parentView = parentView;
+    public Grid<FinancialRecord> getParentViewGrid() {
+        return parentViewGrid;
     }
 
-    @Override
-    public <T> void onCommit(AbstractEntityEditForm<T> form) {
-        if (form.doCommit()) {
-            DataProvider<FinancialRecord, ?> recordDataProvider = getParentView().getFinancialRecordGrid().getDataProvider();
-            DataCommunicator<FinancialRecord> dataCommunicator = getParentView().getFinancialRecordGrid().getDataCommunicator();
-            recordDataProvider.refreshItem((FinancialRecord) form.getCompletedEntity());
-            recordDataProvider.refreshAll();
-            dataCommunicator.reset();
-        }
+    public void setParentViewGrid(Grid<FinancialRecord> parentViewGrid) {
+        this.parentViewGrid = parentViewGrid;
     }
-
-    @Override
-    public <T> void onAbort(AbstractEntityEditForm<T> form) {
-        form.doAbort();
-    }
-
-
 }
