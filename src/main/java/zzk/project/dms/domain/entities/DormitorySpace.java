@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString()
+@ToString
 @Entity
 @Table(name = "domain_dormitoryspace")
 public class DormitorySpace {
@@ -44,6 +44,7 @@ public class DormitorySpace {
     @EqualsAndHashCode.Include
     private String name;
 
+    @ToString.Exclude
     @Enumerated(value = EnumType.STRING)
     private DormitorySpaceType type;
 }

@@ -77,7 +77,7 @@ public class BeanConfigurationForDormitoryView {
             group.add(edit);
 
             //划分
-            if (selectSpace.getType().hasSmaller()) {
+            if (selectSpace.getType().hasSmaller() && selectSpace.getHasDivided()<selectSpace.getCapacity()) {
                 Button divide = new Button(VaadinIcon.ROAD_SPLIT.create(), click -> {
                     Dialog dialog = new Dialog();
                     dialog.setCloseOnEsc(true);

@@ -3,9 +3,7 @@ package zzk.project.dms.ui.finance;
 import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.domain.services.FinancialRecordService;
 

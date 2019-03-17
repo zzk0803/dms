@@ -1,6 +1,5 @@
 package zzk.project.dms.ui.tenement;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -59,15 +58,13 @@ public class TenementEditDialog extends Dialog {
 
     private void onEvent() {
         okButton.addClickListener(click -> {
-            UI.getCurrent().access(() -> {
-                if (tenementEditForm.commit()) {
-                    getTenementGrid().getDataProvider().refreshItem(tenementEditForm.getCompletedTenement());
-                    getTenementGrid().getDataProvider().refreshAll();
-                    getTenementGrid().getDataCommunicator().reset();
-                    close();
-                    tenementEditForm.reset();
-                }
-            });
+            if (tenementEditForm.commit()) {
+                getTenementGrid().getDataProvider().refreshItem(tenementEditForm.getCompletedTenement());
+                getTenementGrid().getDataProvider().refreshAll();
+                getTenementGrid().getDataCommunicator().reset();
+                close();
+                tenementEditForm.reset();
+            }
         });
 
         cancelButton.addClickListener(click -> {

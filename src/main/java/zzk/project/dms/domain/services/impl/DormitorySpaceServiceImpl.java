@@ -1,6 +1,8 @@
 package zzk.project.dms.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import zzk.project.dms.domain.DormitoryManageException;
@@ -32,8 +34,8 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
     }
 
     @Override
-    public List<DormitorySpace> listChildSpace(DormitorySpace parent) {
-        return dormitorySpaceRepository.findDormitorySpacesByParent(parent);
+    public List<DormitorySpace> listChildSpace(DormitorySpace parentSpace) {
+        return dormitorySpaceRepository.findDormitorySpacesByParent(parentSpace);
     }
 
     @Override
@@ -41,14 +43,25 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
         return dormitorySpaceRepository.findDormitorySpacesByType(spaceType);
     }
 
+
     @Override
-    public boolean hasChildSpace(DormitorySpace parent) {
-        return dormitorySpaceRepository.existsDormitorySpacesByParent(parent);
+    public boolean hasChildSpace(DormitorySpace parentSpace) {
+        return dormitorySpaceRepository.existsDormitorySpacesByParent(parentSpace);
     }
 
     @Override
-    public int countChildSpace(DormitorySpace parent) {
-        return dormitorySpaceRepository.countDormitorySpacesByParent(parent);
+    public int countChildSpace(DormitorySpace parentSpace) {
+        return dormitorySpaceRepository.countDormitorySpacesByParent(parentSpace);
+    }
+
+    @Override
+    public Page<DormitorySpace> findByNameContains(String name, Pageable pageable) {
+        return dormitorySpaceRepository.findAllByNameContains(name, pageable);
+    }
+
+    @Override
+    public int countByNameContains(String name) {
+        return dormitorySpaceRepository.countAllByNameContaining(name);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package zzk.project.dms.ui.tenement;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -11,11 +11,9 @@ import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValidationResult;
-import com.vaadin.flow.data.selection.SingleSelect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.DormitoryManageException;
@@ -25,7 +23,8 @@ import zzk.project.dms.domain.entities.PersonGender;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
-import zzk.project.dms.ui.dormitory.DormitoryHierarchicalDataProvider;
+import zzk.project.dms.ui.dormitory.DormitoryFlatDataProvider;
+import zzk.project.dms.utilies.SpringBeansUtil;
 
 import java.util.Objects;
 
@@ -35,8 +34,6 @@ public class TenementEditForm extends VerticalLayout {
     private Binder<Tenement> tenementBinder;
     private TenementService tenementService;
     private boolean commitSuccess;
-
-    //TODO
 
     //--------------------------------------------------------------------------------
     //------------                       个人基本信息                             -----------------
@@ -63,13 +60,14 @@ public class TenementEditForm extends VerticalLayout {
     private VerticalLayout moreInfoGroups;
     private Label selectBerthLabel;
     @Id("spot")
-    private SingleSelect<Grid<DormitorySpace>, DormitorySpace> dormitorySpaceSingleSelect;
+    private ComboBox<DormitorySpace> dormitorySpaceComboBox;
     @Id("startDate")
     private DatePicker tenementDateField;
     @Id("expiredDate")
     private DatePicker expireDateField;
     @Id("valid")
     private Checkbox validCheckbox;
+    private DormitoryFlatDataProvider dormitoryFlatDataProvider;
 
     @Autowired
     public TenementEditForm(
@@ -151,7 +149,7 @@ public class TenementEditForm extends VerticalLayout {
     }
 
     private void advancedBinding() {
-        tenementBinder.forField(dormitorySpaceSingleSelect)
+        tenementBinder.forField(dormitorySpaceComboBox)
                 .withValidator((space, valueContext) -> {
                     if (space != null) {
                         if (space.getType().equals(DormitorySpaceType.BERTH)) {
@@ -212,7 +210,7 @@ public class TenementEditForm extends VerticalLayout {
 
     private void hideTenementsFields() {
         this.remove(moreInfoGroups);
-        this.dormitorySpaceTreeGrid = null;
+        this.dormitorySpaceComboBox = null;
     }
 
     private void showTenementsFields() {
@@ -223,14 +221,14 @@ public class TenementEditForm extends VerticalLayout {
 
         moreInfoGroups.add(selectBerthLabel);
 
-        this.dormitorySpaceTreeGrid = new TreeGrid<>();
-        dormitorySpaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号").setFlexGrow(1).setResizable(true);
-        dormitorySpaceTreeGrid.addColumn(space -> space.getCapacity() - space.getHasOccupy()).setHeader("剩余").setFlexGrow(1).setResizable(true);
-        dormitorySpaceTreeGrid.setDataProvider(getDormitoryHierarchicalDataProvider());
-        dormitorySpaceTreeGrid.setHeight("12em");
-        moreInfoGroups.add(dormitorySpaceTreeGrid, validCheckbox);
-        moreInfoGroups.setFlexGrow(1, dormitorySpaceTreeGrid);
-        moreInfoGroups.expand(dormitorySpaceTreeGrid);
+        dormitoryFlatDataProvider = (DormitoryFlatDataProvider) SpringBeansUtil.getBean(DormitoryFlatDataProvider.class);
+        dormitorySpaceComboBox = new ComboBox<>(5);
+        dormitorySpaceComboBox.setDataProvider(dormitoryFlatDataProvider);
+        dormitorySpaceComboBox.setItemLabelGenerator(Dormitories::getFullName);
+        dormitorySpaceComboBox.setWidth("100%");
+        moreInfoGroups.add(dormitorySpaceComboBox, validCheckbox);
+        moreInfoGroups.setFlexGrow(1, dormitorySpaceComboBox);
+        moreInfoGroups.expand(dormitorySpaceComboBox);
 
         tenementDateField.setLabel("入住时间");
         expireDateField.setLabel("到期时间");
@@ -240,15 +238,6 @@ public class TenementEditForm extends VerticalLayout {
         moreInfoGroups.expand(dateFields);
 
         add(moreInfoGroups);
-        configureSpaceSelector();
-    }
-
-    private void configureSpaceSelector() {
-        this.dormitorySpaceSingleSelect = dormitorySpaceTreeGrid.asSingleSelect();
-        this.dormitorySpaceSingleSelect.addValueChangeListener(valueChange -> {
-            DormitorySpace dormitorySpace = valueChange.getValue();
-            selectBerthLabel.setText(Dormitories.getFullName(dormitorySpace));
-        });
         advancedBinding();
     }
 
