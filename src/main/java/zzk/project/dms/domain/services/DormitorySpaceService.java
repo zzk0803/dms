@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
+import zzk.project.dms.domain.services.common.JpaSupportService;
 
 import java.util.List;
 

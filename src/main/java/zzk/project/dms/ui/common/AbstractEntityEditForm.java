@@ -3,7 +3,7 @@ package zzk.project.dms.ui.common;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import zzk.project.dms.domain.services.FormSupportService;
+import zzk.project.dms.domain.services.common.FormSupportService;
 
 import java.util.function.Supplier;
 

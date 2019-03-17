@@ -27,7 +27,8 @@ public class FinanceView extends VerticalLayout {
         this.financeRecordDialog = financeRecordDialog;
         this.financeRecordDialog.setParentView(this);
 
-        setWidth("95%");
+        setWidth("97.5%");
+        setHeight("100%");
 
         add(
                 new H1(VIEW_TITLE),

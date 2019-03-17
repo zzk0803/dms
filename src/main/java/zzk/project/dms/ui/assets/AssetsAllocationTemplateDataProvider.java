@@ -1,4 +1,4 @@
-package zzk.project.dms.ui.assets;
-
-public class AssetsAllocationTemplateDataProvider {
-}
+//package zzk.project.dms.ui.assets;
+//
+//public class AssetsAllocationTemplateDataProvider {
+//}

@@ -34,7 +34,8 @@ public class TenementView extends VerticalLayout {
     }
 
     private void initUI() {
-        setWidth("95%");
+        setWidth("97.5%");
+        setHeight("100%");
         add(h1header);
         add(createButton);
         add(tenementGrid);

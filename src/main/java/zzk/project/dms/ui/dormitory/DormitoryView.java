@@ -38,11 +38,12 @@ public class DormitoryView extends VerticalLayout {
     }
 
     private void initUI() {
-        setWidth("95%");
+        setWidth("97.5%");
+        setHeight("100%");
         add(headerH1);
         add(controlPanel);
         add(spaceTreeGrid);
-        spaceTreeGrid.setWidth("100%");
+        setAlignSelf(Alignment.STRETCH ,spaceTreeGrid);
         setFlexGrow(1, spaceTreeGrid);
         expand(spaceTreeGrid);
         onEvent();

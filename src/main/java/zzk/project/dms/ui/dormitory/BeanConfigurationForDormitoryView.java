@@ -108,6 +108,7 @@ public class BeanConfigurationForDormitoryView {
             return group;
         }).setHeader("可用操作");
         spaceTreeGrid.setDataProvider(dormitoryHierarchicalDataProvider);
+        spaceTreeGrid.setWidth("100%");
         return spaceTreeGrid;
     }
 

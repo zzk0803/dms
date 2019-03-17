@@ -1,4 +1,4 @@
-package zzk.project.dms.ui.assets;
-
-public class AssetAllocationTemplateForm {
-}
+//package zzk.project.dms.ui.assets;
+//
+//public class AssetAllocationTemplateForm {
+//}

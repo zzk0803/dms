@@ -1,4 +1,4 @@
-package zzk.project.dms.domain.services;
+package zzk.project.dms.domain.services.common;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;

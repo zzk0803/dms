@@ -1,4 +1,4 @@
-package zzk.project.dms.domain.services;
+package zzk.project.dms.domain.services.common;
 
 public interface FormSupportService<T, ID> extends JpaSupportService<T, ID> {
     default T save(T entity) {

@@ -1,4 +1,4 @@
-package zzk.project.dms.domain.services;
+package zzk.project.dms.domain.services.common;
 
 import com.vaadin.flow.data.provider.Query;
 
