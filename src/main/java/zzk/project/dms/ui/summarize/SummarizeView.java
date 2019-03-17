@@ -4,7 +4,6 @@ import com.github.appreciated.card.Card;
 import com.github.appreciated.card.content.Item;
 import com.github.appreciated.card.label.TitleLabel;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -30,7 +29,6 @@ public class SummarizeView extends VerticalLayout {
     ) {
         this.summarizeService = summarizeService;
         buildUI();
-
     }
 
     private void buildUI() {
@@ -60,21 +58,21 @@ public class SummarizeView extends VerticalLayout {
         tenementSummarizedCard.setBackground("var(--lumo-primary-color)");
         tenementSummarizedCard.setSizeUndefined();
 
-//        financeSummarizedCard = new Card(
-//                new TitleLabel("财务概况"),
-//                new Item("当月生成账单", "100"),
-//                new Item("当月已交账单", "36"),
-//                new Item("当月未交总额", "3800000")
-//        );
-//        financeSummarizedCard.getStyle().set("color", "#FFFFFF");
-//        financeSummarizedCard.setBackground("var(--lumo-primary-color)");
-//        financeSummarizedCard.setSizeUndefined();
+        financeSummarizedCard = new Card(
+                new TitleLabel("财务概况"),
+                new Item("当月生成账单", String.valueOf(summarizeService.countCurrentMouthBills())),
+                new Item("当月已交账单", String.valueOf(summarizeService.countCurrentMouthBills(true))),
+                new Item("未交总额", String.valueOf(summarizeService.amountUnmarkCheckIn()))
+        );
+        financeSummarizedCard.getStyle().set("color", "#FFFFFF");
+        financeSummarizedCard.setBackground("var(--lumo-primary-color)");
+        financeSummarizedCard.setSizeUndefined();
 
-        cardsGroup.add(dormitorySummarizedCard, tenementSummarizedCard);
-//        cardsGroup.add(dormitorySummarizedCard, tenementSummarizedCard, financeSummarizedCard);
+//        cardsGroup.add(dormitorySummarizedCard, tenementSummarizedCard);
+        cardsGroup.add(dormitorySummarizedCard, tenementSummarizedCard, financeSummarizedCard);
         cardsGroup.setFlexGrow(1, dormitorySummarizedCard);
         cardsGroup.setFlexGrow(1, tenementSummarizedCard);
-//        cardsGroup.setFlexGrow(1, financeSummarizedCard);
+        cardsGroup.setFlexGrow(1, financeSummarizedCard);
         add(cardsGroup);
     }
 

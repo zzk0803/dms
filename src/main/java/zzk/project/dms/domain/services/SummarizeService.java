@@ -12,4 +12,10 @@ public interface SummarizeService {
     int countResident();
 
     int countPerson();
+
+    int countCurrentMouthBills();
+
+    int countCurrentMouthBills(boolean mark);
+
+    double amountUnmarkCheckIn();
 }

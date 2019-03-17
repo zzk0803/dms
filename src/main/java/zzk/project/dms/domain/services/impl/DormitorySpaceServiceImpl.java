@@ -163,7 +163,7 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
             current.setHasOccupy(occupy);
             current.setAvailable((current.getCapacity() - current.getHasOccupy()) > 0);
 
-            put(current);
+            flush(current);
 
             current = current.getParent();
         }
