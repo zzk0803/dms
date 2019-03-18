@@ -13,14 +13,13 @@ import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.FinancialRecordService;
-import zzk.project.dms.domain.services.common.FormSupportService;
 
 import java.math.BigDecimal;
-import java.util.function.Supplier;
 
 public class FinanceRecordEditForm extends VerticalLayout {
     private ComboBox<Tenement> tenementComboBox;
@@ -33,8 +32,10 @@ public class FinanceRecordEditForm extends VerticalLayout {
     private FinancialRecord editEntity;
     private FinancialRecord completedEntity;
     private Binder<FinancialRecord> entityBinder;
+
     private boolean commitSuccess;
 
+    @Autowired
     public FinanceRecordEditForm(
             @Qualifier("financialRecordBinder") Binder<FinancialRecord> financialRecordBinder,
             @Qualifier("tenementComboBox") ComboBox<Tenement> tenementComboBox,
@@ -50,33 +51,25 @@ public class FinanceRecordEditForm extends VerticalLayout {
         this.descriptionArea = descriptionArea;
         this.markCheckBox = markCheckBox;
         this.financialRecordService = financialRecordService;
-        configure();
+
+        ui();
+        event();
+        this.editEntity = new FinancialRecord();
+        binding();
     }
 
-    protected void configureUI(VerticalLayout rootLayout) {
-        rootLayout.add(
-                new HorizontalLayout(
-                        tenementComboBox,
-                        checkInField),
-                recordDateDatePicker,
-                descriptionArea,
-                markCheckBox
-        );
-        descriptionArea.setWidth("100%");
-        expand(descriptionArea);
-        recordDateDatePicker.setWidth("100%");
-        expand(recordDateDatePicker);
+    private void event() {
+        addAttachListener(attachEvent -> {
+            entityBinder.readBean(this.editEntity);
+        });
     }
 
-    protected void configureUIEvent() {
-
-    }
-
-    protected void configureBinging(Binder<FinancialRecord> entityBinder) {
-        entityBinder.forField(tenementComboBox)
+    private void binding() {
+        entityBinder.setBean(editEntity);
+        entityBinder.forField(this.tenementComboBox)
                 .asRequired("必须填写住户")
                 .bind(FinancialRecord::getTenement, FinancialRecord::setTenement);
-        entityBinder.forField(checkInField)
+        entityBinder.forField(this.checkInField)
                 .asRequired("必须填写收取金额")
                 .withConverter(new Converter<String, BigDecimal>() {
                     @Override
@@ -94,64 +87,48 @@ public class FinanceRecordEditForm extends VerticalLayout {
                     }
                 })
                 .bind(FinancialRecord::getCheckIn, FinancialRecord::setCheckIn);
-        entityBinder.forField(recordDateDatePicker)
+        entityBinder.forField(this.recordDateDatePicker)
                 .asRequired("必须填写结算日期")
                 .bind(FinancialRecord::getRecordDate, FinancialRecord::setRecordDate);
-        entityBinder.forField(descriptionArea)
+        entityBinder.forField(this.descriptionArea)
                 .bind(FinancialRecord::getDescription, FinancialRecord::setDescription);
-        entityBinder.forField(markCheckBox)
+        entityBinder.forField(this.markCheckBox)
                 .bind(FinancialRecord::isMark, FinancialRecord::setMark);
     }
 
-    public FormSupportService<FinancialRecord, ?> getFormSupportService() {
-        return this.financialRecordService;
-    }
-
-    public Supplier<FinancialRecord> getBlackEntitySupplier() {
-        return FinancialRecord::new;
+    private void ui() {
+        add(
+                new HorizontalLayout(
+                        this.tenementComboBox,
+                        this.checkInField),
+                this.recordDateDatePicker,
+                this.descriptionArea,
+                this.markCheckBox
+        );
+        this.descriptionArea.setWidth("100%");
+        expand(this.descriptionArea);
+        this.recordDateDatePicker.setWidth("100%");
+        expand(this.recordDateDatePicker);
     }
 
     public boolean doCommit() {
         try {
-            getEntityBinder().writeBean(getEditEntity());
-            setCompletedEntity(getEditEntity());
-            getFormSupportService().save(getCompletedEntity());
+            entityBinder.writeBean(editEntity);
+            setCompletedEntity(editEntity);
+            financialRecordService.save(getCompletedEntity());
             setCommitSuccess(true);
         } catch (ValidationException e) {
-            Notification.show(e.getMessage());
             setCommitSuccess(false);
+            Notification.show(e.getMessage());
         }
         return isCommitSuccess();
     }
 
-    public void doAbort() {
-        setEditEntity(produceBlackBean());
-        getEntityBinder().setBean(getEditEntity());
+    public void reset() {
+        setEditEntity(new FinancialRecord());
+        entityBinder.readBean(editEntity);
     }
 
-    private FinancialRecord produceBlackBean() {
-        return getBlackEntitySupplier().get();
-    }
-
-    protected void configure() {
-        configureUI(this);
-        configureBinging(getEntityBinder());
-        setEditEntity(produceBlackBean());
-        getEntityBinder().setBean(getEditEntity());
-        configureUIEvent();
-    }
-
-    public VerticalLayout getRootLayout() {
-        return this;
-    }
-
-    public Binder<FinancialRecord> getEntityBinder() {
-        return entityBinder;
-    }
-
-    public FinancialRecord getEditEntity() {
-        return editEntity;
-    }
 
     public void setEditEntity(FinancialRecord editEntity) {
         this.editEntity = editEntity;

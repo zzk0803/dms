@@ -2,6 +2,7 @@ package zzk.project.dms.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,13 +56,14 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
     }
 
     @Override
-    public Page<DormitorySpace> findByNameContains(String name, Pageable pageable) {
-        return dormitorySpaceRepository.findAllByNameLike(name, pageable);
+    public List<DormitorySpace> findByNameContains(String name, Pageable pageable) {
+        return dormitorySpaceRepository.findAll((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"));
+//        return dormitorySpaceRepository.findAll((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"), pageable);
     }
 
     @Override
     public int countByNameContains(String name) {
-        return dormitorySpaceRepository.countAllByNameLike(name);
+        return ((int) dormitorySpaceRepository.count(((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"))));
     }
 
     @Override

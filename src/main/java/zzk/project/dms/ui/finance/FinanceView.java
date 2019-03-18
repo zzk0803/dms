@@ -8,6 +8,7 @@ import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.ui.MainView;
+import zzk.project.dms.ui.dormitory.DormitoryEditDialog;
 
 @Route(value = FinanceView.VIEW_NAME,layout = MainView.class)
 public class FinanceView extends VerticalLayout {
@@ -43,5 +44,9 @@ public class FinanceView extends VerticalLayout {
         addRecordButton.addClickListener(click -> {
             financeRecordDialog.open();
         });
+    }
+
+    public FinanceRecordDialog getEditDialog() {
+        return this.financeRecordDialog;
     }
 }

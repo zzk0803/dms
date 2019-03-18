@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.treegrid.TreeGrid;
+import org.springframework.beans.factory.annotation.Autowired;
 import zzk.project.dms.domain.entities.DormitorySpace;
 
 public class DormitoryEditDialog extends Dialog {
@@ -18,6 +19,7 @@ public class DormitoryEditDialog extends Dialog {
     private Button commitButton;
     private Button giveUpButton;
 
+    @Autowired
     public DormitoryEditDialog(
             DormitoryEditForm dormitoryEditForm,
             Button commitButton,

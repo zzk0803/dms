@@ -30,10 +30,10 @@ public class DmsApplication {
     ) {
         return () -> {
             DormitorySpace dormitorySpace = new DormitorySpace();
-            dormitorySpace.setName("万人坑");
+            dormitorySpace.setName("小社区");
             dormitorySpace.setType(DormitorySpaceType.COMMUNITY);
-            dormitorySpace.setCapacity(10000);
-            dormitorySpaceService.put(dormitorySpace);
+            dormitorySpace.setCapacity(200);
+            DormitorySpace root = dormitorySpaceService.put(dormitorySpace);
         };
     }
 

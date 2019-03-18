@@ -19,12 +19,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
-import zzk.project.dms.domain.entities.TenementGender;
 import zzk.project.dms.domain.entities.Tenement;
+import zzk.project.dms.domain.entities.TenementGender;
+import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
 import zzk.project.dms.ui.dormitory.DormitoryFlatDataProvider;
-import zzk.project.dms.utilies.SpringBeansUtil;
 
 import java.util.Objects;
 
@@ -33,6 +33,7 @@ public class TenementEditForm extends VerticalLayout {
     private Tenement completedTenement;
     private Binder<Tenement> tenementBinder;
     private TenementService tenementService;
+    private DormitorySpaceService dormitorySpaceService;
     private boolean commitSuccess;
 
     //--------------------------------------------------------------------------------
@@ -67,12 +68,12 @@ public class TenementEditForm extends VerticalLayout {
     private DatePicker expireDateField;
     @Id("valid")
     private Checkbox validCheckbox;
-    private DormitoryFlatDataProvider dormitoryFlatDataProvider;
 
     @Autowired
     public TenementEditForm(
             @Qualifier("tenementBinder") Binder<Tenement> tenementBinder,
             TenementService tenementService,
+            DormitorySpaceService dormitorySpaceService,
             @Qualifier("distributeCurrently") Checkbox distributeCurrentlyCheckbox,
             @Qualifier("nameField") TextField nameField,
             @Qualifier("genderSelect") Select<TenementGender> genderSelect,
@@ -88,6 +89,7 @@ public class TenementEditForm extends VerticalLayout {
 
         this.tenementBinder = tenementBinder;
         this.tenementService = tenementService;
+        this.dormitorySpaceService = dormitorySpaceService;
         this.distributeCurrentlyCheckbox = distributeCurrentlyCheckbox;
         this.nameField = nameField;
         this.genderSelect = genderSelect;
@@ -221,9 +223,8 @@ public class TenementEditForm extends VerticalLayout {
 
         moreInfoGroups.add(selectBerthLabel);
 
-        dormitoryFlatDataProvider = (DormitoryFlatDataProvider) SpringBeansUtil.getBean(DormitoryFlatDataProvider.class);
-        dormitorySpaceComboBox = new ComboBox<>(5);
-        dormitorySpaceComboBox.setDataProvider(dormitoryFlatDataProvider);
+        dormitorySpaceComboBox = new ComboBox<>("分配宿舍");
+        dormitorySpaceComboBox.setDataProvider(new DormitoryFlatDataProvider(dormitorySpaceService));
         dormitorySpaceComboBox.setItemLabelGenerator(Dormitories::getFullName);
         dormitorySpaceComboBox.setWidth("100%");
         moreInfoGroups.add(dormitorySpaceComboBox, validCheckbox);

@@ -7,14 +7,13 @@ import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.provider.DataCommunicator;
-import com.vaadin.flow.data.provider.DataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.FinancialRecord;
 
 public class FinanceRecordDialog extends Dialog {
     private VerticalLayout rootLayout = new VerticalLayout();
+
     private H4 dialogHeader;
     private FinanceRecordEditForm entityEditForm;
     private Button okButton;
@@ -45,7 +44,7 @@ public class FinanceRecordDialog extends Dialog {
         HorizontalLayout buttonGroup = new HorizontalLayout(okButton, cancelButton);
         buttonGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         rootLayout.add(buttonGroup);
-        rootLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        rootLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, buttonGroup);
         add(rootLayout);
         onEvent();
     }
@@ -57,13 +56,13 @@ public class FinanceRecordDialog extends Dialog {
                 getParentViewGrid().getDataProvider().refreshAll();
                 getParentViewGrid().getDataCommunicator().reset();
                 close();
-                entityEditForm.doAbort();
+                entityEditForm.reset();
             }
         });
 
         cancelButton.addClickListener(click -> {
-            entityEditForm.doAbort();
             close();
+            entityEditForm.reset();
         });
     }
 
@@ -73,5 +72,9 @@ public class FinanceRecordDialog extends Dialog {
 
     public void setParentViewGrid(Grid<FinancialRecord> parentViewGrid) {
         this.parentViewGrid = parentViewGrid;
+    }
+
+    public void warp(FinancialRecord financialRecord) {
+        this.entityEditForm.setEditEntity(financialRecord);
     }
 }

@@ -1,8 +1,8 @@
 package zzk.project.dms.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import zzk.project.dms.domain.DormitoryManageException;
@@ -14,6 +14,7 @@ import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.middle.ServiceAndSubscriber;
 
+import java.util.List;
 import java.util.Optional;
 
 @ServiceAndSubscriber
@@ -55,11 +56,13 @@ public class TenementServiceImpl implements TenementService {
                     break;
 
                 case EXCHANGE:
+                    save(tenement);
                     setAvailableBerthForTenement(tenement, newDormitorySpace);
                     dormitorySpaceService.updateOccupy(oldDormitorySpace, -1);
                     break;
 
                 case TAKEIN:
+                    save(tenement);
                     setAvailableBerthForTenement(tenement, newDormitorySpace);
                     break;
 
@@ -72,6 +75,7 @@ public class TenementServiceImpl implements TenementService {
 
     private void serveNewTenement(Tenement tenement) throws DormitoryManageException {
         setAvailableBerthForTenement(tenement, tenement.getDormitorySpace());
+        save(tenement);
     }
 
     private void setAvailableBerthForTenement(Tenement tenement, DormitorySpace dormitorySpace) throws DormitoryManageException {
@@ -118,12 +122,15 @@ public class TenementServiceImpl implements TenementService {
     }
 
     @Override
-    public Page<Tenement> filterFromBackend(String name, Pageable pageable) {
-        return tenementRepository.findAllByNameContains(name, pageable);
+    public List<Tenement> filterFromBackend(String name, Pageable pageable) {
+        return tenementRepository.findAll(
+                (Specification<Tenement>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%")
+        );
+//        return tenementRepository.findAll((Specification<Tenement>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"), pageable);
     }
 
     @Override
     public int sizeInBackend(String name) {
-        return tenementRepository.countAllByNameContains(name);
+        return (int) tenementRepository.count((Specification<Tenement>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"));
     }
 }

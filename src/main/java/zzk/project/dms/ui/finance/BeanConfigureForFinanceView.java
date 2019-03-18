@@ -8,6 +8,8 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -20,6 +22,7 @@ import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
+import zzk.project.dms.ui.dormitory.DormitoryView;
 import zzk.project.dms.ui.tenement.TenementNameFilterAndPageableDataProvider;
 
 @Configuration
@@ -67,11 +70,34 @@ public class BeanConfigureForFinanceView {
                 .setFlexGrow(1)
                 .setResizable(true)
                 .setHeader("备忘录");
+        financialRecordGrid.addColumn(FinancialRecord::getCheckIn)
+                .setFlexGrow(1)
+                .setResizable(true)
+                .setHeader("应收金额");
         financialRecordGrid.addColumn(record -> record.isMark() ? "已缴费" : "未缴费")
                 .setFlexGrow(1)
                 .setResizable(true)
                 .setHeader("是否已缴费");
         financialRecordGrid.setDataProvider(financeRecordDataProvider);
+        financialRecordGrid.addComponentColumn(financialRecord -> {
+            //编辑
+            Button edit = new Button(VaadinIcon.EDIT.create(), click -> {
+                financialRecordGrid.getParent().ifPresent(component -> {
+                    if (component instanceof FinanceView) {
+                        FinanceView financeView = (FinanceView) component;
+                        financeView.getEditDialog().warp(financialRecord);
+                        financeView.getEditDialog().open();
+                    }
+                });
+            });
+            edit.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
+
+            Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
+                Notification.show("还未实现");
+            });
+            delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
+            return new HorizontalLayout(edit, delete);
+        }).setHeader("可用操作");
         return financialRecordGrid;
     }
 

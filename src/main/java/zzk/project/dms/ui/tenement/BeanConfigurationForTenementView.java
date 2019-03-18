@@ -22,8 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import zzk.project.dms.domain.entities.TenementGender;
 import zzk.project.dms.domain.entities.Tenement;
+import zzk.project.dms.domain.entities.TenementGender;
+import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
 
@@ -34,6 +35,9 @@ public class BeanConfigurationForTenementView {
 
     @Autowired
     private TenementService tenementService;
+
+    @Autowired
+    private DormitorySpaceService dormitorySpaceService;
 
     @Autowired
     private TenementBackendDataProvider tenementBackendDataProvider;
@@ -60,14 +64,13 @@ public class BeanConfigurationForTenementView {
     @UIScope
     public Grid<Tenement> tenementGrid() {
         Grid<Tenement> tenementGrid = new Grid<>();
-        tenementGrid.setSelectionMode(Grid.SelectionMode.NONE);
-        tenementGrid.addColumn(Tenement::getName).setHeader("姓名").setWidth("4em");
-        tenementGrid.addColumn(tenement -> tenement.getGender().getCn()).setHeader("性别").setFlexGrow(0);
-        tenementGrid.addColumn(Tenement::getPersonIdentityID).setHeader("身份证号码").setWidth("5em");
-        tenementGrid.addColumn(tenement -> tenement.getTenementContactMethod().getMobilePhone()).setHeader("手机号").setWidth("5em");
-        tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getDormitorySpace())).setHeader("寝室信息").setWidth("20em");
-        tenementGrid.addColumn(Tenement::getStartDate).setHeader("入住日期").setFlexGrow(1);
-        tenementGrid.addColumn(Tenement::getExpiredDate).setHeader("到期日期").setFlexGrow(1);
+        tenementGrid.addColumn(Tenement::getName).setHeader("姓名").setWidth("4em").setFlexGrow(1).setResizable(true);
+        tenementGrid.addColumn(tenement -> tenement.getGender().getCn()).setHeader("性别").setFlexGrow(1).setResizable(true);
+        tenementGrid.addColumn(Tenement::getPersonIdentityID).setHeader("身份证号码").setWidth("5em").setFlexGrow(1).setResizable(true);
+        tenementGrid.addColumn(tenement -> tenement.getTenementContactMethod().getMobilePhone()).setHeader("手机号").setWidth("5em").setFlexGrow(1).setResizable(true);
+        tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getDormitorySpace())).setHeader("寝室信息").setWidth("20em").setFlexGrow(1).setResizable(true);
+        tenementGrid.addColumn(Tenement::getStartDate).setHeader("入住日期").setFlexGrow(1).setResizable(true);
+        tenementGrid.addColumn(Tenement::getExpiredDate).setHeader("到期日期").setFlexGrow(1).setResizable(true);
         tenementGrid.addComponentColumn(tenement -> {
             HorizontalLayout group = new HorizontalLayout();
             group.setAlignItems(FlexComponent.Alignment.BASELINE);
@@ -82,6 +85,8 @@ public class BeanConfigurationForTenementView {
             });
             edit.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
             group.add(edit);
+
+
             Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
                 Notification.show("还未实现");
             });
@@ -254,6 +259,7 @@ public class BeanConfigurationForTenementView {
         return new TenementEditForm(
                 tenementBinder(),
                 tenementService,
+                dormitorySpaceService,
                 distributeCurrently(),
                 nameField(),
                 genderSelect(),

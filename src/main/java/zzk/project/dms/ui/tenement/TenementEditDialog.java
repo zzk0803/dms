@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.Tenement;
 
@@ -20,6 +21,7 @@ public class TenementEditDialog extends Dialog {
 
     private Grid<Tenement> tenementGrid;
 
+    @Autowired
     public TenementEditDialog(
             @Qualifier("dialogHeader") H4 dialogHeader,
             @Qualifier("tenementEditForm") TenementEditForm tenementEditForm,
@@ -68,7 +70,6 @@ public class TenementEditDialog extends Dialog {
         });
 
         cancelButton.addClickListener(click -> {
-            tenementEditForm.setEditTenement(new Tenement());
             close();
             tenementEditForm.reset();
         });

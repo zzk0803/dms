@@ -16,7 +16,7 @@ public interface DormitorySpaceService extends JpaSupportService<DormitorySpace,
     List<DormitorySpace> listChildSpace(DormitorySpace parentSpace);
     int countChildSpace(DormitorySpace parentSpace);
 
-    Page<DormitorySpace> findByNameContains(String name, Pageable pageable);
+    List<DormitorySpace> findByNameContains(String name, Pageable pageable);
     int countByNameContains(String name);
 
     List<DormitorySpace> listSpaceByType(DormitorySpaceType spaceType);
