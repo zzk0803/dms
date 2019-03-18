@@ -5,10 +5,8 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.ui.MainView;
-import zzk.project.dms.ui.dormitory.DormitoryEditDialog;
 
 @Route(value = FinanceView.VIEW_NAME,layout = MainView.class)
 public class FinanceView extends VerticalLayout {
@@ -20,9 +18,10 @@ public class FinanceView extends VerticalLayout {
     private FinanceRecordDialog financeRecordDialog;
 
     public FinanceView(
-            @Qualifier("addRecordButton") Button addRecordButton,
-            @Qualifier("financialRecordGrid") Grid<FinancialRecord> financialRecordGrid,
-            @Qualifier("financeRecordDialog") FinanceRecordDialog financeRecordDialog) {
+            Button addRecordButton,
+            Grid<FinancialRecord> financialRecordGrid,
+            FinanceRecordDialog financeRecordDialog
+    ) {
         this.addRecordButton = addRecordButton;
         this.financialRecordGrid = financialRecordGrid;
         this.financeRecordDialog = financeRecordDialog;
@@ -40,7 +39,7 @@ public class FinanceView extends VerticalLayout {
         setFlexGrow(1, financeRecordDialog);
         expand(financeRecordDialog);
 
-        this.financeRecordDialog.setParentViewGrid(this.financialRecordGrid);
+        this.financeRecordDialog.setRecordGrid(this.financialRecordGrid);
         addRecordButton.addClickListener(click -> {
             financeRecordDialog.open();
         });

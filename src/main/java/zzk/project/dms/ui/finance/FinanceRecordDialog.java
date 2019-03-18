@@ -1,5 +1,6 @@
 package zzk.project.dms.ui.finance;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -19,12 +20,12 @@ public class FinanceRecordDialog extends Dialog {
     private Button okButton;
     private Button cancelButton;
 
-    private Grid<FinancialRecord> parentViewGrid;
+    private Grid<FinancialRecord> recordGrid;
 
     @Autowired
     public FinanceRecordDialog(
             @Qualifier("financeRecordFormDialogHeader") H4 dialogHeader,
-            @Qualifier("financeRecordFormEntityEditForm") FinanceRecordEditForm financeRecordEditForm,
+            FinanceRecordEditForm financeRecordEditForm,
             @Qualifier("financeRecordFormOkButton") Button okButton,
             @Qualifier("financeRecordFormCancelButton") Button cancelButton
     ) {
@@ -45,33 +46,31 @@ public class FinanceRecordDialog extends Dialog {
         buttonGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         rootLayout.add(buttonGroup);
         rootLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, buttonGroup);
-        add(rootLayout);
+        addComponentAsFirst(rootLayout);
         onEvent();
     }
 
     private void onEvent() {
         okButton.addClickListener(click -> {
-            if (entityEditForm.doCommit()) {
-                getParentViewGrid().getDataProvider().refreshItem(entityEditForm.getCompletedEntity());
-                getParentViewGrid().getDataProvider().refreshAll();
-                getParentViewGrid().getDataCommunicator().reset();
-                close();
-                entityEditForm.reset();
-            }
+            UI.getCurrent().access(() -> {
+                if (entityEditForm.commit()) {
+                    recordGrid.getDataProvider().refreshAll();
+                    recordGrid.getDataProvider().refreshItem(entityEditForm.getCompletedEntity());
+                    recordGrid.getDataCommunicator().reset();
+                    close();
+                    entityEditForm.reset();
+                }
+            });
         });
 
         cancelButton.addClickListener(click -> {
-            close();
             entityEditForm.reset();
+            close();
         });
     }
 
-    public Grid<FinancialRecord> getParentViewGrid() {
-        return parentViewGrid;
-    }
-
-    public void setParentViewGrid(Grid<FinancialRecord> parentViewGrid) {
-        this.parentViewGrid = parentViewGrid;
+    public void setRecordGrid(Grid<FinancialRecord> recordGrid) {
+        this.recordGrid = recordGrid;
     }
 
     public void warp(FinancialRecord financialRecord) {

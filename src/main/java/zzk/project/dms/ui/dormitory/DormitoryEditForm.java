@@ -55,7 +55,7 @@ public class DormitoryEditForm extends VerticalLayout {
 
         initUI();
         onEvent();
-        initBinding();
+        binding();
     }
 
     public DormitorySpace getEditingObject() {
@@ -77,7 +77,7 @@ public class DormitoryEditForm extends VerticalLayout {
 
     public void reset() {
         setEditingObject(new DormitorySpace());
-        binding();
+        dormitorySpaceBinder.readBean(getEditingObject());
     }
 
     public boolean doCommit() {
@@ -92,8 +92,8 @@ public class DormitoryEditForm extends VerticalLayout {
         return isCommitSuccess();
     }
 
-    private void initBinding() {
-        binding();
+    private void binding() {
+        dormitorySpaceBinder.readBean(getEditingObject());
         dormitorySpaceBinder.forField(spaceNameField)
                 .asRequired("空间名称&编号不能为空")
                 .bind(DormitorySpace::getName, DormitorySpace::setName);
@@ -120,10 +120,6 @@ public class DormitoryEditForm extends VerticalLayout {
 
         dormitorySpaceBinder.forField(upperSpaceComboBox)
                 .bind(DormitorySpace::getParent, DormitorySpace::setParent);
-    }
-
-    private void binding() {
-        dormitorySpaceBinder.readBean(getEditingObject());
     }
 
     private void onEvent() {

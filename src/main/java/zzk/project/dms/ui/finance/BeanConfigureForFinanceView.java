@@ -22,7 +22,6 @@ import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
-import zzk.project.dms.ui.dormitory.DormitoryView;
 import zzk.project.dms.ui.tenement.TenementNameFilterAndPageableDataProvider;
 
 @Configuration

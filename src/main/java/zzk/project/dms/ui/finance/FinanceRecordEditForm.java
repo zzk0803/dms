@@ -14,7 +14,6 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.FinancialRecordService;
@@ -37,12 +36,12 @@ public class FinanceRecordEditForm extends VerticalLayout {
 
     @Autowired
     public FinanceRecordEditForm(
-            @Qualifier("financialRecordBinder") Binder<FinancialRecord> financialRecordBinder,
-            @Qualifier("tenementComboBox") ComboBox<Tenement> tenementComboBox,
-            @Qualifier("recordDateDatePicker") DatePicker recordDateDatePicker,
-            @Qualifier("checkInField") TextField checkInField,
-            @Qualifier("descriptionArea") TextArea descriptionArea,
-            @Qualifier("markCheckBox") Checkbox markCheckBox,
+            Binder<FinancialRecord> financialRecordBinder,
+            ComboBox<Tenement> tenementComboBox,
+            DatePicker recordDateDatePicker,
+            TextField checkInField,
+            TextArea descriptionArea,
+            Checkbox markCheckBox,
             FinancialRecordService financialRecordService) {
         this.entityBinder = financialRecordBinder;
         this.tenementComboBox = tenementComboBox;
@@ -54,18 +53,18 @@ public class FinanceRecordEditForm extends VerticalLayout {
 
         ui();
         event();
-        this.editEntity = new FinancialRecord();
+        setEditEntity(new FinancialRecord());
         binding();
     }
 
     private void event() {
         addAttachListener(attachEvent -> {
-            entityBinder.readBean(this.editEntity);
+            entityBinder.readBean(getEditEntity());
         });
     }
 
     private void binding() {
-        entityBinder.setBean(editEntity);
+        entityBinder.setBean(getEditEntity());
         entityBinder.forField(this.tenementComboBox)
                 .asRequired("必须填写住户")
                 .bind(FinancialRecord::getTenement, FinancialRecord::setTenement);
@@ -111,7 +110,7 @@ public class FinanceRecordEditForm extends VerticalLayout {
         expand(this.recordDateDatePicker);
     }
 
-    public boolean doCommit() {
+    public boolean commit() {
         try {
             entityBinder.writeBean(editEntity);
             setCompletedEntity(editEntity);
@@ -126,9 +125,12 @@ public class FinanceRecordEditForm extends VerticalLayout {
 
     public void reset() {
         setEditEntity(new FinancialRecord());
-        entityBinder.readBean(editEntity);
+        entityBinder.readBean(getEditEntity());
     }
 
+    public FinancialRecord getEditEntity() {
+        return editEntity;
+    }
 
     public void setEditEntity(FinancialRecord editEntity) {
         this.editEntity = editEntity;
