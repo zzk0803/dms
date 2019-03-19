@@ -2,6 +2,7 @@ package zzk.project.dms.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 import zzk.project.dms.domain.dao.DormitorySpaceRepository;
 import zzk.project.dms.domain.dao.FinancialRecordRepository;
 import zzk.project.dms.domain.dao.TenementRepository;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ServiceAndSubscriber
+@Service
 public class SummarizeServiceImpl implements SummarizeService {
 
     @Autowired

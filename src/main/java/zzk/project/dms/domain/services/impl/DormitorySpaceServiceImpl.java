@@ -1,28 +1,63 @@
 package zzk.project.dms.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.dao.DormitorySpaceRepository;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.services.DormitorySpaceService;
-import zzk.project.dms.middle.ServiceAndSubscriber;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-@ServiceAndSubscriber
+@Service
 @Transactional(rollbackFor = DormitoryManageException.class)
 public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
     @Autowired
     private DormitorySpaceRepository dormitorySpaceRepository;
+
+    private class SpaceTreeIterator {
+        private DormitorySpaceRepository dormitorySpaceRepository;
+        private DormitorySpace parent;
+        private DormitorySpace current;
+        private List<DormitorySpace> result;
+
+        public SpaceTreeIterator(DormitorySpaceRepository dormitorySpaceRepository, DormitorySpace parent) {
+            this.dormitorySpaceRepository = dormitorySpaceRepository;
+            this.parent = parent;
+            this.result = new LinkedList<>();
+        }
+
+        public void search() {
+            this.current = this.parent;
+            if (this.current.getType() == DormitorySpaceType.BERTH) {
+                this.result.add(current);
+            } else {
+                search(this.current);
+            }
+        }
+
+        private void search(DormitorySpace current) {
+            List<DormitorySpace> child = dormitorySpaceRepository.findDormitorySpacesByParent(current);
+            for (DormitorySpace space : child) {
+                if (space.getType() != DormitorySpaceType.BERTH) {
+                    search(space);
+                } else {
+                    result.add(space);
+                }
+            }
+        }
+
+        public List<DormitorySpace> getResult() {
+            return result;
+        }
+    }
 
     @Override
     public JpaRepository<DormitorySpace, Long> getRepository() {
@@ -37,6 +72,14 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
     @Override
     public List<DormitorySpace> listChildSpace(DormitorySpace parentSpace) {
         return dormitorySpaceRepository.findDormitorySpacesByParent(parentSpace);
+    }
+
+    @Override
+    public List<DormitorySpace> listChildSpaceRecursive(DormitorySpace dormitorySpace) {
+        SpaceTreeIterator treeIterator = new SpaceTreeIterator(this.dormitorySpaceRepository, dormitorySpace);
+        treeIterator.search();
+        //        throw new UnsupportedOperationException();
+        return treeIterator.getResult();
     }
 
     @Override
@@ -156,23 +199,16 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
     @Override
     public void updateOccupy(DormitorySpace berthSpace, int occupyAmount) {
+        List<DormitorySpace> spaces = new LinkedList<>();
         DormitorySpace current = berthSpace;
         while (Objects.nonNull(current)) {
+            spaces.add(current);
             int occupy = current.getHasOccupy() + occupyAmount;
-            if (occupy <= 0) {
-                occupy = 0;
-            }
-            if (occupy >= current.getCapacity()) {
-                occupy = current.getCapacity();
-            }
-
             current.setHasOccupy(occupy);
             current.setAvailable((current.getCapacity() - current.getHasOccupy()) > 0);
-
-            flush(current);
-
             current = current.getParent();
         }
+        dormitorySpaceRepository.saveAll(spaces);
     }
 
     private void checkAllocatable(DormitorySpace parent, int allocate) throws DormitoryManageException {

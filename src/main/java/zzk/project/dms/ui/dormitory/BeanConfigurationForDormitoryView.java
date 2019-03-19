@@ -7,7 +7,9 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -31,8 +33,12 @@ import org.springframework.context.annotation.Configuration;
 import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
+import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.DormitorySpaceService;
+import zzk.project.dms.domain.services.TenementService;
+import zzk.project.dms.domain.utilies.Dormitories;
 
+import java.util.Collection;
 import java.util.List;
 
 @Configuration
@@ -40,6 +46,9 @@ public class BeanConfigurationForDormitoryView {
 
     @Autowired
     DormitorySpaceService dormitorySpaceService;
+
+    @Autowired
+    TenementService tenementService;
 
     @Autowired
     DormitoryHierarchicalDataProvider dormitoryHierarchicalDataProvider;
@@ -99,6 +108,32 @@ public class BeanConfigurationForDormitoryView {
                 group.add(divide);
             }
 
+            //查看住户人员
+            Button search = new Button(VaadinIcon.SEARCH.create(), click -> {
+                Dialog dialog = new Dialog();
+                dialog.setWidth("50vw");
+                VerticalLayout layout = new VerticalLayout();
+                layout.add(new H3("占用空间的用户"));
+                Grid<Tenement> tenementGrid = new Grid<>();
+                tenementGrid.addColumn(Tenement::getName).setHeader("姓名").setFlexGrow(1).setResizable(true);
+                tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getDormitorySpace())).setHeader("位置").setFlexGrow(1).setResizable(true);
+                Collection<Tenement> tenements = tenementService.findTenementBySpace(selectSpace);
+                tenementGrid.setSizeUndefined();
+                tenementGrid.setItems(tenements);
+                layout.add(tenementGrid);
+                if (selectSpace.getHasOccupy() != tenements.size()) {
+                    Button fixButton = new Button("尝试修复");
+                    fixButton.addClickListener(fixClick -> {
+                        dialog.close();
+                    });
+                    layout.add(fixButton);
+                }
+                dialog.addComponentAsFirst(layout);
+                dialog.open();
+            });
+            search.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
+            group.add(search);
+
             //删除
             Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
                 Notification.show("还未实现");
@@ -106,7 +141,7 @@ public class BeanConfigurationForDormitoryView {
             delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
             group.add(delete);
             return group;
-        }).setHeader("可用操作");
+        }).setHeader("可用操作").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.setDataProvider(dormitoryHierarchicalDataProvider);
         spaceTreeGrid.setWidth("100%");
         return spaceTreeGrid;

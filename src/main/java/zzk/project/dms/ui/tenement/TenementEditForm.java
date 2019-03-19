@@ -12,6 +12,7 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.PropertyId;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,13 +61,13 @@ public class TenementEditForm extends VerticalLayout {
     private Checkbox distributeCurrentlyCheckbox;
     private VerticalLayout moreInfoGroups;
     private Label selectBerthLabel;
-    @Id("spot")
+    @PropertyId("spot")
     private ComboBox<DormitorySpace> dormitorySpaceComboBox;
-    @Id("startDate")
+    @PropertyId("startDate")
     private DatePicker tenementDateField;
-    @Id("expiredDate")
+    @PropertyId("expiredDate")
     private DatePicker expireDateField;
-    @Id("valid")
+    @PropertyId("valid")
     private Checkbox validCheckbox;
 
     @Autowired
@@ -123,7 +124,7 @@ public class TenementEditForm extends VerticalLayout {
     }
 
     private void binding() {
-        tenementBinder.setBean(getEditTenement());
+        tenementBinder.readBean(getEditTenement());
         tenementBinder.forField(nameField)
                 .asRequired("姓名不能为空")
                 .bind(Tenement::getName, Tenement::setName);
@@ -198,11 +199,7 @@ public class TenementEditForm extends VerticalLayout {
             } else {
                 setLabelTextAndColor("#E26A17", "还没有选择床位");
             }
-        });
-
-        addDetachListener(detachEvent -> {
-            reset();
-        });
+        });;
     }
 
     private void setLabelTextAndColor(String color, String message) {

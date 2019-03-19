@@ -14,6 +14,7 @@ public interface DormitorySpaceService extends JpaSupportService<DormitorySpace,
 
     boolean hasChildSpace(DormitorySpace parentSpace);
     List<DormitorySpace> listChildSpace(DormitorySpace parentSpace);
+    List<DormitorySpace> listChildSpaceRecursive(DormitorySpace dormitorySpace);
     List<DormitorySpace> listChildSpace(DormitorySpace parentSpace,Pageable pageable);
     int countChildSpace(DormitorySpace parentSpace);
 

@@ -64,6 +64,11 @@ public class FinanceRecordEditForm extends VerticalLayout {
         this.editingRecord = editingRecord;
     }
 
+    public void setEditingRecordEmergency(FinancialRecord financialRecord) {
+        setEditingRecord(financialRecord);
+        this.binder.readBean(financialRecord);
+    }
+
     public FinancialRecord getCompletedRecord() {
         return completedRecord;
     }

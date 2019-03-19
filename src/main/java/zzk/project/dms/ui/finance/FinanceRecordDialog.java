@@ -74,6 +74,6 @@ public class FinanceRecordDialog extends Dialog {
     }
 
     public void setEditingRecord(FinancialRecord financialRecord) {
-        this.financeRecordEditForm.setEditingRecord(financialRecord);
+        this.financeRecordEditForm.setEditingRecordEmergency(financialRecord);
     }
 }

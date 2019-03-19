@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.dao.TenementRepository;
@@ -12,13 +13,13 @@ import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.TenementService;
-import zzk.project.dms.middle.ServiceAndSubscriber;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@ServiceAndSubscriber
+@Service
 @Transactional(rollbackFor = DormitoryManageException.class)
 public class TenementServiceImpl implements TenementService {
 
@@ -137,5 +138,11 @@ public class TenementServiceImpl implements TenementService {
     @Override
     public int sizeInBackend(String name) {
         return (int) tenementRepository.count((Specification<Tenement>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"));
+    }
+
+    @Override
+    public Collection<Tenement> findTenementBySpace(DormitorySpace selectSpace) {
+        List<DormitorySpace> spaces = dormitorySpaceService.listChildSpaceRecursive(selectSpace);
+        return tenementRepository.findAllByDormitorySpaceIn(spaces);
     }
 }
