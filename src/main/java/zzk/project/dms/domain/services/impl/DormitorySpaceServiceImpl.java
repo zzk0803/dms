@@ -40,6 +40,11 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
     }
 
     @Override
+    public List<DormitorySpace> listChildSpace(DormitorySpace parentSpace, Pageable pageable) {
+        return dormitorySpaceRepository.findDormitorySpacesByParent(parentSpace,pageable).getContent();
+    }
+
+    @Override
     public List<DormitorySpace> listSpaceByType(DormitorySpaceType spaceType) {
         return dormitorySpaceRepository.findDormitorySpacesByType(spaceType);
     }
@@ -57,13 +62,12 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
     @Override
     public List<DormitorySpace> findByNameContains(String name, Pageable pageable) {
-        return dormitorySpaceRepository.findAll((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"));
-//        return dormitorySpaceRepository.findAll((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"), pageable);
+        return dormitorySpaceRepository.findByNameContaining(name, pageable).getContent();
     }
 
     @Override
     public int countByNameContains(String name) {
-        return ((int) dormitorySpaceRepository.count(((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"))));
+        return dormitorySpaceRepository.countByNameContains(name);
     }
 
     @Override

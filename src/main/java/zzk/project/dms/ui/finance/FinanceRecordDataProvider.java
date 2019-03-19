@@ -17,11 +17,9 @@ public class FinanceRecordDataProvider extends AbstractBackEndDataProvider<Finan
     @Autowired
     private FinancialRecordRepository financialRecordRepository;
 
-
     @Override
     protected Stream<FinancialRecord> fetchFromBackEnd(Query<FinancialRecord, Void> query) {
-//        return financialRecordRepository.findAll(getPageable(queryquery)).stream();
-        return financialRecordRepository.findAll().stream().skip(query.getOffset()).limit(query.getLimit());
+        return financialRecordRepository.findAll(getPageable(query)).stream();
     }
 
     @Override
@@ -30,7 +28,7 @@ public class FinanceRecordDataProvider extends AbstractBackEndDataProvider<Finan
     }
 
     private Pageable getPageable(Query<FinancialRecord, Void> query) {
-        return PageRequest.of(query.getOffset() / query.getLimit() + 1, query.getLimit());
+        return PageRequest.of(query.getOffset() / query.getLimit(), query.getLimit());
     }
 
 }

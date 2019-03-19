@@ -224,6 +224,7 @@ public class TenementEditForm extends VerticalLayout {
         moreInfoGroups.add(selectBerthLabel);
 
         dormitorySpaceComboBox = new ComboBox<>("分配宿舍");
+        dormitorySpaceComboBox.setPageSize(12);
         dormitorySpaceComboBox.setDataProvider(new DormitoryFlatDataProvider(dormitorySpaceService));
         dormitorySpaceComboBox.setItemLabelGenerator(Dormitories::getFullName);
         dormitorySpaceComboBox.setWidth("100%");

@@ -4,6 +4,7 @@ import com.vaadin.flow.data.provider.hierarchy.AbstractBackEndHierarchicalDataPr
 import com.vaadin.flow.data.provider.hierarchy.HierarchicalQuery;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.services.DormitorySpaceService;
 
@@ -27,9 +28,11 @@ public class DormitoryHierarchicalDataProvider extends AbstractBackEndHierarchic
 
     @Override
     protected Stream<DormitorySpace> fetchChildrenFromBackEnd(HierarchicalQuery<DormitorySpace, Void> query) {
+        int offset = query.getOffset();
+        int limit = query.getLimit();
         DormitorySpace parent = query.getParent();
         if (Objects.nonNull(parent)) {
-            List<DormitorySpace> childSpace = dormitorySpaceService.listChildSpace(parent);
+            List<DormitorySpace> childSpace = dormitorySpaceService.listChildSpace(parent, PageRequest.of(offset/limit,limit));
             return childSpace.stream();
         }
         return dormitorySpaceService.listRootSpaces().stream();

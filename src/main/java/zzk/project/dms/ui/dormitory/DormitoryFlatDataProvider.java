@@ -21,15 +21,14 @@ public class DormitoryFlatDataProvider extends AbstractBackEndDataProvider<Dormi
     protected Stream<DormitorySpace> fetchFromBackEnd(Query<DormitorySpace, String> query) {
         return dormitorySpaceService.findByNameContains(parseFilterString(query), getPageable(query)).stream();
     }
-
-
+    
     @Override
     protected int sizeInBackEnd(Query<DormitorySpace, String> query) {
         return dormitorySpaceService.countByNameContains(parseFilterString(query));
     }
 
     private Pageable getPageable(Query<DormitorySpace, String> query) {
-        return PageRequest.of(query.getOffset() / query.getLimit() + 1, query.getLimit());
+        return PageRequest.of(query.getOffset() / query.getLimit(), query.getLimit());
     }
 
     private String parseFilterString(Query<DormitorySpace, String> query) {
