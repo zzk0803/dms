@@ -94,6 +94,7 @@ public class DormitoryEditForm extends VerticalLayout {
 
     private void binding() {
         dormitorySpaceBinder.readBean(getEditingObject());
+        dormitorySpaceBinder.readBean(getEditingObject());
         dormitorySpaceBinder.forField(spaceNameField)
                 .asRequired("空间名称&编号不能为空")
                 .bind(DormitorySpace::getName, DormitorySpace::setName);
@@ -116,6 +117,7 @@ public class DormitoryEditForm extends VerticalLayout {
                 .bind(DormitorySpace::isOperational, DormitorySpace::setOperational);
 
         dormitorySpaceBinder.forField(spaceTypeComboBox)
+                .asRequired("空间类型不能为空")
                 .bind(DormitorySpace::getType, DormitorySpace::setType);
 
         dormitorySpaceBinder.forField(upperSpaceComboBox)

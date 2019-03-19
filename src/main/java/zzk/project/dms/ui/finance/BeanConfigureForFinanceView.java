@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -84,7 +85,7 @@ public class BeanConfigureForFinanceView {
                 financialRecordGrid.getParent().ifPresent(component -> {
                     if (component instanceof FinanceView) {
                         FinanceView financeView = (FinanceView) component;
-                        financeView.getEditDialog().warp(financialRecord);
+                        financeView.getEditDialog().setEditingRecord(financialRecord);
                         financeView.getEditDialog().open();
                     }
                 });
@@ -149,10 +150,11 @@ public class BeanConfigureForFinanceView {
 
     @Bean
     @UIScope
-    public TextField checkInField() {
-        TextField textField = new TextField("应收金额");
-        textField.setSuffixComponent(VaadinIcon.DOLLAR.create());
-        return textField;
+    public NumberField checkInField() {
+        NumberField numberField = new NumberField("应收金额");
+        numberField.setHasControls(true);
+        numberField.setSuffixComponent(VaadinIcon.DOLLAR.create());
+        return numberField;
     }
 
     @Bean
@@ -184,8 +186,8 @@ public class BeanConfigureForFinanceView {
     public FinanceRecordEditForm financeRecordFormEntityEditForm() {
         return new FinanceRecordEditForm(
                 financialRecordBinder(),
-                tenementComboBox(),
                 recordDateDatePicker(),
+                tenementComboBox(),
                 checkInField(),
                 descriptionArea(),
                 markCheckBox(),

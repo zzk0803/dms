@@ -13,10 +13,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.FinancialRecord;
 
 public class FinanceRecordDialog extends Dialog {
-    private VerticalLayout rootLayout = new VerticalLayout();
 
     private H4 dialogHeader;
-    private FinanceRecordEditForm entityEditForm;
+    private FinanceRecordEditForm financeRecordEditForm;
     private Button okButton;
     private Button cancelButton;
 
@@ -30,41 +29,42 @@ public class FinanceRecordDialog extends Dialog {
             @Qualifier("financeRecordFormCancelButton") Button cancelButton
     ) {
         this.dialogHeader = dialogHeader;
-        this.entityEditForm = financeRecordEditForm;
+        this.financeRecordEditForm = financeRecordEditForm;
         this.okButton = okButton;
         this.cancelButton = cancelButton;
-        init();
+        ui();
+        onEvent();
     }
 
-    private void init() {
+    private void ui() {
         this.setCloseOnOutsideClick(false);
         this.setCloseOnEsc(false);
 
+        VerticalLayout rootLayout = new VerticalLayout();
         rootLayout.add(dialogHeader);
-        rootLayout.add(entityEditForm);
+        rootLayout.add(financeRecordEditForm);
         HorizontalLayout buttonGroup = new HorizontalLayout(okButton, cancelButton);
         buttonGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         rootLayout.add(buttonGroup);
         rootLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, buttonGroup);
         addComponentAsFirst(rootLayout);
-        onEvent();
     }
 
     private void onEvent() {
         okButton.addClickListener(click -> {
             UI.getCurrent().access(() -> {
-                if (entityEditForm.commit()) {
+                if (financeRecordEditForm.commit()) {
+                    recordGrid.getDataProvider().refreshItem(financeRecordEditForm.getCompletedRecord());
                     recordGrid.getDataProvider().refreshAll();
-                    recordGrid.getDataProvider().refreshItem(entityEditForm.getCompletedEntity());
                     recordGrid.getDataCommunicator().reset();
                     close();
-                    entityEditForm.reset();
+                    financeRecordEditForm.reset();
                 }
             });
         });
 
         cancelButton.addClickListener(click -> {
-            entityEditForm.reset();
+            financeRecordEditForm.reset();
             close();
         });
     }
@@ -73,7 +73,7 @@ public class FinanceRecordDialog extends Dialog {
         this.recordGrid = recordGrid;
     }
 
-    public void warp(FinancialRecord financialRecord) {
-        this.entityEditForm.setEditEntity(financialRecord);
+    public void setEditingRecord(FinancialRecord financialRecord) {
+        this.financeRecordEditForm.setEditingRecord(financialRecord);
     }
 }

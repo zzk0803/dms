@@ -1,14 +1,11 @@
 package zzk.project.dms.middle;
 
-import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.Executors;
 
 @Component
 public class DmsEventBusService implements ApplicationContextAware {
@@ -25,10 +22,7 @@ public class DmsEventBusService implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
 
-        eventBus = new AsyncEventBus(
-                "domain-event-bus",
-                Executors.newCachedThreadPool()
-        );
+        eventBus = new EventBus("domain-event-bus");
         applicationContext.getBeansWithAnnotation(ServiceAndSubscriber.class)
                 .forEach((name, bean) -> eventBus.register(bean));
         System.out.println("-------------------------");

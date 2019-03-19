@@ -247,7 +247,7 @@ public class TenementEditForm extends VerticalLayout {
         try {
             tenementBinder.writeBean(getEditTenement());
             setCompletedTenement(getEditTenement());
-            tenementService.distributeBerthForTenement(getCompletedTenement());
+            tenementService.serve(getCompletedTenement());
             setCommitSuccess(true);
         } catch (ValidationException e) {
             setCommitSuccess(false);

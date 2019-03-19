@@ -3,17 +3,15 @@ package zzk.project.dms.ui.finance;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.polymertemplate.Id;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
-import org.springframework.beans.factory.annotation.Autowired;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.FinancialRecordService;
@@ -21,127 +19,57 @@ import zzk.project.dms.domain.services.FinancialRecordService;
 import java.math.BigDecimal;
 
 public class FinanceRecordEditForm extends VerticalLayout {
+    private Binder<FinancialRecord> binder;
+    private FinancialRecord editingRecord;
+    private FinancialRecord completedRecord;
+    private boolean commitSuccess;
+
+    @Id("recordDate")
+    private DatePicker recordDatePicker;
+    @Id("tenement")
     private ComboBox<Tenement> tenementComboBox;
-    private DatePicker recordDateDatePicker;
-    private TextField checkInField;
+    @Id("checkIn")
+    private NumberField checkInField;
+    @Id("description")
     private TextArea descriptionArea;
+    @Id("mark")
     private Checkbox markCheckBox;
 
     private FinancialRecordService financialRecordService;
-    private FinancialRecord editEntity;
-    private FinancialRecord completedEntity;
-    private Binder<FinancialRecord> entityBinder;
 
-    private boolean commitSuccess;
-
-    @Autowired
     public FinanceRecordEditForm(
-            Binder<FinancialRecord> financialRecordBinder,
+            Binder<FinancialRecord> binder,
+            DatePicker recordDatePicker,
             ComboBox<Tenement> tenementComboBox,
-            DatePicker recordDateDatePicker,
-            TextField checkInField,
+            NumberField checkInField,
             TextArea descriptionArea,
             Checkbox markCheckBox,
-            FinancialRecordService financialRecordService) {
-        this.entityBinder = financialRecordBinder;
+            FinancialRecordService financialRecordService
+    ) {
+        this.financialRecordService = financialRecordService;
+        this.binder = binder;
+        this.recordDatePicker = recordDatePicker;
         this.tenementComboBox = tenementComboBox;
-        this.recordDateDatePicker = recordDateDatePicker;
         this.checkInField = checkInField;
         this.descriptionArea = descriptionArea;
         this.markCheckBox = markCheckBox;
-        this.financialRecordService = financialRecordService;
-
-        ui();
-        event();
-        setEditEntity(new FinancialRecord());
-        binding();
+        init();
     }
 
-    private void event() {
-        addAttachListener(attachEvent -> {
-            entityBinder.readBean(getEditEntity());
-        });
+    public FinancialRecord getEditingRecord() {
+        return editingRecord;
     }
 
-    private void binding() {
-        entityBinder.setBean(getEditEntity());
-        entityBinder.forField(this.tenementComboBox)
-                .asRequired("必须填写住户")
-                .bind(FinancialRecord::getTenement, FinancialRecord::setTenement);
-        entityBinder.forField(this.checkInField)
-                .asRequired("必须填写收取金额")
-                .withConverter(new Converter<String, BigDecimal>() {
-                    @Override
-                    public Result<BigDecimal> convertToModel(String input, ValueContext valueContext) {
-                        try {
-                            return Result.ok(BigDecimal.valueOf(Double.valueOf(input)));
-                        } catch (NumberFormatException e) {
-                            return Result.error("请输入数字");
-                        }
-                    }
-
-                    @Override
-                    public String convertToPresentation(BigDecimal bigDecimal, ValueContext valueContext) {
-                        return String.valueOf(bigDecimal);
-                    }
-                })
-                .bind(FinancialRecord::getCheckIn, FinancialRecord::setCheckIn);
-        entityBinder.forField(this.recordDateDatePicker)
-                .asRequired("必须填写结算日期")
-                .bind(FinancialRecord::getRecordDate, FinancialRecord::setRecordDate);
-        entityBinder.forField(this.descriptionArea)
-                .bind(FinancialRecord::getDescription, FinancialRecord::setDescription);
-        entityBinder.forField(this.markCheckBox)
-                .bind(FinancialRecord::isMark, FinancialRecord::setMark);
+    public void setEditingRecord(FinancialRecord editingRecord) {
+        this.editingRecord = editingRecord;
     }
 
-    private void ui() {
-        add(
-                new HorizontalLayout(
-                        this.tenementComboBox,
-                        this.checkInField),
-                this.recordDateDatePicker,
-                this.descriptionArea,
-                this.markCheckBox
-        );
-        this.descriptionArea.setWidth("100%");
-        expand(this.descriptionArea);
-        this.recordDateDatePicker.setWidth("100%");
-        expand(this.recordDateDatePicker);
+    public FinancialRecord getCompletedRecord() {
+        return completedRecord;
     }
 
-    public boolean commit() {
-        try {
-            entityBinder.writeBean(editEntity);
-            setCompletedEntity(editEntity);
-            financialRecordService.save(getCompletedEntity());
-            setCommitSuccess(true);
-        } catch (ValidationException e) {
-            setCommitSuccess(false);
-            Notification.show(e.getMessage());
-        }
-        return isCommitSuccess();
-    }
-
-    public void reset() {
-        setEditEntity(new FinancialRecord());
-        entityBinder.readBean(getEditEntity());
-    }
-
-    public FinancialRecord getEditEntity() {
-        return editEntity;
-    }
-
-    public void setEditEntity(FinancialRecord editEntity) {
-        this.editEntity = editEntity;
-    }
-
-    public FinancialRecord getCompletedEntity() {
-        return completedEntity;
-    }
-
-    public void setCompletedEntity(FinancialRecord completedEntity) {
-        this.completedEntity = completedEntity;
+    public void setCompletedRecord(FinancialRecord completedRecord) {
+        this.completedRecord = completedRecord;
     }
 
     public boolean isCommitSuccess() {
@@ -150,5 +78,68 @@ public class FinanceRecordEditForm extends VerticalLayout {
 
     public void setCommitSuccess(boolean commitSuccess) {
         this.commitSuccess = commitSuccess;
+    }
+
+    private void init() {
+        ui();
+        binding();
+        event();
+    }
+
+    private void binding() {
+        setEditingRecord(new FinancialRecord());
+        binder.forField(recordDatePicker)
+                .asRequired("须填写结算日期")
+                .bind(FinancialRecord::getRecordDate, FinancialRecord::setRecordDate);
+        binder.forField(tenementComboBox)
+                .asRequired("须填写入住人")
+                .bind(FinancialRecord::getTenement, FinancialRecord::setTenement);
+        binder.forField(checkInField)
+                .asRequired("须填写收费金额")
+                .withConverter(new Converter<Double, BigDecimal>() {
+                    @Override
+                    public Result<BigDecimal> convertToModel(Double value, ValueContext context) {
+                        return Result.ok(BigDecimal.valueOf(value));
+                    }
+
+                    @Override
+                    public Double convertToPresentation(BigDecimal value, ValueContext context) {
+                        return value.doubleValue();
+                    }
+                }).bind(FinancialRecord::getCheckIn, FinancialRecord::setCheckIn);
+        binder.forField(descriptionArea)
+                .bind(FinancialRecord::getDescription, FinancialRecord::setDescription);
+        binder.forField(markCheckBox)
+                .bind(FinancialRecord::isMark, FinancialRecord::setMark);
+    }
+
+    private void event() {
+
+    }
+
+    private void ui() {
+        add(tenementComboBox);
+        add(checkInField);
+        add(descriptionArea);
+        add(recordDatePicker);
+        add(markCheckBox);
+    }
+
+    public boolean commit() {
+        FinancialRecord editingRecord = getEditingRecord();
+        try {
+            binder.writeBean(editingRecord);
+            setCompletedRecord(financialRecordService.save(editingRecord));
+            setCommitSuccess(true);
+        } catch (ValidationException e) {
+            setCommitSuccess(false);
+        }
+        return isCommitSuccess();
+    }
+
+    public void reset() {
+        setCompletedRecord(null);
+        setEditingRecord(new FinancialRecord());
+        binder.setBean(getEditingRecord());
     }
 }

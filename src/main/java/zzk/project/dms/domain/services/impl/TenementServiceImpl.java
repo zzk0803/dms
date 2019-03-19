@@ -15,6 +15,7 @@ import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.middle.ServiceAndSubscriber;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @ServiceAndSubscriber
@@ -33,7 +34,7 @@ public class TenementServiceImpl implements TenementService {
     }
 
     @Override
-    public void distributeBerthForTenement(Tenement tenement) throws DormitoryManageException {
+    public void serve(Tenement tenement) throws DormitoryManageException {
         if (tenement.getId() == null) {
             serveNewTenement(tenement);
         } else {
@@ -48,73 +49,77 @@ public class TenementServiceImpl implements TenementService {
             oldTenement = oldTenementOptional.get();
             DormitorySpace oldDormitorySpace = oldTenement.getDormitorySpace();
             DormitorySpace newDormitorySpace = tenement.getDormitorySpace();
-            OldTenementServeType serveType = analysisServeType(oldDormitorySpace, newDormitorySpace);
+            TenementServeType serveType = analysisServeType(oldDormitorySpace, newDormitorySpace);
             switch (serveType) {
                 case RETURN:
-                    save(tenement);
                     dormitorySpaceService.updateOccupy(oldDormitorySpace, -1);
                     break;
 
                 case EXCHANGE:
-                    save(tenement);
-                    setAvailableBerthForTenement(tenement, newDormitorySpace);
+                    newDormitorySpace = findAvailableBerthForTenement(newDormitorySpace);
+                    tenement.setDormitorySpace(newDormitorySpace);
+                    dormitorySpaceService.updateOccupy(newDormitorySpace, 1);
                     dormitorySpaceService.updateOccupy(oldDormitorySpace, -1);
                     break;
 
                 case TAKEIN:
-                    save(tenement);
-                    setAvailableBerthForTenement(tenement, newDormitorySpace);
+                    newDormitorySpace = findAvailableBerthForTenement(newDormitorySpace);
+                    tenement.setDormitorySpace(newDormitorySpace);
+                    dormitorySpaceService.updateOccupy(newDormitorySpace, 1);
                     break;
 
                 case KEEP:
                 default:
                     break;
             }
+            save(tenement);
         }
     }
 
     private void serveNewTenement(Tenement tenement) throws DormitoryManageException {
-        setAvailableBerthForTenement(tenement, tenement.getDormitorySpace());
+        DormitorySpace dormitorySpace = tenement.getDormitorySpace();
+        if (Objects.nonNull(dormitorySpace)) {
+            DormitorySpace newDormitorySpace = findAvailableBerthForTenement(dormitorySpace);
+            tenement.setDormitorySpace(newDormitorySpace);
+            dormitorySpaceService.updateOccupy(newDormitorySpace, 1);
+        }
         save(tenement);
     }
 
-    private void setAvailableBerthForTenement(Tenement tenement, DormitorySpace dormitorySpace) throws DormitoryManageException {
-        if (dormitorySpace != null) {
-            if (!dormitorySpace.isAvailable()) {
-                throw new DormitoryManageException("选的的空间已满或床位已被占用");
-            }
-
-            DormitorySpace assumeAvailableBerth = dormitorySpace;
-            try {
-                if (assumeAvailableBerth.getType() != DormitorySpaceType.BERTH) {
-                    assumeAvailableBerth = dormitorySpaceService.findAvailableBerth(dormitorySpace);
-                }
-                tenement.setDormitorySpace(assumeAvailableBerth);
-                save(tenement);
-                dormitorySpaceService.updateOccupy(assumeAvailableBerth, 1);
-                } catch (DormitoryManageException e) {
-                    throw e;
-                }
+    private DormitorySpace findAvailableBerthForTenement(DormitorySpace dormitorySpace) throws DormitoryManageException {
+        DormitorySpace assumeAvailableBerth;
+        if (!dormitorySpace.isAvailable()) {
+            throw new DormitoryManageException("选的的空间已满或床位已被占用");
         }
+
+        assumeAvailableBerth = dormitorySpace;
+        if (assumeAvailableBerth.getType() != DormitorySpaceType.BERTH) {
+            assumeAvailableBerth = dormitorySpaceService.findAvailableBerth(dormitorySpace);
+        }
+        return assumeAvailableBerth;
     }
 
-    private OldTenementServeType analysisServeType(DormitorySpace oldDormitorySpace, DormitorySpace newDormitorySpace) {
-        OldTenementServeType serveType;
-        if (newDormitorySpace != null) {
-            serveType = OldTenementServeType.TAKEIN;
-            if (oldDormitorySpace != null) {
-                serveType = OldTenementServeType.EXCHANGE;
-            }
+    private TenementServeType analysisServeType(DormitorySpace oldDormitorySpace, DormitorySpace newDormitorySpace) {
+        TenementServeType serveType;
+        boolean oldIsNull = oldDormitorySpace == null;
+        boolean newIsNull = newDormitorySpace == null;
+        boolean spaceEqual = (oldIsNull && newIsNull) || (!oldIsNull && !newIsNull && newDormitorySpace.equals(oldDormitorySpace));
+        if (spaceEqual) {
+            serveType = TenementServeType.KEEP;
         } else {
-            serveType = OldTenementServeType.RETURN;
-            if (oldDormitorySpace == null) {
-                serveType = OldTenementServeType.KEEP;
+            if (newIsNull) {
+                serveType = TenementServeType.RETURN;
+            } else {
+                serveType = TenementServeType.TAKEIN;
             }
+        }
+        if (oldIsNull && !newIsNull) {
+            serveType=TenementServeType.EXCHANGE;
         }
         return serveType;
     }
 
-    private enum OldTenementServeType {
+    private enum TenementServeType {
         EXCHANGE,
         RETURN,
         TAKEIN,

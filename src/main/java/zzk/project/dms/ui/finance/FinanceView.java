@@ -15,6 +15,7 @@ public class FinanceView extends VerticalLayout {
 
     private Button addRecordButton;
     private Grid<FinancialRecord> financialRecordGrid;
+
     private FinanceRecordDialog financeRecordDialog;
 
     public FinanceView(
@@ -25,21 +26,26 @@ public class FinanceView extends VerticalLayout {
         this.addRecordButton = addRecordButton;
         this.financialRecordGrid = financialRecordGrid;
         this.financeRecordDialog = financeRecordDialog;
+        this.financeRecordDialog.setRecordGrid(this.financialRecordGrid);
 
+        ui();
+        event();
+    }
+
+    private void ui() {
         setWidth("97.5%");
         setHeight("100%");
-
         add(
                 new H1(VIEW_TITLE),
                 addRecordButton,
                 financialRecordGrid,
                 financeRecordDialog
         );
-
         setFlexGrow(1, financeRecordDialog);
         expand(financeRecordDialog);
+    }
 
-        this.financeRecordDialog.setRecordGrid(this.financialRecordGrid);
+    private void event() {
         addRecordButton.addClickListener(click -> {
             financeRecordDialog.open();
         });

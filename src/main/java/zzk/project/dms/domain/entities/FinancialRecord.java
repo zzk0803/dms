@@ -5,7 +5,6 @@ import lombok.Data;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -15,7 +14,7 @@ public class FinancialRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate recordDate = LocalDate.now();
+    private LocalDate recordDate;
 
     @OneToOne
     private Tenement tenement;
