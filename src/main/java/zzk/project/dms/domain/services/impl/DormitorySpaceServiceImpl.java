@@ -22,13 +22,13 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
     @Autowired
     private DormitorySpaceRepository dormitorySpaceRepository;
 
-    private class SpaceTreeIterator {
+    private class SpaceTreeRepositoryIterator {
         private DormitorySpaceRepository dormitorySpaceRepository;
         private DormitorySpace parent;
         private DormitorySpace current;
         private List<DormitorySpace> result;
 
-        public SpaceTreeIterator(DormitorySpaceRepository dormitorySpaceRepository, DormitorySpace parent) {
+        public SpaceTreeRepositoryIterator(DormitorySpaceRepository dormitorySpaceRepository, DormitorySpace parent) {
             this.dormitorySpaceRepository = dormitorySpaceRepository;
             this.parent = parent;
             this.result = new LinkedList<>();
@@ -76,7 +76,7 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
     @Override
     public List<DormitorySpace> listChildSpaceRecursive(DormitorySpace dormitorySpace) {
-        SpaceTreeIterator treeIterator = new SpaceTreeIterator(this.dormitorySpaceRepository, dormitorySpace);
+        SpaceTreeRepositoryIterator treeIterator = new SpaceTreeRepositoryIterator(this.dormitorySpaceRepository, dormitorySpace);
         treeIterator.search();
         //        throw new UnsupportedOperationException();
         return treeIterator.getResult();
@@ -230,5 +230,23 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
         if (remain < allocate) {
             throw new DormitoryManageException("给定的分配数额已大于剩余的分配数额");
         }
+    }
+
+    @Override
+    public boolean isFormerChildOfLatter(DormitorySpace former, DormitorySpace latter) {
+        if (former == null || latter == null) {
+            return false;
+        }
+
+        DormitorySpace currentFormer = former;
+        while (currentFormer != null) {
+            DormitorySpace formerParent = currentFormer.getParent();
+            if (formerParent != null && formerParent.equals(latter)) {
+                return true;
+            }
+            currentFormer = formerParent;
+        }
+
+        return false;
     }
 }

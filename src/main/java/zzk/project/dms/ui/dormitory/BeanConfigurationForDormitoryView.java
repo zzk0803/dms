@@ -62,6 +62,7 @@ public class BeanConfigurationForDormitoryView {
     public TreeGrid<DormitorySpace> spaceTreeGrid() {
         TreeGrid<DormitorySpace> spaceTreeGrid = new TreeGrid<>();
         spaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号").setFlexGrow(1).setResizable(true);
+        spaceTreeGrid.setSelectionMode(Grid.SelectionMode.NONE);
         spaceTreeGrid.addColumn(space -> space.getType().getCn()).setHeader("层级").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(space -> space.isOperational() ? "已启用" : "已停用").setHeader("是否启用").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(space -> space.isAvailable() ? "可用" : "已占用").setHeader("是否占用").setFlexGrow(1).setResizable(true);

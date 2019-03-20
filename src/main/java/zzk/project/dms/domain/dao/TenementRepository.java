@@ -1,5 +1,7 @@
 package zzk.project.dms.domain.dao;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import zzk.project.dms.domain.entities.DormitorySpace;
@@ -11,4 +13,8 @@ public interface TenementRepository extends JpaRepository<Tenement, Long> , JpaS
     int countByDormitorySpaceIsNotNull();
 
     List<Tenement> findAllByDormitorySpaceIn(List<DormitorySpace> dormitorySpace);
+
+    Page<Tenement> findByNameContaining(String name, Pageable pageable);
+
+    int countByNameContains(String name);
 }

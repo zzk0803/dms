@@ -1,7 +1,6 @@
 package zzk.project.dms.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import zzk.project.dms.domain.dao.DormitorySpaceRepository;
 import zzk.project.dms.domain.dao.FinancialRecordRepository;
@@ -9,12 +8,10 @@ import zzk.project.dms.domain.dao.TenementRepository;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.domain.services.SummarizeService;
-import zzk.project.dms.middle.ServiceAndSubscriber;
 
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SummarizeServiceImpl implements SummarizeService {

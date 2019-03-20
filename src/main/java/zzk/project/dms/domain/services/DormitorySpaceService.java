@@ -32,4 +32,5 @@ public interface DormitorySpaceService extends JpaSupportService<DormitorySpace,
     DormitorySpace findAvailableBerth(DormitorySpace airborne) throws DormitoryManageException;
 
 
+    boolean isFormerChildOfLatter(DormitorySpace former, DormitorySpace latter);
 }

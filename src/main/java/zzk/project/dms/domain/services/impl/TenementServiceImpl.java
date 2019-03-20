@@ -2,7 +2,6 @@ package zzk.project.dms.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +68,9 @@ public class TenementServiceImpl implements TenementService {
                     dormitorySpaceService.updateOccupy(newDormitorySpace, 1);
                     break;
 
+                case UNKNOW:
+                    throw new DormitoryManageException("未知类型！！FixMe！！");
+
                 case KEEP:
                 default:
                     break;
@@ -105,18 +107,26 @@ public class TenementServiceImpl implements TenementService {
         boolean oldIsNull = oldDormitorySpace == null;
         boolean newIsNull = newDormitorySpace == null;
         boolean spaceEqual = (oldIsNull && newIsNull) || (!oldIsNull && !newIsNull && newDormitorySpace.equals(oldDormitorySpace));
+
         if (spaceEqual) {
             serveType = TenementServeType.KEEP;
         } else {
-            if (newIsNull) {
+            if (oldIsNull) {
+                serveType = TenementServeType.TAKEIN;
+            } else if (newIsNull) {
                 serveType = TenementServeType.RETURN;
             } else {
-                serveType = TenementServeType.TAKEIN;
+                boolean oldIsBerth = oldDormitorySpace.getType() == DormitorySpaceType.BERTH;
+                boolean newIsBerth = newDormitorySpace.getType() == DormitorySpaceType.BERTH;
+                boolean newIsParentOfOld = dormitorySpaceService.isFormerChildOfLatter(oldDormitorySpace, newDormitorySpace);
+                if ((oldIsBerth && newIsBerth) || newIsParentOfOld) {
+                    serveType = TenementServeType.EXCHANGE;
+                } else {
+                    serveType = TenementServeType.UNKNOW;
+                }
             }
         }
-        if (oldIsNull && !newIsNull) {
-            serveType=TenementServeType.EXCHANGE;
-        }
+
         return serveType;
     }
 
@@ -124,20 +134,18 @@ public class TenementServiceImpl implements TenementService {
         EXCHANGE,
         RETURN,
         TAKEIN,
-        KEEP
+        KEEP,
+        UNKNOW
     }
 
     @Override
     public List<Tenement> filterFromBackend(String name, Pageable pageable) {
-        return tenementRepository.findAll(
-                (Specification<Tenement>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%")
-        );
-//        return tenementRepository.findAll((Specification<Tenement>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"), pageable);
+        return tenementRepository.findByNameContaining(name, pageable).getContent();
     }
 
     @Override
     public int sizeInBackend(String name) {
-        return (int) tenementRepository.count((Specification<Tenement>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%"));
+        return tenementRepository.countByNameContains(name);
     }
 
     @Override

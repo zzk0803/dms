@@ -129,7 +129,9 @@ public class TenementEditForm extends VerticalLayout {
                 .asRequired("姓名不能为空")
                 .bind(Tenement::getName, Tenement::setName);
 
-        tenementBinder.bind(genderSelect, Tenement::getGender, Tenement::setGender);
+        tenementBinder.forField(genderSelect)
+                .asRequired("性别必填")
+                .bind(Tenement::getGender, Tenement::setGender);
 
         tenementBinder.forField(personIdentityIDField)
                 .asRequired("身份证号码不能为空")

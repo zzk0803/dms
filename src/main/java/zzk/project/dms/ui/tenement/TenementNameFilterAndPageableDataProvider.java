@@ -2,7 +2,6 @@ package zzk.project.dms.ui.tenement;
 
 import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import zzk.project.dms.domain.entities.Tenement;
@@ -20,8 +19,11 @@ public class TenementNameFilterAndPageableDataProvider extends AbstractBackEndDa
 
     @Override
     protected Stream<Tenement> fetchFromBackEnd(Query<Tenement, String> query) {
-        PageRequest pageable = PageRequest.of(query.getOffset() / query.getLimit() + 1, query.getLimit());
-        return tenementService.filterFromBackend(query.getFilter().orElse(""), pageable).stream();
+        return tenementService.filterFromBackend(query.getFilter().orElse(""), getPageable(query)).stream();
+    }
+
+    private Pageable getPageable(Query<Tenement, String> query) {
+        return PageRequest.of(query.getOffset() / query.getLimit(), query.getLimit());
     }
 
     @Override
