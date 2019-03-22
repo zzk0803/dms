@@ -78,7 +78,6 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
     public List<DormitorySpace> listChildSpaceRecursive(DormitorySpace dormitorySpace) {
         SpaceTreeRepositoryIterator treeIterator = new SpaceTreeRepositoryIterator(this.dormitorySpaceRepository, dormitorySpace);
         treeIterator.search();
-        //        throw new UnsupportedOperationException();
         return treeIterator.getResult();
     }
 
@@ -136,7 +135,7 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
         checkAllocatable(parent, allocate);
 
         //设置父级空间的已划分数量
-        parent.setHasDivided(parent.getHasDivided() + allocate);
+        updateDivided(parent, allocate);
         DormitorySpace modifiedParent = put(parent);
 
         DormitorySpace newSpace = new DormitorySpace();
@@ -209,6 +208,23 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
             current = current.getParent();
         }
         dormitorySpaceRepository.saveAll(spaces);
+    }
+
+    @Override
+    public void updateDivided(DormitorySpace dormitorySpace, int divided) {
+        int hasDivided = dormitorySpace.getHasDivided();
+        dormitorySpace.setHasDivided(hasDivided + divided);
+    }
+
+    @Override
+    public DormitorySpace delete(DormitorySpace dormitorySpace) {
+        DormitorySpace parent = dormitorySpace.getParent();
+        if (parent != null) {
+            updateDivided(parent, -dormitorySpace.getCapacity());
+            put(parent);
+        }
+        getRepository().delete(dormitorySpace);
+        return null;
     }
 
     private void checkAllocatable(DormitorySpace parent, int allocate) throws DormitoryManageException {

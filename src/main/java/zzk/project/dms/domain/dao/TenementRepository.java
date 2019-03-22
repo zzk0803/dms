@@ -12,6 +12,8 @@ import java.util.List;
 public interface TenementRepository extends JpaRepository<Tenement, Long> , JpaSpecificationExecutor<Tenement> {
     int countByDormitorySpaceIsNotNull();
 
+    int countByDormitorySpaceIn(List<DormitorySpace> dormitorySpace);
+
     List<Tenement> findAllByDormitorySpaceIn(List<DormitorySpace> dormitorySpace);
 
     Page<Tenement> findByNameContaining(String name, Pageable pageable);

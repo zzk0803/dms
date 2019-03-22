@@ -34,6 +34,16 @@ public class TenementServiceImpl implements TenementService {
     }
 
     @Override
+    public Tenement delete(Tenement tenement) {
+        DormitorySpace dormitorySpace;
+        if ((dormitorySpace = tenement.getDormitorySpace()) != null) {
+            dormitorySpaceService.updateOccupy(dormitorySpace, dormitorySpace.getHasOccupy());
+        }
+        getRepository().delete(tenement);
+        return tenement;
+    }
+
+    @Override
     public void serve(Tenement tenement) throws DormitoryManageException {
         if (tenement.getId() == null) {
             serveNewTenement(tenement);
@@ -131,10 +141,15 @@ public class TenementServiceImpl implements TenementService {
     }
 
     private enum TenementServeType {
+        //调换
         EXCHANGE,
+        //搬出
         RETURN,
+        //入住
         TAKEIN,
+        //不变
         KEEP,
+        //出错未知！
         UNKNOW
     }
 
@@ -149,8 +164,14 @@ public class TenementServiceImpl implements TenementService {
     }
 
     @Override
-    public Collection<Tenement> findTenementBySpace(DormitorySpace selectSpace) {
-        List<DormitorySpace> spaces = dormitorySpaceService.listChildSpaceRecursive(selectSpace);
+    public Collection<Tenement> findTenementBySpace(DormitorySpace dormitorySpace) {
+        List<DormitorySpace> spaces = dormitorySpaceService.listChildSpaceRecursive(dormitorySpace);
         return tenementRepository.findAllByDormitorySpaceIn(spaces);
+    }
+
+    @Override
+    public int countTenementInSpace(DormitorySpace dormitorySpace) {
+        List<DormitorySpace> spaces = dormitorySpaceService.listChildSpaceRecursive(dormitorySpace);
+        return tenementRepository.countByDormitorySpaceIn(spaces);
     }
 }

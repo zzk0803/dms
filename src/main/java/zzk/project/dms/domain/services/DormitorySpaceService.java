@@ -13,15 +13,15 @@ public interface DormitorySpaceService extends JpaSupportService<DormitorySpace,
     List<DormitorySpace> listRootSpaces();
 
     boolean hasChildSpace(DormitorySpace parentSpace);
+    boolean isFormerChildOfLatter(DormitorySpace former, DormitorySpace latter);
     List<DormitorySpace> listChildSpace(DormitorySpace parentSpace);
-    List<DormitorySpace> listChildSpaceRecursive(DormitorySpace dormitorySpace);
     List<DormitorySpace> listChildSpace(DormitorySpace parentSpace,Pageable pageable);
+    List<DormitorySpace> listChildSpaceRecursive(DormitorySpace dormitorySpace);
+    List<DormitorySpace> listSpaceByType(DormitorySpaceType spaceType);
     int countChildSpace(DormitorySpace parentSpace);
 
     List<DormitorySpace> findByNameContains(String name, Pageable pageable);
     int countByNameContains(String name);
-
-    List<DormitorySpace> listSpaceByType(DormitorySpaceType spaceType);
 
     DormitorySpace allocateFromParentByExplicitCapacity(DormitorySpace parent, int allocate) throws DormitoryManageException;
     DormitorySpace allocateFromParentByExplicitCapacity(DormitorySpace parent, String childName, int allocate) throws DormitoryManageException;
@@ -29,8 +29,7 @@ public interface DormitorySpaceService extends JpaSupportService<DormitorySpace,
     List<DormitorySpace> allocateFromParentByExplicitAllocationByEqualization(DormitorySpace parent, int allocate) throws DormitoryManageException;
 
     void updateOccupy(DormitorySpace berthSpace, int occupyAmount);
-    DormitorySpace findAvailableBerth(DormitorySpace airborne) throws DormitoryManageException;
+    DormitorySpace findAvailableBerth(DormitorySpace dormitorySpace) throws DormitoryManageException;
 
-
-    boolean isFormerChildOfLatter(DormitorySpace former, DormitorySpace latter);
+    void updateDivided(DormitorySpace dormitorySpace, int divided);
 }

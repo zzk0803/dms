@@ -88,7 +88,14 @@ public class BeanConfigurationForTenementView {
 
 
             Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
-                Notification.show("还未实现");
+                Tenement delTenement = tenementService.delete(tenement);
+                tenementGrid.getParent().ifPresent(component -> {
+                    if (component instanceof TenementView) {
+                        tenementGrid.getDataProvider().refreshItem(delTenement);
+                        tenementGrid.getDataProvider().refreshAll();
+                        tenementGrid.getDataCommunicator().reset();
+                    }
+                });
             });
             delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
             group.add(delete);

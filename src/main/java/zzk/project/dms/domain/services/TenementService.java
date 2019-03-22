@@ -16,5 +16,7 @@ public interface TenementService extends FormSupportService<Tenement, Long> {
 
     int sizeInBackend(String name);
 
-    Collection<Tenement> findTenementBySpace(DormitorySpace selectSpace);
+    Collection<Tenement> findTenementBySpace(DormitorySpace dormitorySpace);
+
+    int countTenementInSpace(DormitorySpace dormitorySpace);
 }

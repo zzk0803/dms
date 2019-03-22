@@ -97,9 +97,7 @@ public class BeanConfigurationForDormitoryView {
                         if (component instanceof DormitoryView) {
                             DormitoryView dormitoryView = (DormitoryView) component;
                             TreeGrid<DormitorySpace> treeGrid = dormitoryView.getSpaceTreeGrid();
-                            HierarchicalDataProvider<DormitorySpace, SerializablePredicate<DormitorySpace>> dataProvider = treeGrid.getDataProvider();
-                            HierarchicalDataCommunicator<DormitorySpace> dataCommunicator = treeGrid.getDataCommunicator();
-                            buildDivideDialog(selectSpace, dialog, dataProvider, dataCommunicator);
+                            buildDivideDialog(selectSpace, dialog, treeGrid);
                         }
                     });
 
@@ -111,25 +109,7 @@ public class BeanConfigurationForDormitoryView {
 
             //查看住户人员
             Button search = new Button(VaadinIcon.SEARCH.create(), click -> {
-                Dialog dialog = new Dialog();
-                dialog.setWidth("50vw");
-                VerticalLayout layout = new VerticalLayout();
-                layout.add(new H3("占用空间的用户"));
-                Grid<Tenement> tenementGrid = new Grid<>();
-                tenementGrid.addColumn(Tenement::getName).setHeader("姓名").setFlexGrow(1).setResizable(true);
-                tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getDormitorySpace())).setHeader("位置").setFlexGrow(1).setResizable(true);
-                Collection<Tenement> tenements = tenementService.findTenementBySpace(selectSpace);
-                tenementGrid.setSizeUndefined();
-                tenementGrid.setItems(tenements);
-                layout.add(tenementGrid);
-                if (selectSpace.getHasOccupy() != tenements.size()) {
-                    Button fixButton = new Button("尝试修复");
-                    fixButton.addClickListener(fixClick -> {
-                        dialog.close();
-                    });
-                    layout.add(fixButton);
-                }
-                dialog.addComponentAsFirst(layout);
+                Dialog dialog = buildInspectTenementDialog(selectSpace);
                 dialog.open();
             });
             search.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
@@ -137,7 +117,21 @@ public class BeanConfigurationForDormitoryView {
 
             //删除
             Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
-                Notification.show("还未实现");
+                if (!dormitorySpaceService.hasChildSpace(selectSpace)) {
+                    if (tenementService.countTenementInSpace(selectSpace) == 0) {
+                        dormitorySpaceService.delete(selectSpace);
+                        spaceTreeGrid.getParent().ifPresent(component -> {
+                            if (component instanceof DormitoryView) {
+                                spaceTreeGrid.getDataProvider().refreshAll();
+                                spaceTreeGrid.getDataCommunicator().reset();
+                            }
+                        });
+                    } else {
+                        Notification.show("该区域还有住宿的人员，请妥善处理住宿的人员后（如迁移），再删除该区域");
+                    }
+                } else {
+                    Notification.show("该区域还有子区域，请先删除未有住户占有的子区域后，再删除该区域");
+                }
             });
             delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
             group.add(delete);
@@ -148,14 +142,36 @@ public class BeanConfigurationForDormitoryView {
         return spaceTreeGrid;
     }
 
-    private void buildDivideDialog(
-            DormitorySpace dormitorySpace,
-            Dialog dialog,
-            HierarchicalDataProvider<DormitorySpace, SerializablePredicate<DormitorySpace>> dataProvider,
-            HierarchicalDataCommunicator<DormitorySpace> dataCommunicator
-    ) {
-        VerticalLayout container = new VerticalLayout();
+    private Dialog buildInspectTenementDialog(DormitorySpace selectSpace) {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("50vw");
+        VerticalLayout layout = new VerticalLayout();
+        layout.add(new H3("占用空间的用户"));
+        Grid<Tenement> tenementGrid = new Grid<>();
+        tenementGrid.addColumn(Tenement::getName).setHeader("姓名").setFlexGrow(1).setResizable(true);
+        tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getDormitorySpace())).setHeader("位置").setFlexGrow(1).setResizable(true);
+        Collection<Tenement> tenements = tenementService.findTenementBySpace(selectSpace);
+        tenementGrid.setSizeUndefined();
+        tenementGrid.setItems(tenements);
+        layout.add(tenementGrid);
+        if (selectSpace.getHasOccupy() != tenements.size()) {
+            Button fixButton = new Button("尝试修复");
+            fixButton.addClickListener(fixClick -> {
+                dialog.close();
+            });
+            layout.add(fixButton);
+        }
+        dialog.addComponentAsFirst(layout);
+        return dialog;
+    }
 
+    private void buildDivideDialog(DormitorySpace dormitorySpace,
+                                   Dialog dialog,
+                                   TreeGrid<DormitorySpace> treeGrid) {
+        HierarchicalDataProvider<DormitorySpace, SerializablePredicate<DormitorySpace>> dataProvider = treeGrid.getDataProvider();
+        HierarchicalDataCommunicator<DormitorySpace> dataCommunicator = treeGrid.getDataCommunicator();
+
+        VerticalLayout container = new VerticalLayout();
         H4 header = new H4(String.format("从%s划分出%s", dormitorySpace.getName(), dormitorySpace.getType().smaller().getCn()));
         container.add(header);
 

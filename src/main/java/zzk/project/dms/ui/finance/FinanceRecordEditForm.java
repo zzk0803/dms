@@ -3,6 +3,7 @@ package zzk.project.dms.ui.finance;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -123,11 +124,11 @@ public class FinanceRecordEditForm extends VerticalLayout {
     }
 
     private void ui() {
-        add(tenementComboBox);
-        add(checkInField);
+        setDefaultHorizontalComponentAlignment(Alignment.STRETCH);
+        add(new HorizontalLayout(tenementComboBox,checkInField));
+        add(markCheckBox);
         add(descriptionArea);
         add(recordDatePicker);
-        add(markCheckBox);
     }
 
     public boolean commit() {
