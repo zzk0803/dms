@@ -6,8 +6,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import zzk.project.dms.domain.entities.Account;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
+import zzk.project.dms.domain.services.AccountService;
 import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.domain.services.TenementService;
@@ -23,7 +25,8 @@ public class DmsApplication {
     public InitializingBean initializingBean(
             @Autowired DormitorySpaceService dormitorySpaceService,
             @Autowired TenementService tenementService,
-            @Autowired FinancialRecordService financialRecordService
+            @Autowired FinancialRecordService financialRecordService,
+            @Autowired  AccountService accountService
 
     ) {
         return () -> {
@@ -32,6 +35,11 @@ public class DmsApplication {
             dormitorySpace.setType(DormitorySpaceType.COMMUNITY);
             dormitorySpace.setCapacity(200);
             DormitorySpace root = dormitorySpaceService.put(dormitorySpace);
+
+            Account adminAccount = new Account();
+            adminAccount.setUsername("admin");
+            adminAccount.setPassword("admin");
+            accountService.register(adminAccount);
         };
     }
 
