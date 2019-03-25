@@ -1,4 +1,4 @@
-package zzk.project.dms.authentication;
+package zzk.project.dms.domain.authentication;
 
 import zzk.project.dms.domain.entities.Account;
 

@@ -2,8 +2,8 @@ package zzk.project.dms;
 
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
-import zzk.project.dms.authentication.AccessControl;
-import zzk.project.dms.authentication.LoginView;
+import zzk.project.dms.domain.authentication.AccessControl;
+import zzk.project.dms.ui.LoginView;
 import zzk.project.dms.domain.utilies.SpringBeansUtil;
 
 public class DormitoryManageSystemInitListener implements VaadinServiceInitListener {

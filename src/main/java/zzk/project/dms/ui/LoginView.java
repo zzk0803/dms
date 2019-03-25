@@ -1,8 +1,9 @@
-package zzk.project.dms.authentication;
+package zzk.project.dms.ui;
 
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.router.Route;
+import zzk.project.dms.domain.authentication.AccessControl;
 
 @Route(value = "login")
 public class LoginView extends LoginOverlay {

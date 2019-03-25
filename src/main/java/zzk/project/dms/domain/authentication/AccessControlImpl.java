@@ -1,4 +1,4 @@
-package zzk.project.dms.authentication;
+package zzk.project.dms.domain.authentication;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
