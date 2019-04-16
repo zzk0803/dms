@@ -14,7 +14,8 @@ import zzk.project.dms.ui.tenement.TenementView;
 public class MainView extends AbstractAppRouterLayout {
     @Override
     protected void configure(AppLayout appLayout, AppLayoutMenu appLayoutMenu) {
-        appLayout.setBranding(new Span("宿舍管理系统"));
+        Span branding = new Span("宿舍管理系统");
+        appLayout.setBranding(branding);
         appLayoutMenu.addMenuItems(
                 new AppLayoutMenuItem(VaadinIcon.CHART_GRID.create(), SummarizeView.VIEW_TITLE, SummarizeView.VIEW_NAME),
                 new AppLayoutMenuItem(VaadinIcon.BUILDING.create(), DormitoryView.VIEW_TITLE, DormitoryView.VIEW_NAME),

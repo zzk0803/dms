@@ -4,9 +4,9 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public  class TenementContactMethod {
-    private String houseTelephone;
-    private String mobilePhone;
-    private String primaryEmail;
+    private String houseTelephone = "";
+    private String mobilePhone = "";
+    private String primaryEmail = "";
 
     public String getHouseTelephone() {
         return houseTelephone;

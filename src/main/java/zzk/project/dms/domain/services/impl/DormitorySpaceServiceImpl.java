@@ -150,7 +150,7 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
 
     @Override
-    public List<DormitorySpace> allocateFromParentByExplicitNumber(DormitorySpace parent, int childNumber) throws DormitoryManageException {
+    public List<DormitorySpace> allocateFromParentByExplicitNumberByEqualization(DormitorySpace parent, int childNumber) throws DormitoryManageException {
         int capacity = parent.getCapacity();
         int hasDivided = parent.getHasDivided();
         int remain = capacity - hasDivided;

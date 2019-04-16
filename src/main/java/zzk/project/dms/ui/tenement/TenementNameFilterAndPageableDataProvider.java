@@ -22,12 +22,12 @@ public class TenementNameFilterAndPageableDataProvider extends AbstractBackEndDa
         return tenementService.filterFromBackend(query.getFilter().orElse(""), getPageable(query)).stream();
     }
 
-    private Pageable getPageable(Query<Tenement, String> query) {
-        return PageRequest.of(query.getOffset() / query.getLimit(), query.getLimit());
-    }
-
     @Override
     protected int sizeInBackEnd(Query<Tenement, String> query) {
         return tenementService.sizeInBackend(query.getFilter().orElse(""));
+    }
+
+    private Pageable getPageable(Query<Tenement, String> query) {
+        return PageRequest.of(query.getOffset() / query.getLimit(), query.getLimit());
     }
 }

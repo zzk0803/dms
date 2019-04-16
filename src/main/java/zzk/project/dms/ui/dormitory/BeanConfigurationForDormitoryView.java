@@ -67,7 +67,7 @@ public class BeanConfigurationForDormitoryView {
         spaceTreeGrid.addColumn(space -> space.isOperational() ? "已启用" : "已停用").setHeader("是否启用").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(space -> space.isAvailable() ? "可用" : "已占用").setHeader("是否占用").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(DormitorySpace::getCapacity).setHeader("容积").setFlexGrow(1).setResizable(true);
-        spaceTreeGrid.addColumn(DormitorySpace::getHasDivided).setHeader("已分派").setFlexGrow(1).setResizable(true);
+        spaceTreeGrid.addColumn(DormitorySpace::getHasDivided).setHeader("已分割").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(DormitorySpace::getHasOccupy).setHeader("已被住户占有").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addComponentColumn(selectSpace -> {
             HorizontalLayout group = new HorizontalLayout();
@@ -87,7 +87,7 @@ public class BeanConfigurationForDormitoryView {
             group.add(edit);
 
             //划分
-            if (selectSpace.getType().hasSmaller() && selectSpace.getHasDivided()<selectSpace.getCapacity()) {
+            if (selectSpace.getType().hasSmaller() && selectSpace.getHasDivided() < selectSpace.getCapacity()) {
                 Button divide = new Button(VaadinIcon.ROAD_SPLIT.create(), click -> {
                     Dialog dialog = new Dialog();
                     dialog.setCloseOnEsc(true);
@@ -127,10 +127,10 @@ public class BeanConfigurationForDormitoryView {
                             }
                         });
                     } else {
-                        Notification.show("该区域还有住宿的人员，请妥善处理住宿的人员后（如迁移），再删除该区域");
+                        Notification.show("该区域还有住宿的人员，请妥善处理住宿的人员后（如迁移），再删除该区域", 5000, Notification.Position.MIDDLE);
                     }
                 } else {
-                    Notification.show("该区域还有子区域，请先删除未有住户占有的子区域后，再删除该区域");
+                    Notification.show("该区域还有子区域，请先删除未有住户占有的子区域后，再删除该区域", 5000, Notification.Position.MIDDLE);
                 }
             });
             delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
@@ -209,7 +209,7 @@ public class BeanConfigurationForDormitoryView {
                     List<DormitorySpace> dormitorySpaces;
                     switch (approach) {
                         case Number:
-                            dormitorySpaces = dormitorySpaceService.allocateFromParentByExplicitNumber(dormitorySpace, value.intValue());
+                            dormitorySpaces = dormitorySpaceService.allocateFromParentByExplicitNumberByEqualization(dormitorySpace, value.intValue());
                             dormitorySpaces.forEach(dataProvider::refreshItem);
                             dataProvider.refreshAll();
                             dataCommunicator.reset();

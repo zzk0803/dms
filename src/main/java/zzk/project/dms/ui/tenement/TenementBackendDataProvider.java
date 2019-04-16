@@ -4,6 +4,8 @@ import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import zzk.project.dms.domain.dao.TenementRepository;
 import zzk.project.dms.domain.entities.Tenement;
 
@@ -15,16 +17,17 @@ public class TenementBackendDataProvider extends AbstractBackEndDataProvider<Ten
     @Autowired
     private TenementRepository tenementRepository;
 
-
     @Override
     protected Stream<Tenement> fetchFromBackEnd(Query<Tenement, Void> query) {
-        int offset = query.getOffset();
-        int limit = query.getLimit();
-        return tenementRepository.findAll().stream().skip(offset).limit(limit);
+        return tenementRepository.findAll(getPageable(query)).stream();
     }
 
     @Override
     protected int sizeInBackEnd(Query<Tenement, Void> query) {
         return (int) tenementRepository.count();
+    }
+
+    private Pageable getPageable(Query<Tenement, Void> query) {
+        return PageRequest.of(query.getOffset() / query.getLimit(), query.getLimit());
     }
 }

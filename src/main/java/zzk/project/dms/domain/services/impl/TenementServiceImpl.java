@@ -126,31 +126,11 @@ public class TenementServiceImpl implements TenementService {
             } else if (newIsNull) {
                 serveType = TenementServeType.RETURN;
             } else {
-                boolean oldIsBerth = oldDormitorySpace.getType() == DormitorySpaceType.BERTH;
-                boolean newIsBerth = newDormitorySpace.getType() == DormitorySpaceType.BERTH;
-                boolean newIsParentOfOld = dormitorySpaceService.isFormerChildOfLatter(oldDormitorySpace, newDormitorySpace);
-                if ((oldIsBerth && newIsBerth) || newIsParentOfOld) {
-                    serveType = TenementServeType.EXCHANGE;
-                } else {
-                    serveType = TenementServeType.UNKNOW;
-                }
+                serveType = TenementServeType.EXCHANGE;
             }
         }
 
         return serveType;
-    }
-
-    private enum TenementServeType {
-        //调换
-        EXCHANGE,
-        //搬出
-        RETURN,
-        //入住
-        TAKEIN,
-        //不变
-        KEEP,
-        //出错未知！
-        UNKNOW
     }
 
     @Override
@@ -173,5 +153,18 @@ public class TenementServiceImpl implements TenementService {
     public int countTenementInSpace(DormitorySpace dormitorySpace) {
         List<DormitorySpace> spaces = dormitorySpaceService.listChildSpaceRecursive(dormitorySpace);
         return tenementRepository.countByDormitorySpaceIn(spaces);
+    }
+
+    private enum TenementServeType {
+        //调换
+        EXCHANGE,
+        //搬出
+        RETURN,
+        //入住
+        TAKEIN,
+        //不变
+        KEEP,
+        //出错未知！
+        UNKNOW
     }
 }

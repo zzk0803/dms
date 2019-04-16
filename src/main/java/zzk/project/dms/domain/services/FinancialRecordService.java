@@ -5,4 +5,5 @@ import zzk.project.dms.domain.services.common.FormSupportService;
 
 public interface FinancialRecordService
         extends FormSupportService<FinancialRecord, Long>{
+
 }
