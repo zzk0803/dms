@@ -9,6 +9,4 @@
 Java8+ + maven3.6
 
 #技术栈
-1、Spring Boot 2.x
-2、Spring Data Jpa
-3、Vaadin Flow 10+
+Spring Boot 2.x，Spring Data Jpa，Vaadin Flow
