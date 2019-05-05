@@ -8,10 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.Result;
-import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.binder.ValueContext;
+import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.data.converter.Converter;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.domain.entities.Tenement;
@@ -25,15 +22,15 @@ public class FinanceRecordEditForm extends VerticalLayout {
     private FinancialRecord completedRecord;
     private boolean commitSuccess;
 
-    @Id("recordDate")
+    @PropertyId("recordDate")
     private DatePicker recordDatePicker;
-    @Id("tenement")
+    @PropertyId("tenement")
     private ComboBox<Tenement> tenementComboBox;
-    @Id("checkIn")
+    @PropertyId("checkIn")
     private NumberField checkInField;
-    @Id("description")
+    @PropertyId("description")
     private TextArea descriptionArea;
-    @Id("mark")
+    @PropertyId("mark")
     private Checkbox markCheckBox;
 
     private FinancialRecordService financialRecordService;
@@ -98,7 +95,7 @@ public class FinanceRecordEditForm extends VerticalLayout {
                 .asRequired("须填写结算日期")
                 .bind(FinancialRecord::getRecordDate, FinancialRecord::setRecordDate);
         binder.forField(tenementComboBox)
-                .asRequired("须填写入住人")
+                .asRequired("须填写住户")
                 .bind(FinancialRecord::getTenement, FinancialRecord::setTenement);
         binder.forField(checkInField)
                 .asRequired("须填写收费金额")

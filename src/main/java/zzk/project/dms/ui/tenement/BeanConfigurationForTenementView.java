@@ -64,16 +64,43 @@ public class BeanConfigurationForTenementView {
     @UIScope
     public Grid<Tenement> tenementGrid() {
         Grid<Tenement> tenementGrid = new Grid<>();
-        tenementGrid.addColumn(Tenement::getName).setHeader("姓名").setWidth("4em").setFlexGrow(1).setResizable(true);
-        tenementGrid.addColumn(tenement -> tenement.getGender().getCn()).setHeader("性别").setFlexGrow(1).setResizable(true);
-        tenementGrid.addColumn(Tenement::getPersonIdentityID).setHeader("身份证号码").setWidth("5em").setFlexGrow(1).setResizable(true);
-        tenementGrid.addColumn(tenement -> tenement.getTenementContactMethod().getMobilePhone()).setHeader("手机号").setWidth("5em").setFlexGrow(1).setResizable(true);
-        tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getDormitorySpace())).setHeader("寝室信息").setWidth("20em").setFlexGrow(1).setResizable(true);
-        tenementGrid.addColumn(Tenement::getStartDate).setHeader("入住日期").setFlexGrow(1).setResizable(true);
-        tenementGrid.addColumn(Tenement::getExpiredDate).setHeader("到期日期").setFlexGrow(1).setResizable(true);
+        tenementGrid.addColumn(Tenement::getName)
+                .setHeader("姓名")
+                .setWidth("4em")
+                .setFlexGrow(1)
+                .setResizable(true);
+        tenementGrid.addColumn(tenement -> tenement.getGender().getCn())
+                .setHeader("性别")
+                .setFlexGrow(1)
+                .setResizable(true);
+        tenementGrid.addColumn(Tenement::getPersonIdentityID)
+                .setHeader("身份证号码")
+                .setWidth("5em")
+                .setFlexGrow(1)
+                .setResizable(true);
+        tenementGrid.addColumn(tenement -> tenement.getTenementContactMethod().getMobilePhone())
+                .setHeader("手机号")
+                .setWidth("5em")
+                .setFlexGrow(1)
+                .setResizable(true);
+        tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getDormitorySpace()))
+                .setHeader("寝室信息")
+                .setWidth("20em")
+                .setFlexGrow(1)
+                .setResizable(true);
+        tenementGrid.addColumn(Tenement::getStartDate)
+                .setHeader("入住日期")
+                .setFlexGrow(1)
+                .setResizable(true);
+        tenementGrid.addColumn(Tenement::getExpiredDate)
+                .setHeader("到期日期")
+                .setFlexGrow(1)
+                .setResizable(true);
         tenementGrid.addComponentColumn(tenement -> {
             HorizontalLayout group = new HorizontalLayout();
             group.setAlignItems(FlexComponent.Alignment.BASELINE);
+
+            //编辑
             Button edit = new Button(VaadinIcon.EDIT.create(), click -> {
                 tenementGrid.getParent().ifPresent(component -> {
                     if (component instanceof TenementView) {
@@ -86,7 +113,7 @@ public class BeanConfigurationForTenementView {
             edit.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
             group.add(edit);
 
-
+            //删除
             Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
                 Tenement delTenement = tenementService.delete(tenement);
                 tenementGrid.getParent().ifPresent(component -> {
@@ -100,7 +127,7 @@ public class BeanConfigurationForTenementView {
             delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
             group.add(delete);
             return group;
-        }).setHeader("可用操作");
+        }).setHeader("可用操作").setFlexGrow(1).setResizable(true);
         tenementGrid.addContextMenu().addItem("刷新", click -> click.getGrid().getDataCommunicator().reset());
         tenementGrid.setDataProvider(tenementBackendDataProvider);
         return tenementGrid;

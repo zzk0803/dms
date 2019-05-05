@@ -54,4 +54,8 @@ public class FinanceView extends VerticalLayout {
     public FinanceRecordDialog getEditDialog() {
         return this.financeRecordDialog;
     }
+
+    public Grid<FinancialRecord> getFinancialRecordGrid() {
+        return financialRecordGrid;
+    }
 }

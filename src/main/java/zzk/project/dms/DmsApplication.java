@@ -12,6 +12,8 @@ import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.domain.services.TenementService;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.List;
 
 @SpringBootApplication
@@ -51,6 +53,7 @@ public class DmsApplication {
             adminAccount.setUsername("admin");
             adminAccount.setPassword("admin");
             accountService.register(adminAccount);
+
         };
     }
 

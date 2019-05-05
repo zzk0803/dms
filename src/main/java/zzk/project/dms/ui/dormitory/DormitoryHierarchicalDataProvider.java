@@ -17,10 +17,6 @@ public class DormitoryHierarchicalDataProvider extends AbstractBackEndHierarchic
 
     private DormitorySpaceService dormitorySpaceService;
 
-    public DormitorySpaceService getDormitorySpaceService() {
-        return dormitorySpaceService;
-    }
-
     @Autowired
     public void setDormitorySpaceService(DormitorySpaceService dormitorySpaceService) {
         this.dormitorySpaceService = dormitorySpaceService;
@@ -32,7 +28,7 @@ public class DormitoryHierarchicalDataProvider extends AbstractBackEndHierarchic
         int limit = query.getLimit();
         DormitorySpace parent = query.getParent();
         if (Objects.nonNull(parent)) {
-            List<DormitorySpace> childSpace = dormitorySpaceService.listChildSpace(parent, PageRequest.of(offset/limit,limit));
+            List<DormitorySpace> childSpace = dormitorySpaceService.listChildSpace(parent, PageRequest.of(offset / limit, limit));
             return childSpace.stream();
         }
         return dormitorySpaceService.listRootSpaces().stream();

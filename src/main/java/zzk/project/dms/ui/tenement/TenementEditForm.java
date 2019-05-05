@@ -41,17 +41,22 @@ public class TenementEditForm extends VerticalLayout {
     //------------                       个人基本信息                             -----------------
     //--------------------------------------------------------------------------------
 
-    @Id("id")
+    @PropertyId("id")
     private TextField nameField;
-    @Id("gender")
+
+    @PropertyId("gender")
     private Select<TenementGender> genderSelect;
-    @Id("personIdentityID")
+
+    @PropertyId("personIdentityID")
     private TextField personIdentityIDField;
-    @Id("contactMethod.houseTelephone")
+
+    @PropertyId("contactMethod.houseTelephone")
     private TextField houseTelephoneField;
-    @Id("contactMethod.mobilePhone")
+
+    @PropertyId("contactMethod.mobilePhone")
     private TextField mobilePhone;
-    @Id("contactMethod.primaryEmail")
+
+    @PropertyId("contactMethod.primaryEmail")
     private EmailField primaryEmailField;
 
     //--------------------------------------------------------------------------------
@@ -61,12 +66,16 @@ public class TenementEditForm extends VerticalLayout {
     private Checkbox distributeCurrentlyCheckbox;
     private VerticalLayout moreInfoGroups;
     private Label selectBerthLabel;
+
     @PropertyId("spot")
     private ComboBox<DormitorySpace> dormitorySpaceComboBox;
+
     @PropertyId("startDate")
     private DatePicker tenementDateField;
+
     @PropertyId("expiredDate")
     private DatePicker expireDateField;
+
     @PropertyId("valid")
     private Checkbox validCheckbox;
 
@@ -201,7 +210,7 @@ public class TenementEditForm extends VerticalLayout {
             } else {
                 setLabelTextAndColor("#E26A17", "还没有选择床位");
             }
-        });;
+        });
     }
 
     private void setLabelTextAndColor(String color, String message) {

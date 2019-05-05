@@ -13,15 +13,19 @@ public class FinancialRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private LocalDate recordDate;
 
     @OneToOne
     private Tenement tenement;
 
+    @Column
     private BigDecimal checkIn = BigDecimal.ZERO;
 
+    @Column
     private String description;
 
+    @Column
     private boolean mark;
 
     public Long getId() {

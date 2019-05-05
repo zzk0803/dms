@@ -78,7 +78,6 @@ public class BeanConfigureForFinanceView {
                 .setFlexGrow(1)
                 .setResizable(true)
                 .setHeader("是否已缴费");
-        financialRecordGrid.setDataProvider(financeRecordDataProvider);
         financialRecordGrid.addComponentColumn(financialRecord -> {
             //编辑
             Button edit = new Button(VaadinIcon.EDIT.create(), click -> {
@@ -92,12 +91,22 @@ public class BeanConfigureForFinanceView {
             });
             edit.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
 
+            //删除
             Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
-                Notification.show("还未实现");
+                financialRecordGrid.getParent().ifPresent(component -> {
+                    if (component instanceof FinanceView) {
+                        FinancialRecord deletedRecord = financialRecordService.delete(financialRecord);
+                        FinanceView financeView = (FinanceView) component;
+                        financeView.getFinancialRecordGrid().getDataProvider().refreshItem(deletedRecord);
+                        financeView.getFinancialRecordGrid().getDataProvider().refreshAll();
+                        financeView.getFinancialRecordGrid().getDataCommunicator().reset();
+                    }
+                });
             });
             delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
             return new HorizontalLayout(edit, delete);
-        }).setHeader("可用操作");
+        }).setHeader("可用操作").setFlexGrow(1).setResizable(true);
+        financialRecordGrid.setDataProvider(financeRecordDataProvider);
         return financialRecordGrid;
     }
 

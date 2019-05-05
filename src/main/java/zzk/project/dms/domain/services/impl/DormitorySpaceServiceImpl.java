@@ -10,6 +10,7 @@ import zzk.project.dms.domain.dao.DormitorySpaceRepository;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.services.DormitorySpaceService;
+import zzk.project.dms.domain.services.TenementService;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,9 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
     @Autowired
     private DormitorySpaceRepository dormitorySpaceRepository;
+
+    @Autowired
+    private TenementService tenementService;
 
     private class SpaceTreeRepositoryIterator {
         private DormitorySpaceRepository dormitorySpaceRepository;
@@ -217,7 +221,15 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
     }
 
     @Override
-    public DormitorySpace delete(DormitorySpace dormitorySpace) {
+    public DormitorySpace delete(DormitorySpace dormitorySpace) throws DormitoryManageException{
+        if (!hasChildSpace(dormitorySpace)) {
+            throw new DormitoryManageException("该区域还有子区域，请先删除未有住户占有的子区域后，再删除该区域");
+        }
+
+        if (tenementService.countTenementInSpace(dormitorySpace) != 0) {
+            throw new DormitoryManageException("该区域还有住宿的人员，请妥善处理住宿的人员后，再删除该区域");
+        }
+
         DormitorySpace parent = dormitorySpace.getParent();
         if (parent != null) {
             updateDivided(parent, -dormitorySpace.getCapacity());

@@ -1,10 +1,7 @@
 package zzk.project.dms.domain.entities;
 
-import lombok.Data;
-
 import javax.persistence.*;
 
-@Data
 @Entity
 @Table(name = "system_account")
 public class Account {
@@ -13,9 +10,13 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String username;
+
+    @Column
     private String password;
 
+    @Column
     private boolean vaild = true;
 
     public Long getId() {

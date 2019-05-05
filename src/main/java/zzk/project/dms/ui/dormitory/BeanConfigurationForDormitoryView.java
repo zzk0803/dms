@@ -61,8 +61,9 @@ public class BeanConfigurationForDormitoryView {
     @UIScope
     public TreeGrid<DormitorySpace> spaceTreeGrid() {
         TreeGrid<DormitorySpace> spaceTreeGrid = new TreeGrid<>();
-        spaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.setSelectionMode(Grid.SelectionMode.NONE);
+
+        spaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(space -> space.getType().getCn()).setHeader("层级").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(space -> space.isOperational() ? "已启用" : "已停用").setHeader("是否启用").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(space -> space.isAvailable() ? "可用" : "已占用").setHeader("是否占用").setFlexGrow(1).setResizable(true);
@@ -97,7 +98,7 @@ public class BeanConfigurationForDormitoryView {
                         if (component instanceof DormitoryView) {
                             DormitoryView dormitoryView = (DormitoryView) component;
                             TreeGrid<DormitorySpace> treeGrid = dormitoryView.getSpaceTreeGrid();
-                            buildDivideDialog(selectSpace, dialog, treeGrid);
+                            configDivideDialog(selectSpace, dialog, treeGrid);
                         }
                     });
 
@@ -117,24 +118,22 @@ public class BeanConfigurationForDormitoryView {
 
             //删除
             Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
-                if (!dormitorySpaceService.hasChildSpace(selectSpace)) {
-                    if (tenementService.countTenementInSpace(selectSpace) == 0) {
-                        dormitorySpaceService.delete(selectSpace);
-                        spaceTreeGrid.getParent().ifPresent(component -> {
-                            if (component instanceof DormitoryView) {
-                                spaceTreeGrid.getDataProvider().refreshAll();
-                                spaceTreeGrid.getDataCommunicator().reset();
-                            }
-                        });
-                    } else {
-                        Notification.show("该区域还有住宿的人员，请妥善处理住宿的人员后（如迁移），再删除该区域", 5000, Notification.Position.MIDDLE);
-                    }
-                } else {
-                    Notification.show("该区域还有子区域，请先删除未有住户占有的子区域后，再删除该区域", 5000, Notification.Position.MIDDLE);
+                try{
+                    dormitorySpaceService.delete(selectSpace);
+                    spaceTreeGrid.getParent().ifPresent(component -> {
+                        if (component instanceof DormitoryView) {
+                            spaceTreeGrid.getDataProvider().refreshAll();
+                            spaceTreeGrid.getDataCommunicator().reset();
+                        }
+                    });
+                } catch (DormitoryManageException e) {
+                    String message = e.getMessage();
+                    Notification.show(message, 3000, Notification.Position.MIDDLE);
                 }
             });
             delete.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
             group.add(delete);
+
             return group;
         }).setHeader("可用操作").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.setDataProvider(dormitoryHierarchicalDataProvider);
@@ -143,42 +142,52 @@ public class BeanConfigurationForDormitoryView {
     }
 
     private Dialog buildInspectTenementDialog(DormitorySpace selectSpace) {
+        //对话框
         Dialog dialog = new Dialog();
         dialog.setWidth("50vw");
+
+        //对话框内布局--垂直布局
         VerticalLayout layout = new VerticalLayout();
+
+        //标题
         layout.add(new H3("占用空间的用户"));
+
+        //占用空间住户列表
         Grid<Tenement> tenementGrid = new Grid<>();
         tenementGrid.addColumn(Tenement::getName).setHeader("姓名").setFlexGrow(1).setResizable(true);
         tenementGrid.addColumn(tenement -> Dormitories.getFullName(tenement.getDormitorySpace())).setHeader("位置").setFlexGrow(1).setResizable(true);
-        Collection<Tenement> tenements = tenementService.findTenementBySpace(selectSpace);
+        tenementGrid.setItems(tenementService.findTenementBySpace(selectSpace));
         tenementGrid.setSizeUndefined();
-        tenementGrid.setItems(tenements);
         layout.add(tenementGrid);
-        if (selectSpace.getHasOccupy() != tenements.size()) {
-            Button fixButton = new Button("尝试修复");
-            fixButton.addClickListener(fixClick -> {
-                dialog.close();
-            });
-            layout.add(fixButton);
-        }
+
         dialog.addComponentAsFirst(layout);
         return dialog;
     }
 
-    private void buildDivideDialog(DormitorySpace dormitorySpace,
-                                   Dialog dialog,
-                                   TreeGrid<DormitorySpace> treeGrid) {
+    /**
+     * 生成分割对话框
+     *
+     * @param dormitorySpace 对应的宿舍空间
+     * @param dialog
+     * @param treeGrid
+     */
+    private void configDivideDialog(DormitorySpace dormitorySpace,
+                                    Dialog dialog,
+                                    TreeGrid<DormitorySpace> treeGrid) {
         HierarchicalDataProvider<DormitorySpace, SerializablePredicate<DormitorySpace>> dataProvider = treeGrid.getDataProvider();
         HierarchicalDataCommunicator<DormitorySpace> dataCommunicator = treeGrid.getDataCommunicator();
 
         VerticalLayout container = new VerticalLayout();
+
+        //标题
         H4 header = new H4(String.format("从%s划分出%s", dormitorySpace.getName(), dormitorySpace.getType().smaller().getCn()));
         container.add(header);
 
+        //划分方法单选框
         RadioButtonGroup<DormitoryDivideApproach> approachRadioButtonGroup = new RadioButtonGroup<>();
         approachRadioButtonGroup.setLabel("分割方法");
         approachRadioButtonGroup.setItems(DormitoryDivideApproach.values());
-        approachRadioButtonGroup.setRenderer(new TextRenderer<DormitoryDivideApproach>() {
+        approachRadioButtonGroup.setRenderer(new TextRenderer<>() {
             @Override
             public Component createComponent(DormitoryDivideApproach dormitoryDivideApproach) {
                 return new Text(dormitoryDivideApproach.getCn());
@@ -186,6 +195,7 @@ public class BeanConfigurationForDormitoryView {
         });
         container.add(approachRadioButtonGroup);
 
+        //分割大小输入框
         int remain = dormitorySpace.getCapacity() - dormitorySpace.getHasDivided();
         NumberField numberField = new NumberField();
         numberField.setVisible(false);
@@ -199,6 +209,7 @@ public class BeanConfigurationForDormitoryView {
             numberField.setVisible(true);
         });
 
+        //提交按钮
         Button okButton = new Button("提交");
         okButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         okButton.addClickListener(clickEvent -> {

@@ -8,8 +8,6 @@ import java.util.List;
 
 @Transactional
 public interface JpaSupportService<T, ID> {
-    int DEFAULT_PAGE_SIZE = 8;
-
     JpaRepository<T, ID> getRepository();
 
     default T put(T entity) {

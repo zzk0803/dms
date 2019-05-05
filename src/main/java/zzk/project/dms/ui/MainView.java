@@ -8,7 +8,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import zzk.project.dms.ui.dormitory.DormitoryView;
 import zzk.project.dms.ui.finance.FinanceView;
-import zzk.project.dms.ui.summarize.SummarizeView;
+import zzk.project.dms.ui.summary.SummaryView;
 import zzk.project.dms.ui.tenement.TenementView;
 
 public class MainView extends AbstractAppRouterLayout {
@@ -17,7 +17,7 @@ public class MainView extends AbstractAppRouterLayout {
         Span branding = new Span("宿舍管理系统");
         appLayout.setBranding(branding);
         appLayoutMenu.addMenuItems(
-                new AppLayoutMenuItem(VaadinIcon.CHART_GRID.create(), SummarizeView.VIEW_TITLE, SummarizeView.VIEW_NAME),
+                new AppLayoutMenuItem(VaadinIcon.CHART_GRID.create(), SummaryView.VIEW_TITLE, SummaryView.VIEW_NAME),
                 new AppLayoutMenuItem(VaadinIcon.BUILDING.create(), DormitoryView.VIEW_TITLE, DormitoryView.VIEW_NAME),
                 new AppLayoutMenuItem(VaadinIcon.USER.create(), TenementView.VIEW_TITLE, TenementView.VIEW_NAME),
                 new AppLayoutMenuItem(VaadinIcon.DOLLAR.create(), FinanceView.VIEW_TITLE, FinanceView.VIEW_NAME)

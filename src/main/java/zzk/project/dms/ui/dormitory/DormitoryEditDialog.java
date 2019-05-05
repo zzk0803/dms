@@ -55,8 +55,9 @@ public class DormitoryEditDialog extends Dialog {
         commitButton.addClickListener(click -> {
             UI.getCurrent().access(() -> {
                 if (dormitoryEditForm.doCommit()) {
+                    DormitorySpace completedDormitorySpace = dormitoryEditForm.getCompletedDormitorySpace();
                     spaceTreeGrid.getDataProvider().refreshAll();
-                    spaceTreeGrid.getDataProvider().refreshItem(dormitoryEditForm.getCompletedDormitorySpace());
+                    spaceTreeGrid.getDataProvider().refreshItem(completedDormitorySpace);
                     spaceTreeGrid.getDataCommunicator().reset();
                     close();
                     dormitoryEditForm.reset();

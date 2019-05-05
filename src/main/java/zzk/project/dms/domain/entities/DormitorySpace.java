@@ -20,16 +20,22 @@ public class DormitorySpace {
     )
     private DormitorySpace parent;
 
+    @Column
     private boolean available = true;
 
+    @Column
     private boolean operational = true;
 
+    @Column
     private int capacity = DEFAULT_CAPACITY;
 
+    @Column
     private int hasDivided = DEFAULT_DIVIDED_REMAIN;
 
+    @Column
     private int hasOccupy = DEFAULT_HAS_OCCUPY;
 
+    @Column
     private String name;
 
     @Enumerated(value = EnumType.STRING)

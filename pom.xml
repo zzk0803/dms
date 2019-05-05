@@ -15,8 +15,9 @@
     <description>Graduation Project Dormitory Management</description>
 
     <properties>
-        <java.version>1.11</java.version>
-        <vaadin.version>13.0.3</vaadin.version>
+        <java.version>1.12</java.version>
+        <vaadin.version>13.0.5</vaadin.version>
+        <card.version>0.9.4</card.version>
     </properties>
 
     <dependencies>
@@ -68,7 +69,7 @@
         <dependency>
             <groupId>com.github.appreciated</groupId>
             <artifactId>card</artifactId>
-            <version>0.9.4</version>
+            <version>${card.version}</version>
         </dependency>
     </dependencies>
 

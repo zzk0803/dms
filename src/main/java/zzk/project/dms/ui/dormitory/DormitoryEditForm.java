@@ -18,7 +18,6 @@ import zzk.project.dms.domain.services.DormitorySpaceService;
 import java.util.Objects;
 
 public class DormitoryEditForm extends VerticalLayout {
-    private DormitorySpaceService dormitorySpaceService;
     private Binder<DormitorySpace> dormitorySpaceBinder;
 
     private TextField spaceNameField;
@@ -30,6 +29,7 @@ public class DormitoryEditForm extends VerticalLayout {
 
     private DormitorySpace editingObject = new DormitorySpace();
     private DormitorySpace completedDormitorySpace;
+    private DormitorySpaceService dormitorySpaceService;
 
     private boolean commitSuccess;
 
@@ -94,7 +94,6 @@ public class DormitoryEditForm extends VerticalLayout {
 
     private void binding() {
         dormitorySpaceBinder.readBean(getEditingObject());
-        dormitorySpaceBinder.readBean(getEditingObject());
         dormitorySpaceBinder.forField(spaceNameField)
                 .asRequired("空间名称&编号不能为空")
                 .bind(DormitorySpace::getName, DormitorySpace::setName);
@@ -128,12 +127,9 @@ public class DormitoryEditForm extends VerticalLayout {
         spaceTypeComboBox.addValueChangeListener(changed -> {
             DormitorySpaceType spaceType = changed.getValue();
             if (Objects.nonNull(spaceType) && spaceType.hasBigger()) {
-                ListDataProvider<DormitorySpace> spaceListDataProvider;
-
                 DormitorySpaceType nextType = spaceType.bigger();
-                spaceListDataProvider = new ListDataProvider<>(dormitorySpaceService.listSpaceByType(nextType));
                 upperSpaceComboBox.setLabel("选择" + nextType.getCn());
-                upperSpaceComboBox.setDataProvider(spaceListDataProvider);
+                upperSpaceComboBox.setDataProvider(new ListDataProvider<DormitorySpace>(dormitorySpaceService.listSpaceByType(nextType)));
                 upperSpaceComboBox.setVisible(true);
             } else {
                 upperSpaceComboBox.setVisible(false);

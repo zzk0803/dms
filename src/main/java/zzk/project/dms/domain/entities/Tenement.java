@@ -15,16 +15,21 @@ public class Tenement {
     @Enumerated(EnumType.STRING)
     private TenementGender gender;
 
+    @Column
     private String name = "";
 
     private TenementContactMethod tenementContactMethod = new TenementContactMethod();
 
+    @Column
     private String personIdentityID;
 
+    @Column
     private LocalDate startDate;
 
+    @Column
     private LocalDate expiredDate;
 
+    @Column
     private boolean valid = true;
 
     @OneToOne
