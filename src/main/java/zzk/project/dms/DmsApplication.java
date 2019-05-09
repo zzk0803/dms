@@ -1,26 +1,35 @@
 package zzk.project.dms;
 
+import com.google.common.eventbus.AsyncEventBus;
+import com.google.common.eventbus.EventBus;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import zzk.project.dms.domain.entities.*;
 import zzk.project.dms.domain.services.AccountService;
 import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.FinancialRecordService;
 import zzk.project.dms.domain.services.TenementService;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 @SpringBootApplication
 public class DmsApplication {
 
+    private static ConfigurableApplicationContext applicationContext;
+
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(DmsApplication.class, args);
+        applicationContext = SpringApplication.run(DmsApplication.class, args);
+    }
+
+    public static <T> T getBean(Class<T> type) {
+        return applicationContext.getBean(type);
     }
 
     @Bean
@@ -36,7 +45,7 @@ public class DmsApplication {
             dormitorySpace.setName("小社区");
             dormitorySpace.setType(DormitorySpaceType.COMMUNITY);
             dormitorySpace.setCapacity(1000);
-            DormitorySpace root = dormitorySpaceService.put(dormitorySpace);
+            DormitorySpace root = dormitorySpaceService.save(dormitorySpace);
 
             List<DormitorySpace> builds = dormitorySpaceService.allocateFromParentByExplicitNumberByEqualization(root, 4);
             builds.forEach(
@@ -55,6 +64,12 @@ public class DmsApplication {
             accountService.register(adminAccount);
 
         };
+    }
+
+    @Bean
+    @Scope("prototype")
+    public EventBus eventBus() {
+        return new AsyncEventBus(Executors.newCachedThreadPool());
     }
 
 }

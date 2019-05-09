@@ -2,6 +2,7 @@ package zzk.project.dms.ui.dormitory;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -11,6 +12,7 @@ import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.services.DormitorySpaceService;
@@ -81,13 +83,15 @@ public class DormitoryEditForm extends VerticalLayout {
     }
 
     public boolean doCommit() {
-        try{
+        try {
             dormitorySpaceBinder.writeBean(getEditingObject());
             setCompletedDormitorySpace(getEditingObject());
-            dormitorySpaceService.put(getEditingObject());
+            dormitorySpaceService.save(getEditingObject());
             setCommitSuccess(true);
         } catch (ValidationException e) {
             setCommitSuccess(false);
+        } catch (DormitoryManageException e) {
+            Notification.show(e.getMessage(), 2000, Notification.Position.BOTTOM_END);
         }
         return isCommitSuccess();
     }

@@ -11,6 +11,7 @@ import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.DormitorySpaceService;
+import zzk.project.dms.domain.services.ExcelService;
 import zzk.project.dms.domain.services.TenementService;
 
 import java.util.Collection;
@@ -85,7 +86,7 @@ public class TenementServiceImpl implements TenementService {
                 default:
                     break;
             }
-            save(tenement);
+            commit(tenement);
         }
     }
 
@@ -96,7 +97,7 @@ public class TenementServiceImpl implements TenementService {
             tenement.setDormitorySpace(newDormitorySpace);
             dormitorySpaceService.updateOccupy(newDormitorySpace, 1);
         }
-        save(tenement);
+        commit(tenement);
     }
 
     private DormitorySpace findAvailableBerthForTenement(DormitorySpace dormitorySpace) throws DormitoryManageException {

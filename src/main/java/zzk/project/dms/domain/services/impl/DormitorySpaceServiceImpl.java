@@ -18,13 +18,7 @@ import java.util.Objects;
 
 @Service
 @Transactional(rollbackFor = DormitoryManageException.class)
-public class DormitorySpaceServiceImpl implements DormitorySpaceService{
-
-    @Autowired
-    private DormitorySpaceRepository dormitorySpaceRepository;
-
-    @Autowired
-    private TenementService tenementService;
+public class DormitorySpaceServiceImpl implements DormitorySpaceService {
 
     private class SpaceTreeRepositoryIterator {
         private DormitorySpaceRepository dormitorySpaceRepository;
@@ -63,9 +57,35 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
         }
     }
 
+    @Autowired
+    private DormitorySpaceRepository dormitorySpaceRepository;
+
+    @Autowired
+    private TenementService tenementService;
+
     @Override
     public JpaRepository<DormitorySpace, Long> getRepository() {
         return dormitorySpaceRepository;
+    }
+
+    @Override
+    public DormitorySpace save(DormitorySpace entity) throws DormitoryManageException {
+        final Long entityId = entity.getId();
+        if (entityId != null) {
+            final DormitorySpace oldSpace = findById(entityId);
+            if (Objects.nonNull(oldSpace)) {
+                final int capacity = entity.getCapacity();
+                final int oldCapacity = oldSpace.getCapacity();
+                if (capacity != oldCapacity && capacity < entity.getHasDivided()) {
+                    throw new DormitoryManageException("更改宿舍空间大小，必须大于已分配的空间大小");
+                } else {
+                    getRepository().save(entity);
+                }
+            } else {
+                throw new DormitoryManageException("DEV旧的空间虽然有ID，但判空DEV");
+            }
+        }
+        return getRepository().save(entity);
     }
 
     @Override
@@ -87,14 +107,13 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
     @Override
     public List<DormitorySpace> listChildSpace(DormitorySpace parentSpace, Pageable pageable) {
-        return dormitorySpaceRepository.findDormitorySpacesByParent(parentSpace,pageable).getContent();
+        return dormitorySpaceRepository.findDormitorySpacesByParent(parentSpace, pageable).getContent();
     }
 
     @Override
     public List<DormitorySpace> listSpaceByType(DormitorySpaceType spaceType) {
         return dormitorySpaceRepository.findDormitorySpacesByType(spaceType);
     }
-
 
     @Override
     public boolean hasChildSpace(DormitorySpace parentSpace) {
@@ -122,14 +141,14 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
         //设置父级空间的已划分数量
         parent.setHasDivided(parent.getHasDivided() + allocate);
-        parent = put(parent);
+        parent = save(parent);
 
         DormitorySpace newSpace = new DormitorySpace();
         newSpace.setParent(parent);
         newSpace.setCapacity(allocate);
         newSpace.setType(parent.getType().smaller());
         newSpace.setName(String.format("A %s Has Capacity=%d Of %s", newSpace.getType(), newSpace.getCapacity(), parent.getName()));
-        put(newSpace);
+        save(newSpace);
 
         return newSpace;
     }
@@ -140,18 +159,17 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
 
         //设置父级空间的已划分数量
         updateDivided(parent, allocate);
-        DormitorySpace modifiedParent = put(parent);
+        DormitorySpace modifiedParent = save(parent);
 
         DormitorySpace newSpace = new DormitorySpace();
         newSpace.setParent(modifiedParent);
         newSpace.setCapacity(allocate);
         newSpace.setType(parent.getType().smaller());
         newSpace.setName(childName);
-        put(newSpace);
+        save(newSpace);
 
         return newSpace;
     }
-
 
     @Override
     public List<DormitorySpace> allocateFromParentByExplicitNumberByEqualization(DormitorySpace parent, int childNumber) throws DormitoryManageException {
@@ -221,8 +239,8 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
     }
 
     @Override
-    public DormitorySpace delete(DormitorySpace dormitorySpace) throws DormitoryManageException{
-        if (!hasChildSpace(dormitorySpace)) {
+    public DormitorySpace delete(DormitorySpace dormitorySpace) throws DormitoryManageException {
+        if (hasChildSpace(dormitorySpace)) {
             throw new DormitoryManageException("该区域还有子区域，请先删除未有住户占有的子区域后，再删除该区域");
         }
 
@@ -233,7 +251,7 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService{
         DormitorySpace parent = dormitorySpace.getParent();
         if (parent != null) {
             updateDivided(parent, -dormitorySpace.getCapacity());
-            put(parent);
+            save(parent);
         }
         getRepository().delete(dormitorySpace);
         return null;

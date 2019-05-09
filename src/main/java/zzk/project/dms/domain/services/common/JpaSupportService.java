@@ -10,7 +10,7 @@ import java.util.List;
 public interface JpaSupportService<T, ID> {
     JpaRepository<T, ID> getRepository();
 
-    default T put(T entity) {
+    default T save(T entity) {
         return getRepository().save(entity);
     }
 
@@ -18,7 +18,7 @@ public interface JpaSupportService<T, ID> {
         return getRepository().saveAndFlush(entity);
     }
 
-    default List<T> putAll(Iterable<T> entities) {
+    default List<T> saveAll(Iterable<T> entities) {
         return getRepository().saveAll(entities);
     }
 

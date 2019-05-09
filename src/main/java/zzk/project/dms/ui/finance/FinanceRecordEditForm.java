@@ -5,7 +5,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.binder.*;
@@ -132,7 +131,7 @@ public class FinanceRecordEditForm extends VerticalLayout {
         FinancialRecord editingRecord = getEditingRecord();
         try {
             binder.writeBean(editingRecord);
-            setCompletedRecord(financialRecordService.save(editingRecord));
+            setCompletedRecord(financialRecordService.commit(editingRecord));
             setCommitSuccess(true);
         } catch (ValidationException e) {
             setCommitSuccess(false);

@@ -141,5 +141,14 @@ public class Tenement {
         return result;
     }
 
-
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Tenement{");
+        sb.append("gender=").append(gender);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", tenementContactMethod=").append(tenementContactMethod);
+        sb.append(", personIdentityID='").append(personIdentityID).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }
