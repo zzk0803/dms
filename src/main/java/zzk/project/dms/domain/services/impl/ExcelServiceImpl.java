@@ -18,41 +18,35 @@ import java.util.List;
 @Service
 public class ExcelServiceImpl implements ExcelService {
 
-    public static final int HEADER_ROW_INDEX = 0;
-    public static final int NAME_COLUMN_INDEX = 0;
-    public static final int GENDER_COLUMN_INDEX = 1;
-    public static final int IDENTITY_COLUMN_INDEX = 2;
+    private static final String EXCEL2003 = "application/vnd.ms-excel";
+    private static final String EXCEL2007PLUS = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    //    application/xls,
-//    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    private static final int HEADER_ROW_INDEX = 0;
+
+    private static final int NAME_COLUMN_INDEX = 0;
+    private static final int GENDER_COLUMN_INDEX = 1;
+    private static final int IDENTITY_COLUMN_INDEX = 2;
+
     @Override
-    public List<Tenement> parseExcelFileToTenementList(InputStream xlsInputStream, String xlsMine) throws DormitoryManageException {
+    public List<Tenement> parseExcelFileToTenementList(InputStream xlsInputStream, String xlsMime) throws DormitoryManageException {
         LinkedList<Tenement> tenements;
-        Workbook workbook = null;
+        Workbook workbook;
         try {
-            if (xlsMine.equals("application/vnd.ms-excel")) {
-                workbook = new HSSFWorkbook(xlsInputStream);
-            } else if ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(xlsMine)) {
-                workbook = new XSSFWorkbook(xlsInputStream);
-            } else {
-                throw new DormitoryManageException("multiple dealing file is not a current type");
-            }
+            workbook = decideWorkbookType(xlsInputStream, xlsMime);
             tenements = new LinkedList<>();
-            final Sheet firstSheet = workbook.getSheetAt(0);
-            final Iterator<Row> rowIterator = firstSheet.rowIterator();
+            Sheet firstSheet = workbook.getSheetAt(0);
+            Iterator<Row> rowIterator = firstSheet.rowIterator();
             while (rowIterator.hasNext()) {
-                final Row row = rowIterator.next();
-                final int rowNum = row.getRowNum();
+                Row row = rowIterator.next();
+                int rowNum = row.getRowNum();
                 if (rowNum == HEADER_ROW_INDEX) {
-                    checkRow(row);
+                    validExcelRow(row);
                     continue;
                 }
-                final String tenementName = row.getCell(NAME_COLUMN_INDEX).getStringCellValue();
-                final String tenementGender = row.getCell(GENDER_COLUMN_INDEX).getStringCellValue();
-                final Cell identityCell = row.getCell(IDENTITY_COLUMN_INDEX);
-                identityCell.setCellType(CellType.STRING);
-                final String tenementIdentity = identityCell.getStringCellValue();
-                final Tenement tenement = new Tenement();
+                String tenementName = parseNameColumn(row);
+                String tenementGender = parseGenderColumn(row);
+                String tenementIdentity = parseIdentityColumn(row);
+                Tenement tenement = new Tenement();
                 tenement.setName(tenementName);
                 tenement.setGender(TenementGender.forCN(tenementGender));
                 tenement.setPersonIdentityID(tenementIdentity);
@@ -64,7 +58,33 @@ public class ExcelServiceImpl implements ExcelService {
         return tenements;
     }
 
-    private void checkRow(Row firstRow) throws DormitoryManageException {
+    private String parseIdentityColumn(Row row) {
+        Cell identityCell = row.getCell(IDENTITY_COLUMN_INDEX);
+        identityCell.setCellType(CellType.STRING);
+        return identityCell.getStringCellValue();
+    }
+
+    private String parseGenderColumn(Row row) {
+        return row.getCell(GENDER_COLUMN_INDEX).getStringCellValue();
+    }
+
+    private String parseNameColumn(Row row) {
+        return row.getCell(NAME_COLUMN_INDEX).getStringCellValue();
+    }
+
+    private Workbook decideWorkbookType(InputStream xlsInputStream, String xlsMine) throws IOException {
+        Workbook workbook;
+        if (EXCEL2003.equals(xlsMine)) {
+            workbook = new HSSFWorkbook(xlsInputStream);
+        } else if (EXCEL2007PLUS.equals(xlsMine)) {
+            workbook = new XSSFWorkbook(xlsInputStream);
+        } else {
+            throw new DormitoryManageException("multiple dealing file is not a current type");
+        }
+        return workbook;
+    }
+
+    private void validExcelRow(Row firstRow) throws DormitoryManageException {
         final Cell nameCell = firstRow.getCell(NAME_COLUMN_INDEX);
         final String nameCellStringCellValue = nameCell.getStringCellValue();
         final Cell genderCell = firstRow.getCell(GENDER_COLUMN_INDEX);
