@@ -2,7 +2,6 @@ package zzk.project.dms;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -10,7 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
-import zzk.project.dms.domain.entities.*;
+import zzk.project.dms.domain.entities.Account;
+import zzk.project.dms.domain.entities.DormitorySpace;
+import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.services.AccountService;
 import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.FinancialRecordService;
@@ -53,7 +54,7 @@ public class DmsApplication {
                         List<DormitorySpace> floors = dormitorySpaceService.allocateFromParentByExplicitNumberByEqualization(build, 5);
                         floors.forEach(floor -> {
                             List<DormitorySpace> rooms = dormitorySpaceService.allocateFromParentByExplicitAllocationByEqualization(floor, 10);
-                            rooms.forEach(room->dormitorySpaceService.allocateFromParentByExplicitAllocationByEqualization(room, 1));
+                            rooms.forEach(room -> dormitorySpaceService.allocateFromParentByExplicitAllocationByEqualization(room, 1));
                         });
                     }
             );

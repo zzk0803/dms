@@ -12,7 +12,7 @@ import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.ui.MainView;
 
 @Route(value = TenementView.VIEW_NAME, layout = MainView.class)
-public class TenementView extends VerticalLayout  {
+public class TenementView extends VerticalLayout {
 
     public static final String VIEW_NAME = "tenement";
     public static final String VIEW_TITLE = "住户管理";
@@ -38,7 +38,6 @@ public class TenementView extends VerticalLayout  {
         this.tenementEditDialog = tenementEditDialog;
         initUI();
     }
-
 
 
     private void initUI() {

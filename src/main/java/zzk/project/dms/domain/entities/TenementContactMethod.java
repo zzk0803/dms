@@ -3,7 +3,7 @@ package zzk.project.dms.domain.entities;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public  class TenementContactMethod {
+public class TenementContactMethod {
     private String houseTelephone = "";
     private String mobilePhone = "";
     private String primaryEmail = "";

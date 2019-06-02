@@ -19,11 +19,11 @@ public enum DormitorySpaceType {
     //未分区
 //        UNCLASSIFIED(5, "未分区");
 
+    private String cn;
+
     DormitorySpaceType(String cn) {
         this.cn = cn;
     }
-
-    private String cn;
 
     public String getCn() {
         return cn;

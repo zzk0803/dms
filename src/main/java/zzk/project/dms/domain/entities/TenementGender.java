@@ -13,10 +13,6 @@ public enum TenementGender {
         this.cn = cn;
     }
 
-    public String getCn() {
-        return cn;
-    }
-
     public static TenementGender forCN(String cn) {
         if ("男".equals(cn)) {
             return MALE;
@@ -24,5 +20,9 @@ public enum TenementGender {
             return FEMALE;
         }
         return null;
+    }
+
+    public String getCn() {
+        return cn;
     }
 }

@@ -10,16 +10,16 @@ public class SpringBeansUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
-    @Override
-    public void setApplicationContext(ApplicationContext ctx) throws BeansException {
-        applicationContext = ctx;
-    }
-
     public static Object getBean(Class<?> clazz) {
         return applicationContext.getBean(clazz);
     }
 
     public static Object getBean(String beanName) {
         return applicationContext.getBean(beanName);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext ctx) throws BeansException {
+        applicationContext = ctx;
     }
 }

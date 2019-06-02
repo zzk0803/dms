@@ -1,7 +1,5 @@
 package zzk.project.dms.domain.entities;
 
-import lombok.Data;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 

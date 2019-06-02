@@ -43,7 +43,7 @@ public class DormitoryView extends VerticalLayout {
         add(headerH1);
         add(controlPanel);
         add(spaceTreeGrid);
-        setAlignSelf(Alignment.STRETCH ,spaceTreeGrid);
+        setAlignSelf(Alignment.STRETCH, spaceTreeGrid);
         setFlexGrow(1, spaceTreeGrid);
         expand(spaceTreeGrid);
         onEvent();

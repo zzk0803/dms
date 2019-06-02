@@ -21,7 +21,7 @@ public final class CurrentUser {
     public static void set(String username) {
         if (username == null) {
             getSession().removeAttribute(KEY);
-        }else {
+        } else {
             getSession().setAttribute(KEY, username);
         }
     }

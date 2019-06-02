@@ -38,7 +38,6 @@ import zzk.project.dms.domain.services.DormitorySpaceService;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
 
-import java.util.Collection;
 import java.util.List;
 
 @Configuration
@@ -118,7 +117,7 @@ public class BeanConfigurationForDormitoryView {
 
             //删除
             Button delete = new Button(VaadinIcon.CLOSE_CIRCLE.create(), click -> {
-                try{
+                try {
                     dormitorySpaceService.delete(selectSpace);
                     spaceTreeGrid.getParent().ifPresent(component -> {
                         if (component instanceof DormitoryView) {

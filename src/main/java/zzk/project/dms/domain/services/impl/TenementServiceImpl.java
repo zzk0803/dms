@@ -11,7 +11,6 @@ import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.DormitorySpaceService;
-import zzk.project.dms.domain.services.ExcelService;
 import zzk.project.dms.domain.services.TenementService;
 
 import java.util.Collection;

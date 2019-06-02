@@ -40,7 +40,7 @@ public class DormitoryEditForm extends VerticalLayout {
             DormitorySpaceService dormitorySpaceService,
             Binder<DormitorySpace> dormitorySpaceBinder,
             @Qualifier("spaceNameField") TextField spaceNameField,
-            @Qualifier("capacityField")TextField capacityField,
+            @Qualifier("capacityField") TextField capacityField,
             @Qualifier("availableCheckbox") Checkbox availableCheckbox,
             Checkbox operationalCheckbox,
             ComboBox<DormitorySpaceType> spaceTypeComboBox,

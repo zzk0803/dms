@@ -121,7 +121,7 @@ public class FinanceRecordEditForm extends VerticalLayout {
 
     private void ui() {
         setDefaultHorizontalComponentAlignment(Alignment.STRETCH);
-        add(new HorizontalLayout(tenementComboBox,checkInField));
+        add(new HorizontalLayout(tenementComboBox, checkInField));
         add(markCheckBox);
         add(descriptionArea);
         add(recordDatePicker);

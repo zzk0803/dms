@@ -45,68 +45,68 @@ public class DormitorySpace {
         return this.id;
     }
 
-    public DormitorySpace getParent() {
-        return this.parent;
-    }
-
-    public boolean isAvailable() {
-        return this.available;
-    }
-
-    public boolean isOperational() {
-        return this.operational;
-    }
-
-    public int getCapacity() {
-        return this.capacity;
-    }
-
-    public int getHasDivided() {
-        return this.hasDivided;
-    }
-
-    public int getHasOccupy() {
-        return this.hasOccupy;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public DormitorySpaceType getType() {
-        return this.type;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public DormitorySpace getParent() {
+        return this.parent;
     }
 
     public void setParent(DormitorySpace parent) {
         this.parent = parent;
     }
 
+    public boolean isAvailable() {
+        return this.available;
+    }
+
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public boolean isOperational() {
+        return this.operational;
     }
 
     public void setOperational(boolean operational) {
         this.operational = operational;
     }
 
+    public int getCapacity() {
+        return this.capacity;
+    }
+
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public int getHasDivided() {
+        return this.hasDivided;
     }
 
     public void setHasDivided(int hasDivided) {
         this.hasDivided = hasDivided;
     }
 
+    public int getHasOccupy() {
+        return this.hasOccupy;
+    }
+
     public void setHasOccupy(int hasOccupy) {
         this.hasOccupy = hasOccupy;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public DormitorySpaceType getType() {
+        return this.type;
     }
 
     public void setType(DormitorySpaceType type) {

@@ -9,7 +9,7 @@ import zzk.project.dms.domain.entities.Tenement;
 
 import java.util.List;
 
-public interface TenementRepository extends JpaRepository<Tenement, Long> , JpaSpecificationExecutor<Tenement> {
+public interface TenementRepository extends JpaRepository<Tenement, Long>, JpaSpecificationExecutor<Tenement> {
     int countByDormitorySpaceIsNotNull();
 
     int countByDormitorySpaceIn(List<DormitorySpace> dormitorySpace);

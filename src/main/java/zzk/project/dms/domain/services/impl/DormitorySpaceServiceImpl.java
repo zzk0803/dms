@@ -20,46 +20,8 @@ import java.util.Objects;
 @Transactional(rollbackFor = DormitoryManageException.class)
 public class DormitorySpaceServiceImpl implements DormitorySpaceService {
 
-    private class SpaceTreeRepositoryIterator {
-        private DormitorySpaceRepository dormitorySpaceRepository;
-        private DormitorySpace parent;
-        private DormitorySpace current;
-        private List<DormitorySpace> result;
-
-        public SpaceTreeRepositoryIterator(DormitorySpaceRepository dormitorySpaceRepository, DormitorySpace parent) {
-            this.dormitorySpaceRepository = dormitorySpaceRepository;
-            this.parent = parent;
-            this.result = new LinkedList<>();
-        }
-
-        public void search() {
-            this.current = this.parent;
-            if (this.current.getType() == DormitorySpaceType.BERTH) {
-                this.result.add(current);
-            } else {
-                search(this.current);
-            }
-        }
-
-        private void search(DormitorySpace current) {
-            List<DormitorySpace> child = dormitorySpaceRepository.findDormitorySpacesByParent(current);
-            for (DormitorySpace space : child) {
-                if (space.getType() != DormitorySpaceType.BERTH) {
-                    search(space);
-                } else {
-                    result.add(space);
-                }
-            }
-        }
-
-        public List<DormitorySpace> getResult() {
-            return result;
-        }
-    }
-
     @Autowired
     private DormitorySpaceRepository dormitorySpaceRepository;
-
     @Autowired
     private TenementService tenementService;
 
@@ -294,5 +256,42 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
         }
 
         return false;
+    }
+
+    private class SpaceTreeRepositoryIterator {
+        private DormitorySpaceRepository dormitorySpaceRepository;
+        private DormitorySpace parent;
+        private DormitorySpace current;
+        private List<DormitorySpace> result;
+
+        public SpaceTreeRepositoryIterator(DormitorySpaceRepository dormitorySpaceRepository, DormitorySpace parent) {
+            this.dormitorySpaceRepository = dormitorySpaceRepository;
+            this.parent = parent;
+            this.result = new LinkedList<>();
+        }
+
+        public void search() {
+            this.current = this.parent;
+            if (this.current.getType() == DormitorySpaceType.BERTH) {
+                this.result.add(current);
+            } else {
+                search(this.current);
+            }
+        }
+
+        private void search(DormitorySpace current) {
+            List<DormitorySpace> child = dormitorySpaceRepository.findDormitorySpacesByParent(current);
+            for (DormitorySpace space : child) {
+                if (space.getType() != DormitorySpaceType.BERTH) {
+                    search(space);
+                } else {
+                    result.add(space);
+                }
+            }
+        }
+
+        public List<DormitorySpace> getResult() {
+            return result;
+        }
     }
 }

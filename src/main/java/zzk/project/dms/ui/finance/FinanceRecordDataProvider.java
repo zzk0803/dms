@@ -12,7 +12,7 @@ import zzk.project.dms.domain.entities.FinancialRecord;
 import java.util.stream.Stream;
 
 @SpringComponent
-public class FinanceRecordDataProvider extends AbstractBackEndDataProvider<FinancialRecord,Void> {
+public class FinanceRecordDataProvider extends AbstractBackEndDataProvider<FinancialRecord, Void> {
 
     @Autowired
     private FinancialRecordRepository financialRecordRepository;

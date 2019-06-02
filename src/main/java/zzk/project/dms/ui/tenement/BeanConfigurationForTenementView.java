@@ -89,7 +89,7 @@ public class BeanConfigurationForTenementView {
             } catch (IOException e) {
                 throw new DormitoryManageException(e);
             }
-            event.getSource().getUI().ifPresent(ui->{
+            event.getSource().getUI().ifPresent(ui -> {
                 ui.getPage().reload();
             });
         });

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import zzk.project.dms.domain.entities.FinancialRecord;
 
 public interface FinancialRecordRepository
-        extends JpaRepository<FinancialRecord,Long> , JpaSpecificationExecutor<FinancialRecord> {
+        extends JpaRepository<FinancialRecord, Long>, JpaSpecificationExecutor<FinancialRecord> {
 }

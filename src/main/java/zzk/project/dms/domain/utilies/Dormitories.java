@@ -1,7 +1,6 @@
 package zzk.project.dms.domain.utilies;
 
 import zzk.project.dms.domain.entities.DormitorySpace;
-import zzk.project.dms.domain.entities.DormitorySpaceType;
 
 import java.util.LinkedList;
 

@@ -1,6 +1,5 @@
 package zzk.project.dms.domain.services;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.entities.DormitorySpace;
@@ -37,6 +36,7 @@ public interface DormitorySpaceService extends JpaSupportService<DormitorySpace,
     /**
      * 通过数量均分父级空间
      * 分割后的子空间已持久化
+     *
      * @param parent
      * @param childNumber
      * @return List<DormitorySpace>
@@ -47,6 +47,7 @@ public interface DormitorySpaceService extends JpaSupportService<DormitorySpace,
     /**
      * 通过大小均分父级空间
      * 分割后的子空间已持久化
+     *
      * @param parent
      * @param allocate
      * @return List<DormitorySpace>

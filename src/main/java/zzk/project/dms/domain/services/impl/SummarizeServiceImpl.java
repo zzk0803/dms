@@ -9,7 +9,8 @@ import zzk.project.dms.domain.entities.DormitorySpaceType;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.domain.services.SummarizeService;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.List;
 
