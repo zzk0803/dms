@@ -64,6 +64,14 @@ public class BeanConfigurationForDormitoryView {
 
         spaceTreeGrid.addHierarchyColumn(DormitorySpace::getName).setHeader("名称&编号").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(space -> space.getType().getCn()).setHeader("层级").setFlexGrow(1).setResizable(true);
+        spaceTreeGrid.addItemClickListener(clickedItemEvent -> {
+            final DormitorySpace space = clickedItemEvent.getItem();
+            if (spaceTreeGrid.isExpanded(space)) {
+                spaceTreeGrid.collapse(space);
+            }else {
+                spaceTreeGrid.expand(space);
+            }
+        });
         spaceTreeGrid.addColumn(space -> space.isOperational() ? "已启用" : "已停用").setHeader("是否启用").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(space -> space.isAvailable() ? "可用" : "已占用").setHeader("是否占用").setFlexGrow(1).setResizable(true);
         spaceTreeGrid.addColumn(DormitorySpace::getCapacity).setHeader("容积").setFlexGrow(1).setResizable(true);
