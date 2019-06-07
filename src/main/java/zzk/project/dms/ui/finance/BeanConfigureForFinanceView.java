@@ -108,33 +108,19 @@ public class BeanConfigureForFinanceView {
         return financialRecordGrid;
     }
 
-    @Bean
-    @UIScope
-    public FinanceRecordDialog financeRecordDialog() {
-        FinanceRecordDialog dialog = new FinanceRecordDialog(
-                financeRecordFormDialogHeader(),
-                financeRecordFormEntityEditForm(),
-                financeRecordFormOkButton(),
-                financeRecordFormCancelButton()
-        );
-        dialog.setCloseOnEsc(false);
-        dialog.setCloseOnOutsideClick(false);
-        return dialog;
-    }
-
     //--------------------------------------------------------------------------------
     //------------                       财务表单页面                             -----------------
     //--------------------------------------------------------------------------------
 
     @Bean
     @UIScope
-    public Binder<FinancialRecord> financialRecordBinder() {
-        return new Binder<>();
+    public Binder<FinancialRecord> financialBinder() {
+        return new Binder<FinancialRecord>();
     }
 
     @Bean
     @UIScope
-    public ComboBox<Tenement> tenementComboBox() {
+    public ComboBox<Tenement> financialTenementComboBox() {
         ComboBox<Tenement> tenementComboBox = new ComboBox<>("住户");
         tenementComboBox.setDataProvider(tenementDataProviderForComboBox());
         tenementComboBox.setItemLabelGenerator(Tenement::getName);
@@ -149,7 +135,7 @@ public class BeanConfigureForFinanceView {
 
     @Bean
     @UIScope
-    public DatePicker recordDateDatePicker() {
+    public DatePicker financialRecordDatePicker() {
         DatePicker recordDateDatePicker = new DatePicker();
         recordDateDatePicker.setLabel("结算日期");
         return recordDateDatePicker;
@@ -157,7 +143,7 @@ public class BeanConfigureForFinanceView {
 
     @Bean
     @UIScope
-    public NumberField checkInField() {
+    public NumberField financialCheckInField() {
         NumberField numberField = new NumberField("应收金额");
         numberField.setHasControls(true);
         numberField.setSuffixComponent(VaadinIcon.DOLLAR.create());
@@ -166,7 +152,7 @@ public class BeanConfigureForFinanceView {
 
     @Bean
     @UIScope
-    public TextArea descriptionArea() {
+    public TextArea financialDescriptionArea() {
         TextArea descriptionArea = new TextArea("备忘录");
         descriptionArea.setHeight("20em");
         return descriptionArea;
@@ -174,7 +160,7 @@ public class BeanConfigureForFinanceView {
 
     @Bean
     @UIScope
-    public Checkbox markCheckBox() {
+    public Checkbox financialMarkCheckBox() {
         return new Checkbox("是否已收款");
     }
 
@@ -186,20 +172,6 @@ public class BeanConfigureForFinanceView {
     @UIScope
     public H4 financeRecordFormDialogHeader() {
         return new H4("新建&编辑收费记录");
-    }
-
-    @Bean
-    @UIScope
-    public FinanceRecordEditForm financeRecordFormEntityEditForm() {
-        return new FinanceRecordEditForm(
-                financialRecordBinder(),
-                recordDateDatePicker(),
-                tenementComboBox(),
-                checkInField(),
-                descriptionArea(),
-                markCheckBox(),
-                financialRecordService
-        );
     }
 
     @Bean

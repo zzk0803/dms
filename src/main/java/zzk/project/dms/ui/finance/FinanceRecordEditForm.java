@@ -9,12 +9,17 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.data.converter.Converter;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.FinancialRecord;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.services.FinancialRecordService;
 
 import java.math.BigDecimal;
 
+@SpringComponent
+@UIScope
 public class FinanceRecordEditForm extends VerticalLayout {
     private Binder<FinancialRecord> binder;
     private FinancialRecord editingRecord;
@@ -35,12 +40,12 @@ public class FinanceRecordEditForm extends VerticalLayout {
     private FinancialRecordService financialRecordService;
 
     public FinanceRecordEditForm(
-            Binder<FinancialRecord> binder,
-            DatePicker recordDatePicker,
-            ComboBox<Tenement> tenementComboBox,
-            NumberField checkInField,
-            TextArea descriptionArea,
-            Checkbox markCheckBox,
+            @Qualifier("financialBinder") Binder<FinancialRecord> binder,
+            @Qualifier("financialRecordDatePicker") DatePicker recordDatePicker,
+            @Qualifier("financialTenementComboBox") ComboBox<Tenement> tenementComboBox,
+            @Qualifier("financialCheckInField") NumberField checkInField,
+            @Qualifier("financialDescriptionArea") TextArea descriptionArea,
+            @Qualifier("financialMarkCheckBox") Checkbox markCheckBox,
             FinancialRecordService financialRecordService
     ) {
         this.financialRecordService = financialRecordService;

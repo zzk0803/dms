@@ -68,7 +68,7 @@ public class BeanConfigurationForDormitoryView {
             final DormitorySpace space = clickedItemEvent.getItem();
             if (spaceTreeGrid.isExpanded(space)) {
                 spaceTreeGrid.collapse(space);
-            }else {
+            } else {
                 spaceTreeGrid.expand(space);
             }
         });
@@ -285,20 +285,6 @@ public class BeanConfigurationForDormitoryView {
         return new H1(DormitoryView.VIEW_TITLE);
     }
 
-    @Bean
-    @UIScope
-    public DormitoryEditForm dormitoryEditForm() {
-        return new DormitoryEditForm(
-                dormitorySpaceService,
-                spaceBinder(),
-                spaceNameField(),
-                capacityField(),
-                availableCheckbox(),
-                operationalCheckbox(),
-                spaceTypeComboBox(),
-                upperSpaceComboBox()
-        );
-    }
 
     //--------------------------------------------------------------------------------
     //------------                       住户管理编辑对话框                             -----------------
@@ -306,22 +292,10 @@ public class BeanConfigurationForDormitoryView {
 
     @Bean
     @UIScope
-    public DormitoryEditDialog dormitoryEditDialog() {
-        return new DormitoryEditDialog(
-                dormitoryEditForm(),
-                commitButton(),
-                giveUpButton()
-        );
+    public H4 dialogHeaderForDormitory() {
+        return new H4("新建&编辑宿舍空间");
     }
 
-    @Bean
-    @UIScope
-    public Button giveUpButton() {
-        Button giveUpButton = new Button("放弃并关闭");
-        giveUpButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-        giveUpButton.getStyle().set("color", "red");
-        return giveUpButton;
-    }
 
     @Bean
     @UIScope
@@ -331,7 +305,7 @@ public class BeanConfigurationForDormitoryView {
 
     @Bean
     @UIScope
-    public TextField spaceNameField() {
+    public TextField dormitorySpaceNameField() {
         TextField spaceNameField = new TextField("名称", "请输入名称或编号");
         spaceNameField.setRequired(true);
         spaceNameField.setRequiredIndicatorVisible(true);
@@ -340,7 +314,7 @@ public class BeanConfigurationForDormitoryView {
 
     @Bean
     @UIScope
-    public TextField capacityField() {
+    public TextField dormitoryCapacityField() {
         TextField capacityField = new TextField("容积", "最大容纳人数");
         capacityField.setRequiredIndicatorVisible(true);
         return capacityField;
@@ -348,19 +322,19 @@ public class BeanConfigurationForDormitoryView {
 
     @Bean
     @UIScope
-    public Checkbox availableCheckbox() {
+    public Checkbox dormitoryAvailableCheckbox() {
         return new Checkbox("设置为可用（未满）");
     }
 
     @Bean
     @UIScope
-    public Checkbox operationalCheckbox() {
+    public Checkbox dormitoryOperationalCheckbox() {
         return new Checkbox("设置为启用");
     }
 
     @Bean
     @UIScope
-    public ComboBox<DormitorySpaceType> spaceTypeComboBox() {
+    public ComboBox<DormitorySpaceType> dormitorySpaceTypeComboBox() {
         ComboBox<DormitorySpaceType> spaceTypeComboBox = new ComboBox<>("空间类型");
         spaceTypeComboBox.setItems(DormitorySpaceType.values());
         spaceTypeComboBox.setItemLabelGenerator(DormitorySpaceType::getCn);
@@ -369,7 +343,7 @@ public class BeanConfigurationForDormitoryView {
 
     @Bean
     @UIScope
-    public ComboBox<DormitorySpace> upperSpaceComboBox() {
+    public ComboBox<DormitorySpace> dormitoryUpperSpaceComboBox() {
         ComboBox<DormitorySpace> upperSpaceComboBox = new ComboBox<>("上层空间");
         upperSpaceComboBox.setVisible(false);
         upperSpaceComboBox.setItemLabelGenerator(DormitorySpace::getName);
@@ -378,9 +352,18 @@ public class BeanConfigurationForDormitoryView {
 
     @Bean
     @UIScope
-    public Button commitButton() {
+    public Button dormitoryDialogCommitButton() {
         Button commit = new Button("提交");
         commit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         return commit;
+    }
+
+    @Bean
+    @UIScope
+    public Button dormitoryDialogGiveUpButton() {
+        Button giveUpButton = new Button("放弃并关闭");
+        giveUpButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        giveUpButton.getStyle().set("color", "red");
+        return giveUpButton;
     }
 }

@@ -14,6 +14,8 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.PropertyId;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.DormitoryManageException;
@@ -28,6 +30,8 @@ import zzk.project.dms.ui.dormitory.DormitoryFlatDataProvider;
 
 import java.util.Objects;
 
+@SpringComponent
+@UIScope
 public class TenementEditForm extends VerticalLayout {
     private Tenement editTenement;
     private Tenement completedTenement;
@@ -83,17 +87,17 @@ public class TenementEditForm extends VerticalLayout {
             @Qualifier("tenementBinder") Binder<Tenement> tenementBinder,
             TenementService tenementService,
             DormitorySpaceService dormitorySpaceService,
-            @Qualifier("distributeCurrently") Checkbox distributeCurrentlyCheckbox,
-            @Qualifier("nameField") TextField nameField,
-            @Qualifier("genderSelect") Select<TenementGender> genderSelect,
-            @Qualifier("personIdentityIDField") TextField personIdentityIDField,
-            @Qualifier("houseTelephoneField") TextField houseTelephoneField,
-            @Qualifier("mobilePhone") TextField mobilePhone,
-            @Qualifier("primaryEmailField") EmailField primaryEmailField,
-            @Qualifier("berthLabel") Label berthLabel,
-            @Qualifier("datePicker") DatePicker tenementDateField,
-            @Qualifier("datePicker") DatePicker expireDateField,
-            @Qualifier("validCheckbox") Checkbox validCheckbox
+            @Qualifier("tenementDistributeCurrently") Checkbox distributeCurrentlyCheckbox,
+            @Qualifier("tenementNameField") TextField nameField,
+            @Qualifier("tenementGenderSelect") Select<TenementGender> genderSelect,
+            @Qualifier("tenementPersonIdentityIDField") TextField personIdentityIDField,
+            @Qualifier("tenementHouseTelephoneField") TextField houseTelephoneField,
+            @Qualifier("tenementMobilePhone") TextField mobilePhone,
+            @Qualifier("tenementPrimaryEmailField") EmailField primaryEmailField,
+            @Qualifier("tenementBerthLabel") Label berthLabel,
+            @Qualifier("tenementDatePicker") DatePicker tenementDateField,
+            @Qualifier("tenementDatePicker") DatePicker expireDateField,
+            @Qualifier("tenementValidCheckbox") Checkbox validCheckbox
     ) {
 
         this.tenementBinder = tenementBinder;

@@ -7,12 +7,18 @@ import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.treegrid.TreeGrid;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.DormitorySpace;
 
+@SpringComponent
+@UIScope
 public class DormitoryEditDialog extends Dialog {
     private VerticalLayout root = new VerticalLayout();
 
+    private H4 dialogHeader;
     private DormitoryEditForm dormitoryEditForm;
     private TreeGrid<DormitorySpace> spaceTreeGrid;
 
@@ -21,10 +27,12 @@ public class DormitoryEditDialog extends Dialog {
 
     @Autowired
     public DormitoryEditDialog(
+           @Qualifier("dialogHeaderForDormitory") H4 dialogHeader,
             DormitoryEditForm dormitoryEditForm,
-            Button commitButton,
-            Button giveUpButton
+           @Qualifier("dormitoryDialogCommitButton") Button commitButton,
+           @Qualifier("dormitoryDialogGiveUpButton") Button giveUpButton
     ) {
+        this.dialogHeader = dialogHeader;
         this.dormitoryEditForm = dormitoryEditForm;
         this.commitButton = commitButton;
         this.giveUpButton = giveUpButton;
@@ -43,8 +51,7 @@ public class DormitoryEditDialog extends Dialog {
         this.setCloseOnOutsideClick(false);
         this.setCloseOnEsc(false);
 
-        H4 headerH4 = new H4("新建&编辑宿舍空间");
-        root.add(headerH4);
+        root.add(dialogHeader);
         root.add(dormitoryEditForm);
         root.add(new HorizontalLayout(commitButton, giveUpButton));
         addComponentAsFirst(root);

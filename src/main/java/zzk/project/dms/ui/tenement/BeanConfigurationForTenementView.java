@@ -169,17 +169,6 @@ public class BeanConfigurationForTenementView {
         return tenementGrid;
     }
 
-    @Bean
-    @UIScope
-    public TenementEditDialog tenementEditDialog() {
-        return new TenementEditDialog(
-                dialogHeader(),
-                tenementEditForm(),
-                okButton(),
-                cancelButton()
-        );
-    }
-
     //--------------------------------------------------------------------------------
     //------------                       住户表单页面                             -----------------
     //--------------------------------------------------------------------------------
@@ -192,19 +181,19 @@ public class BeanConfigurationForTenementView {
 
     @Bean
     @UIScope
-    public Checkbox distributeCurrently() {
+    public Checkbox tenementDistributeCurrently() {
         return new Checkbox("显示房间分配");
     }
 
     @Bean
     @UIScope
-    public TextField nameField() {
+    public TextField tenementNameField() {
         return new TextField("姓名");
     }
 
     @Bean
     @UIScope
-    public Select<TenementGender> genderSelect() {
+    public Select<TenementGender> tenementGenderSelect() {
         Select<TenementGender> genderSelect = new Select<>();
         genderSelect.setLabel("性别");
         genderSelect.setItems(TenementGender.values());
@@ -219,31 +208,31 @@ public class BeanConfigurationForTenementView {
 
     @Bean
     @UIScope
-    public TextField personIdentityIDField() {
+    public TextField tenementPersonIdentityIDField() {
         return new TextField("身份证号码");
     }
 
     @Bean
     @UIScope
-    public TextField houseTelephoneField() {
+    public TextField tenementHouseTelephoneField() {
         return new TextField("座机号码");
     }
 
     @Bean
     @UIScope
-    public TextField mobilePhone() {
+    public TextField tenementMobilePhone() {
         return new TextField("手机号码");
     }
 
     @Bean
     @UIScope
-    public EmailField primaryEmailField() {
+    public EmailField tenementPrimaryEmailField() {
         return new EmailField("电子邮箱");
     }
 
     @Bean
     @UIScope
-    public Label berthLabel() {
+    public Label tenementBerthLabel() {
         return new Label();
     }
 
@@ -299,7 +288,7 @@ public class BeanConfigurationForTenementView {
 
     @Bean
     @Scope("prototype")
-    public DatePicker datePicker() {
+    public DatePicker tenementDatePicker() {
         DatePicker datePicker = new DatePicker();
         datePicker.setLocale(Locale.CHINA);
 //        datePicker.setI18n(datePickerI18n());
@@ -308,7 +297,7 @@ public class BeanConfigurationForTenementView {
 
     @Bean
     @UIScope
-    public Checkbox validCheckbox() {
+    public Checkbox tenementValidCheckbox() {
         return new Checkbox("有效");
     }
 
@@ -319,34 +308,13 @@ public class BeanConfigurationForTenementView {
 
     @Bean
     @UIScope
-    public H4 dialogHeader() {
+    public H4 tenementDialogHeader() {
         return new H4("编辑&新建住户");
     }
 
     @Bean
     @UIScope
-    public TenementEditForm tenementEditForm() {
-        return new TenementEditForm(
-                tenementBinder(),
-                tenementService,
-                dormitorySpaceService,
-                distributeCurrently(),
-                nameField(),
-                genderSelect(),
-                personIdentityIDField(),
-                houseTelephoneField(),
-                mobilePhone(),
-                primaryEmailField(),
-                berthLabel(),
-                datePicker(),
-                datePicker(),
-                validCheckbox()
-        );
-    }
-
-    @Bean
-    @UIScope
-    public Button okButton() {
+    public Button tenementOkButton() {
         Button button = new Button("提交");
         button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         return button;
@@ -354,7 +322,7 @@ public class BeanConfigurationForTenementView {
 
     @Bean
     @UIScope
-    public Button cancelButton() {
+    public Button tenementCancelButton() {
         Button cancel = new Button("放弃并返回");
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
         cancel.getStyle().set("color", "red");

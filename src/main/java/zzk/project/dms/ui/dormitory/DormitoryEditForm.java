@@ -10,6 +10,8 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.DormitoryManageException;
@@ -19,6 +21,8 @@ import zzk.project.dms.domain.services.DormitorySpaceService;
 
 import java.util.Objects;
 
+@SpringComponent
+@UIScope
 public class DormitoryEditForm extends VerticalLayout {
     private Binder<DormitorySpace> dormitorySpaceBinder;
 
@@ -39,12 +43,12 @@ public class DormitoryEditForm extends VerticalLayout {
     public DormitoryEditForm(
             DormitorySpaceService dormitorySpaceService,
             Binder<DormitorySpace> dormitorySpaceBinder,
-            @Qualifier("spaceNameField") TextField spaceNameField,
-            @Qualifier("capacityField") TextField capacityField,
-            @Qualifier("availableCheckbox") Checkbox availableCheckbox,
-            Checkbox operationalCheckbox,
-            ComboBox<DormitorySpaceType> spaceTypeComboBox,
-            ComboBox<DormitorySpace> upperSpaceComboBox
+            @Qualifier("dormitorySpaceNameField") TextField spaceNameField,
+            @Qualifier("dormitoryCapacityField") TextField capacityField,
+            @Qualifier("dormitoryAvailableCheckbox") Checkbox availableCheckbox,
+            @Qualifier("dormitoryOperationalCheckbox") Checkbox operationalCheckbox,
+            @Qualifier("dormitorySpaceTypeComboBox") ComboBox<DormitorySpaceType> spaceTypeComboBox,
+            @Qualifier("dormitoryUpperSpaceComboBox") ComboBox<DormitorySpace> upperSpaceComboBox
     ) {
         this.dormitorySpaceService = dormitorySpaceService;
         this.dormitorySpaceBinder = dormitorySpaceBinder;

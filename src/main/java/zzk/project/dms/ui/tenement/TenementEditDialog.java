@@ -7,10 +7,14 @@ import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import zzk.project.dms.domain.entities.Tenement;
 
+@SpringComponent
+@UIScope
 public class TenementEditDialog extends Dialog {
     private VerticalLayout root = new VerticalLayout();
 
@@ -23,10 +27,10 @@ public class TenementEditDialog extends Dialog {
 
     @Autowired
     public TenementEditDialog(
-            @Qualifier("dialogHeader") H4 dialogHeader,
+            @Qualifier("tenementDialogHeader") H4 dialogHeader,
             @Qualifier("tenementEditForm") TenementEditForm tenementEditForm,
-            @Qualifier("okButton") Button okButton,
-            @Qualifier("cancelButton") Button cancelButton
+            @Qualifier("tenementOkButton") Button okButton,
+            @Qualifier("tenementCancelButton") Button cancelButton
     ) {
         this.dialogHeader = dialogHeader;
         this.tenementEditForm = tenementEditForm;
