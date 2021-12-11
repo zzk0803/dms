@@ -15,8 +15,8 @@
     <description>Graduation Project Dormitory Management</description>
 
     <properties>
-        <java.version>1.12</java.version>
-        <vaadin.version>13.0.5</vaadin.version>
+        <java.version>1.8</java.version>
+        <vaadin.version>13.0.13</vaadin.version>
         <card.version>0.9.4</card.version>
     </properties>
 
@@ -70,6 +70,8 @@
             <groupId>com.github.appreciated</groupId>
             <artifactId>card</artifactId>
             <version>${card.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/card-0.9.4.jar</systemPath>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->

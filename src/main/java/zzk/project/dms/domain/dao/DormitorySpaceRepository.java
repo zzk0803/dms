@@ -9,6 +9,7 @@ import zzk.project.dms.domain.entities.DormitorySpaceType;
 import java.util.List;
 
 public interface DormitorySpaceRepository extends JpaRepository<DormitorySpace, Long> {
+
     List<DormitorySpace> findDormitorySpacesByParent(DormitorySpace parent);
 
     Page<DormitorySpace> findDormitorySpacesByParent(DormitorySpace parent, Pageable pageable);
@@ -26,4 +27,5 @@ public interface DormitorySpaceRepository extends JpaRepository<DormitorySpace, 
     Page<DormitorySpace> findByNameContaining(String name, Pageable pageable);
 
     int countByNameContains(String name);
+
 }

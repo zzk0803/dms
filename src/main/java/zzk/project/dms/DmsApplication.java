@@ -4,11 +4,15 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
+import org.springframework.web.client.RestTemplate;
 import zzk.project.dms.domain.entities.Account;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
@@ -27,6 +31,13 @@ public class DmsApplication {
 
     public static void main(String[] args) {
         applicationContext = SpringApplication.run(DmsApplication.class, args);
+
+//        SpringApplicationBuilder springApplicationBuilder = new SpringApplicationBuilder();
+//        springApplicationBuilder.sources(DmsApplication.class)
+//                .parent()
+//                .child()
+//                .bannerMode(Banner.Mode.OFF)
+//                .run(args)
     }
 
     public static <T> T getBean(Class<T> type) {
@@ -66,11 +77,4 @@ public class DmsApplication {
 
         };
     }
-
-    @Bean
-    @Scope("prototype")
-    public EventBus eventBus() {
-        return new AsyncEventBus(Executors.newCachedThreadPool());
-    }
-
 }

@@ -194,7 +194,7 @@ public class BeanConfigurationForDormitoryView {
         RadioButtonGroup<DormitoryDivideApproach> approachRadioButtonGroup = new RadioButtonGroup<>();
         approachRadioButtonGroup.setLabel("分割方法");
         approachRadioButtonGroup.setItems(DormitoryDivideApproach.values());
-        approachRadioButtonGroup.setRenderer(new TextRenderer<>() {
+        approachRadioButtonGroup.setRenderer(new TextRenderer<DormitoryDivideApproach>() {
             @Override
             public Component createComponent(DormitoryDivideApproach dormitoryDivideApproach) {
                 return new Text(dormitoryDivideApproach.getCn());

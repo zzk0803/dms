@@ -22,6 +22,7 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
 
     @Autowired
     private DormitorySpaceRepository dormitorySpaceRepository;
+
     @Autowired
     private TenementService tenementService;
 
@@ -258,7 +259,7 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
         return false;
     }
 
-    private class SpaceTreeRepositoryIterator {
+    private static class SpaceTreeRepositoryIterator {
         private DormitorySpaceRepository dormitorySpaceRepository;
         private DormitorySpace parent;
         private DormitorySpace current;
