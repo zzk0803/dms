@@ -19,7 +19,9 @@ public class DormitoryFlatDataProvider extends AbstractBackEndDataProvider<Dormi
 
     @Override
     protected Stream<DormitorySpace> fetchFromBackEnd(Query<DormitorySpace, String> query) {
-        return dormitorySpaceService.findByNameContains(parseFilterString(query), getPageable(query)).stream();
+        String filterString = parseFilterString(query);
+        Pageable pageable = getPageable(query);
+        return dormitorySpaceService.findByNameContains(filterString, pageable).stream();
     }
 
     @Override

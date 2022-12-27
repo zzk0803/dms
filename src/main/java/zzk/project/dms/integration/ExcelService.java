@@ -1,4 +1,4 @@
-package zzk.project.dms.domain.services;
+package zzk.project.dms.integration;
 
 import zzk.project.dms.domain.entities.Tenement;
 

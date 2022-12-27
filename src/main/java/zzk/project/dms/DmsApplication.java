@@ -11,15 +11,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.client.RestTemplate;
 import zzk.project.dms.domain.entities.Account;
 import zzk.project.dms.domain.entities.DormitorySpace;
 import zzk.project.dms.domain.entities.DormitorySpaceType;
-import zzk.project.dms.domain.services.AccountService;
-import zzk.project.dms.domain.services.DormitorySpaceService;
-import zzk.project.dms.domain.services.FinancialRecordService;
-import zzk.project.dms.domain.services.TenementService;
+import zzk.project.dms.domain.services.*;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -47,6 +45,7 @@ public class DmsApplication {
     @Bean
     public InitializingBean initializingBean(
             @Autowired DormitorySpaceService dormitorySpaceService,
+            @Autowired DormitorySpaceAllocationService dormitorySpaceAllocationService,
             @Autowired TenementService tenementService,
             @Autowired FinancialRecordService financialRecordService,
             @Autowired AccountService accountService
@@ -59,13 +58,13 @@ public class DmsApplication {
             dormitorySpace.setCapacity(1000);
             DormitorySpace root = dormitorySpaceService.save(dormitorySpace);
 
-            List<DormitorySpace> builds = dormitorySpaceService.allocateFromParentByExplicitNumberByEqualization(root, 4);
+            List<DormitorySpace> builds = dormitorySpaceAllocationService.allocateFromParentByExplicitNumberByEqualization(root, 4);
             builds.forEach(
                     build -> {
-                        List<DormitorySpace> floors = dormitorySpaceService.allocateFromParentByExplicitNumberByEqualization(build, 5);
+                        List<DormitorySpace> floors = dormitorySpaceAllocationService.allocateFromParentByExplicitNumberByEqualization(build, 5);
                         floors.forEach(floor -> {
-                            List<DormitorySpace> rooms = dormitorySpaceService.allocateFromParentByExplicitAllocationByEqualization(floor, 10);
-                            rooms.forEach(room -> dormitorySpaceService.allocateFromParentByExplicitAllocationByEqualization(room, 1));
+                            List<DormitorySpace> rooms = dormitorySpaceAllocationService.allocateFromParentByExplicitAllocationByEqualization(floor, 10);
+                            rooms.forEach(room -> dormitorySpaceAllocationService.allocateFromParentByExplicitAllocationByEqualization(room, 1));
                         });
                     }
             );

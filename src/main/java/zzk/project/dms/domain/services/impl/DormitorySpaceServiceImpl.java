@@ -56,7 +56,6 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
         return dormitorySpaceRepository.findDormitorySpacesByParent(null);
     }
 
-    @Override
     public List<DormitorySpace> listChildSpace(DormitorySpace parentSpace) {
         return dormitorySpaceRepository.findDormitorySpacesByParent(parentSpace);
     }
@@ -98,74 +97,7 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
         return dormitorySpaceRepository.countByNameContains(name);
     }
 
-    @Override
-    public DormitorySpace allocateFromParentByExplicitCapacity(DormitorySpace parent, int allocate) throws DormitoryManageException {
-        checkAllocatable(parent, allocate);
 
-        //设置父级空间的已划分数量
-        parent.setHasDivided(parent.getHasDivided() + allocate);
-        parent = save(parent);
-
-        DormitorySpace newSpace = new DormitorySpace();
-        newSpace.setParent(parent);
-        newSpace.setCapacity(allocate);
-        newSpace.setType(parent.getType().smaller());
-        newSpace.setName(String.format("A %s Has Capacity=%d Of %s", newSpace.getType(), newSpace.getCapacity(), parent.getName()));
-        save(newSpace);
-
-        return newSpace;
-    }
-
-    @Override
-    public DormitorySpace allocateFromParentByExplicitCapacity(DormitorySpace parent, String childName, int allocate) throws DormitoryManageException {
-        checkAllocatable(parent, allocate);
-
-        //设置父级空间的已划分数量
-        updateDivided(parent, allocate);
-        DormitorySpace modifiedParent = save(parent);
-
-        DormitorySpace newSpace = new DormitorySpace();
-        newSpace.setParent(modifiedParent);
-        newSpace.setCapacity(allocate);
-        newSpace.setType(parent.getType().smaller());
-        newSpace.setName(childName);
-        save(newSpace);
-
-        return newSpace;
-    }
-
-    @Override
-    public List<DormitorySpace> allocateFromParentByExplicitNumberByEqualization(DormitorySpace parent, int childNumber) throws DormitoryManageException {
-        int capacity = parent.getCapacity();
-        int hasDivided = parent.getHasDivided();
-        int remain = capacity - hasDivided;
-        int allocate = remain / childNumber;
-        checkAllocatable(parent, allocate);
-        DormitorySpace newSpace;
-        List<DormitorySpace> allocatedResult = new LinkedList<>();
-        for (int i = 0; i < childNumber; i++) {
-            newSpace = allocateFromParentByExplicitCapacity(parent, parent.getType().smaller().getCn() + (i + 1), allocate);
-            allocatedResult.add(newSpace);
-        }
-        return allocatedResult;
-    }
-
-    @Override
-    public List<DormitorySpace> allocateFromParentByExplicitAllocationByEqualization(DormitorySpace parent, int allocate) throws DormitoryManageException {
-        checkAllocatable(parent, allocate);
-        int capacity = parent.getCapacity();
-        int hasDivided = parent.getHasDivided();
-        int remainCapacity = capacity - hasDivided;
-        int availableNumber = remainCapacity / allocate;
-
-        DormitorySpace newSpace;
-        List<DormitorySpace> allocatedResult = new LinkedList<>();
-        for (int i = 0; i < availableNumber; i++) {
-            newSpace = allocateFromParentByExplicitCapacity(parent, parent.getType().smaller().getCn() + (i + 1), allocate);
-            allocatedResult.add(newSpace);
-        }
-        return allocatedResult;
-    }
 
     @Override
     public DormitorySpace findAvailableBerth(DormitorySpace dormitorySpace) throws DormitoryManageException {
@@ -195,7 +127,6 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
         dormitorySpaceRepository.saveAll(spaces);
     }
 
-    @Override
     public void updateDivided(DormitorySpace dormitorySpace, int divided) {
         int hasDivided = dormitorySpace.getHasDivided();
         dormitorySpace.setHasDivided(hasDivided + divided);
@@ -220,44 +151,7 @@ public class DormitorySpaceServiceImpl implements DormitorySpaceService {
         return null;
     }
 
-    private void checkAllocatable(DormitorySpace parent, int allocate) throws DormitoryManageException {
-        if (parent.getType() == DormitorySpaceType.BERTH) {
-            throw new DormitoryManageException("父级必须是寝室级以上的单位才能进行划分");
-        }
 
-        if (allocate <= 0) {
-            throw new DormitoryManageException("分配数额必须不小于0");
-        }
-
-        int capacity = parent.getCapacity();
-        if (parent.getHasDivided() == capacity) {
-            throw new DormitoryManageException(parent.getName() + "的划分数量已达上限");
-        }
-
-        int hasDivided = parent.getHasDivided();
-        int remain = capacity - hasDivided;
-        if (remain < allocate) {
-            throw new DormitoryManageException("给定的分配数额已大于剩余的分配数额");
-        }
-    }
-
-    @Override
-    public boolean isFormerChildOfLatter(DormitorySpace former, DormitorySpace latter) {
-        if (former == null || latter == null) {
-            return false;
-        }
-
-        DormitorySpace currentFormer = former;
-        while (currentFormer != null) {
-            DormitorySpace formerParent = currentFormer.getParent();
-            if (formerParent != null && formerParent.equals(latter)) {
-                return true;
-            }
-            currentFormer = formerParent;
-        }
-
-        return false;
-    }
 
     private static class SpaceTreeRepositoryIterator {
         private DormitorySpaceRepository dormitorySpaceRepository;

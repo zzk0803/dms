@@ -26,8 +26,8 @@ import org.springframework.context.annotation.Scope;
 import zzk.project.dms.domain.DormitoryManageException;
 import zzk.project.dms.domain.entities.Tenement;
 import zzk.project.dms.domain.entities.TenementGender;
-import zzk.project.dms.domain.services.DormitorySpaceService;
-import zzk.project.dms.domain.services.ExcelService;
+import zzk.project.dms.domain.services.DormitorySpaceAllocationService;
+import zzk.project.dms.integration.ExcelService;
 import zzk.project.dms.domain.services.TenementService;
 import zzk.project.dms.domain.utilies.Dormitories;
 
@@ -43,7 +43,7 @@ public class BeanConfigurationForTenementView {
     private TenementService tenementService;
 
     @Autowired
-    private DormitorySpaceService dormitorySpaceService;
+    private DormitorySpaceAllocationService dormitorySpaceAllocationService;
 
     @Autowired
     private TenementBackendDataProvider tenementBackendDataProvider;

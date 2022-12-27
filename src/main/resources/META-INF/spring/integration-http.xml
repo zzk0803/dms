@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:si="http://www.springframework.org/schema/integration"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:si-http="http://www.springframework.org/schema/integration/http"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			https://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/integration
+			https://www.springframework.org/schema/integration/spring-integration.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http.xsd">
+
+    <!--    1-->
+    <si:channel id="demoRequest"/>
+    <si:channel id="demoReply"/>
+    <si-http:inbound-channel-adapter id="demoInboundChannelAdapter"
+                                     channel="demoRequest"
+                                     supported-methods="GET,POST,PUT,DELETE"/>
+    <si-http:inbound-gateway request-channel="demoRequest" reply-channel="demoReply"/>
+
+    <!--    2-->
+    <si-http:inbound-gateway id="inboundController"
+                             request-channel="demoRequest" reply-channel="demoReply"
+                             path="/foo/{fooId}"
+                             supported-methods="GET"
+                             view-name="foo"
+                             error-code="oops">
+        <si-http:request-mapping headers="User-Agent"
+                                 params="myParam=myValue"
+                                 consumes="application/json"
+                                 produces="!text/plain"/>
+        <si-http:cross-origin origin="*"/>
+    </si-http:inbound-gateway>
+</beans>
